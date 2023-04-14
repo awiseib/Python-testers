@@ -1,0 +1,107 @@
+from decimal import Decimal
+from ibapi.client import *
+from ibapi.wrapper import *
+from ibapi.contract import ComboLeg
+
+port = 7496
+
+
+class TestApp(EClient, EWrapper):
+    def __init__(self):
+        EClient.__init__(self, self)
+
+    def nextValidId(self, orderId: OrderId):
+        
+        mycontract = Contract()
+        mycontract.symbol = "SPX"
+        mycontract.secType = "BAG"
+        mycontract.exchange = "SMART"
+        mycontract.currency = "USD"
+
+        firstBuy = ComboLeg()
+        firstBuy.conId = 603761180 # SPX 3805 P
+        firstBuy.action = "BUY"
+        firstBuy.ratio = 1
+        firstBuy.exchange = "SMART"
+
+        firstSell = ComboLeg()
+        firstSell.conId = 601920725 # SPX 3810 P
+        firstSell.action = "SELL"
+        firstSell.ratio = 1
+        firstSell.exchange = "SMART"
+
+        secondSell = ComboLeg()
+        secondSell.conId = 601920554 # SPX 3825 C
+        secondSell.action = "SELL"
+        secondSell.ratio = 1
+        secondSell.exchange = "SMART"
+
+        secondBuy = ComboLeg()
+        secondBuy.conId = 601920559 # SPX 3830 C
+        secondBuy.action = "BUY"
+        secondBuy.ratio = 1
+        secondBuy.exchange = "SMART"
+
+        myorder = Order()
+        myorder.orderId = orderId
+        myorder.action = "BUY"
+        myorder.orderType = "LMT"
+        myorder.lmtPrice = -1.10
+        myorder.totalQuantity = 1
+        myorder.tif = "GTC"
+
+        mycontract.comboLegs = []
+        mycontract.comboLegs.append(firstBuy)
+        mycontract.comboLegs.append(firstSell)
+        mycontract.comboLegs.append(secondSell)
+        mycontract.comboLegs.append(secondBuy)
+
+        self.placeOrder(myorder.orderId, mycontract, myorder)
+
+    def openOrder(
+        self,
+        orderId: OrderId,
+        contract: Contract,
+        order: Order,
+        orderState: OrderState,
+    ):
+        print(
+            "openOrder.",
+            f"orderId:{orderId}",
+            f"contract:{contract}",
+            f"order:{order}",
+            # f"orderState:{orderState}",
+        )
+
+    def orderStatus(
+        self,
+        orderId: OrderId,
+        status: str,
+        filled: Decimal,
+        remaining: Decimal,
+        avgFillPrice: float,
+        permId: int,
+        parentId: int,
+        lastFillPrice: float,
+        clientId: int,
+        whyHeld: str,
+        mktCapPrice: float,
+    ):
+        print(
+            "orderStatus.",
+            f"orderId:{orderId}",
+            f"status:{status}",
+            f"filled:{filled}",
+            f"remaining:{remaining}",
+            f"avgFillPrice:{avgFillPrice}",
+            # f"permId:{permId}",
+            f"parentId:{parentId}",
+            f"lastFillPrice:{lastFillPrice}",
+            # f"clientId:{clientId}",
+            # f"whyHeld:{whyHeld}",
+            # f"mktCapPrice:{mktCapPrice}",
+        )
+
+app = TestApp()
+app.connect("127.0.0.1", port, 1001)
+app.run()
