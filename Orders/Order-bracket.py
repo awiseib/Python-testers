@@ -30,15 +30,15 @@ class TestApp(EClient, EWrapper):
         #parent.lmtPrice = parent_price
         parent.transmit = False
 
-        # profit_taker = Order()
-        # profit_taker.orderId = parent.orderId + 1
-        # profit_taker.parentId = parent.orderId
-        # profit_taker.action = "SELL" if parent_action == "BUY" else "BUY"
-        # profit_taker.orderType = "LMT"
-        # profit_taker.totalQuantity = quantity
-        # #profit_taker.lmtPrice = parent_price + 1.0
-        # profit_taker.lmtPrice = 140
-        # profit_taker.transmit = False
+        profit_taker = Order()
+        profit_taker.orderId = parent.orderId + 1
+        profit_taker.parentId = parent.orderId
+        profit_taker.action = "SELL" if parent_action == "BUY" else "BUY"
+        profit_taker.orderType = "LMT"
+        profit_taker.totalQuantity = quantity
+        #profit_taker.lmtPrice = parent_price + 1.0
+        profit_taker.lmtPrice = 140
+        profit_taker.transmit = False
 
         stop_loss = Order()
         stop_loss.orderId = parent.orderId + 2
@@ -51,7 +51,7 @@ class TestApp(EClient, EWrapper):
         stop_loss.transmit = True
 
         self.placeOrder(parent.orderId, mycontract, parent)
-        # self.placeOrder(profit_taker.orderId, mycontract, profit_taker)
+        self.placeOrder(profit_taker.orderId, mycontract, profit_taker)
         self.placeOrder(stop_loss.orderId, mycontract, stop_loss)
 
     def openOrder(
