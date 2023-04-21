@@ -29,7 +29,6 @@ class TestApp(EClient, EWrapper):
         # mycontract.tradingClass = "SPXW"
 
         self.reqContractDetails(reqId=orderId, contract=mycontract)
-        self.qualifying
         
     def contractDetails(self, reqId: int, contractDetails: ContractDetails):
         attrs = vars(contractDetails)
