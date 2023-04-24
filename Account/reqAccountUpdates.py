@@ -2,6 +2,9 @@ from decimal import Decimal
 from ibapi.client import *
 from ibapi.wrapper import *
 
+# Customer file for my private info.
+from Misc.varRef import * 
+
 port = 7496
 
 class TestApp(EClient, EWrapper):
@@ -11,7 +14,7 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
         print(f"nextValidId. orderId={orderId}")
 
-        self.reqAccountUpdates(True, "DU5240685")
+        self.reqAccountUpdates(True, ACCOUNT_ID)
 
     def updateAccountValue(
         self, key: str, val: str, currency: str, accountName: str

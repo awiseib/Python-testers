@@ -2,7 +2,8 @@ from decimal import Decimal
 from ibapi.client import *
 from ibapi.wrapper import *
 
-import threading
+# Customer file for my private info.
+from Misc.varRef import * 
 
 
 class TestApp(EClient, EWrapper):
@@ -10,7 +11,7 @@ class TestApp(EClient, EWrapper):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: OrderId):
-        # self.reqPnLSingle(105468, "DU5240685", "", 265598)
+        self.reqPnLSingle(105468, ACCOUNT_ID, "", 265598)
         self.reqPnL(105468, "ALL", "")
 
     def pnlSingle(self, reqId: int, pos: Decimal, dailyPnL: float, unrealizedPnL: float, realizedPnL: float, value: float):

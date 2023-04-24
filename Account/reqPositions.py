@@ -12,9 +12,7 @@ class TestApp(EWrapper, EClient):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: int):
-        for i in range(0, 10):
-            self.reqPositions()
-            time.sleep(1)
+        self.reqPositions()
 
     def position(self, account: str, contract: Contract, position: Decimal, avgCost: float):
         print(account, contract, position, avgCost)

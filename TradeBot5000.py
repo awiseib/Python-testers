@@ -5,8 +5,10 @@ from ibapi.ticktype import TickTypeEnum
 import time
 import threading
 
+from Misc.varRef import *
+
 port = 7496
-acctId = "DU5240685"
+acctId = ACCOUNT_ID
 
 # Will be used to organize market data
 
