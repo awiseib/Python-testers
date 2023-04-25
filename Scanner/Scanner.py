@@ -4,9 +4,6 @@ from ibapi.tag_value import *
 
 port = 7496
 
-global ALLCONS
-ALLCONS = []
-
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
@@ -17,19 +14,20 @@ class TestApp(EClient, EWrapper):
         # sub.instrument = "FUT.US"
         sub.instrument = "STK"
         sub.locationCode = "STK.US.MAJOR"
-        sub.scanCode = "HIGH_OPEN_GAP"
+        sub.scanCode = "MOST_ACTIVE_USD"
         # sub.abovePrice = 1
         # sub.aboveVolume = 10000
         # sub.marketCapBelow = 1000
 
         # Both are lists of TagValue objects: TagValue(tag, value)
         scan_options = [
-            TagValue("AboveVolume", 10000),
+            # TagValue("AboveVolume", 10000),
             # TagValue("changePerc", 1),
             # TagValue("opt imp vol", 0.2),
             # TagValue("CHANGEOPENPERC","[]")
             # TagValue("colId", "55")
             # TagValue("STVOLUME_5MIN","100")
+            TagValue("hasOptionsIs", True)
             ]
         filter_options = [
             # TagValue("marketCapAbove1e6","100000"),
@@ -37,7 +35,7 @@ class TestApp(EClient, EWrapper):
             # TagValue("priceBelow", 1000),
             # TagValue("esgWorkforceScoreAbove", 7)
             # TagValue("changePercAbove", 0.9),
-            TagValue("changePercBelow", -1),
+            # TagValue("changePercBelow", -1),
             # TagValue("volumeAbove", 0),
             # TagValue("usdVolumeAbove", 500000),
             # TagValue("avgUsdVolumeAbove", 1000000),
@@ -62,11 +60,9 @@ class TestApp(EClient, EWrapper):
     def scannerDataEnd(self, reqId: int):
         print(f"scannerDataEnd. reqId:{reqId}")
         self.cancelScannerSubscription(reqId)
-        self.disconnect
+        self.disconnect()
        
 
 app = TestApp()
 app.connect("127.0.0.1", port, 1001)
 app.run()
-
-print(ALLCONS)

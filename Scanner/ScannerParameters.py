@@ -12,8 +12,7 @@ class TestApp(EClient, EWrapper):
         self.reqScannerParameters()
 
     def scannerParameters(self, xml: str):
-        # super().scannerParameters(xml)
-        open('delme/scanner2.xml', 'w').write(xml)
+        open('./scanParams.xml', 'w').write(xml)
         print("ScannerParameters received.")
 
 app = TestApp()
