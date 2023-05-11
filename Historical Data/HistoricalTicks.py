@@ -42,10 +42,10 @@ class TestApp(EClient, EWrapper):
         self.reqHistoricalTicks(
             reqId=123,
             contract=mycontract,
-            startDateTime="20221103 06:30:00 US/Pacific",
+            startDateTime="20221103 06:30:00 US/Eastern",
             endDateTime="",
             numberOfTicks=1000,
-            whatToShow="Trades",
+            whatToShow="Bid_Ask",
             useRth=1,
             ignoreSize=True,
             miscOptions=[],

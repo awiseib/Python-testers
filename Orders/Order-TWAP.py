@@ -1,10 +1,5 @@
-from asyncio.windows_events import NULL
 from decimal import Decimal
-from pickle import FALSE, TRUE
-from queue import PriorityQueue
-from threading import Timer
 from ibapi.tag_value import TagValue
-from tkinter.tix import Tree
 from ibapi.client import *
 from ibapi.wrapper import *
 from datetime import datetime
@@ -30,9 +25,9 @@ class TestApp(EClient, EWrapper):
         order = Order()
         order.action = "BUY"
         order.totalQuantity = 150
-        order.orderType = "LMT"
+        order.orderType = "LMT" # 
         order.lmtPrice = 12
-        order.tif = "DAY"
+        # order.tif = "DAY"
         order.algoStrategy = "Twap"
 
         order.algoParams = []

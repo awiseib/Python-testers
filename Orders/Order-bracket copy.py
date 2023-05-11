@@ -1,8 +1,6 @@
 from decimal import Decimal
 from ibapi.client import *
 from ibapi.wrapper import *
-from ibapi.tag_value import TagValue
-from ibapi.contract import ComboLeg
 
 port = 7496
 
@@ -14,43 +12,58 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
         print(f"nextValidId. orderId={orderId}")
 
-        stockCon = Contract()
-        stockCon.symbol = "AAPL"
-        stockCon.secType = "BAG"
-        stockCon.exchange = "SMART"
-        stockCon.currency = "USD"
+        mycontract = Contract()
+        mycontract.symbol = "AAPL"
+        mycontract.secType = "STK"
+        mycontract.exchange = "SMART"
+        mycontract.currency = "USD"
 
-        leg1 = ComboLeg()
-        leg1.conId = 605970527 # call
-        leg1.ratio = 1
-        leg1.action = "SELL"
-        leg1.exchange = "SMART"
+        parent_price = 165
+        parent_action = "BUY"
+        quantity = 10.0
 
-        leg2 = ComboLeg()
-        leg2.conId = 605970607 # put
-        leg2.ratio = 1
-        leg2.action = "BUY"
-        leg2.exchange = "SMART"
+        parent = Order()
+        parent.orderId = orderId
+        parent.action = parent_action
+        parent.orderType = "LMT"
+        parent.totalQuantity = quantity
+        parent.lmtPrice = parent_price
+        parent.transmit = False
 
-        leg3 = ComboLeg()
-        leg3.conId = 265598 # put
-        leg3.ratio = 100
-        leg3.action = "BUY"
-        leg3.exchange = "SMART"
+        profit_taker = Order()
+        profit_taker.orderId = parent.orderId + 1
+        profit_taker.parentId = parent.orderId
+        profit_taker.action = "SELL" if parent_action == "BUY" else "BUY"
+        profit_taker.orderType = "LMT"
+        profit_taker.totalQuantity = quantity
+        profit_taker.lmtPrice = parent_price + 1.0
+        profit_taker.transmit = False
 
-        stockCon.comboLegs = []
-        stockCon.comboLegs.append(leg1)
-        stockCon.comboLegs.append(leg2)
-        stockCon.comboLegs.append(leg3)
+        stop_loss = Order()
+        stop_loss.orderId = parent.orderId + 2
+        stop_loss.parentId = parent.orderId
+        stop_loss.action = "SELL" if parent_action == "BUY" else "BUY"
+        stop_loss.orderType = "STP"
+        stop_loss.totalQuantity = quantity
+        stop_loss.auxPrice = parent_price - 1.0
+        profit_taker.transmit = False
 
-        stkOrder = Order()
-        stkOrder.orderId = orderId
-        stkOrder.action = "BUY"
-        stkOrder.orderType = "LMT"
-        stkOrder.totalQuantity = 1
-        stkOrder.lmtPrice = 152.25
+        extra_trail = Order()
+        extra_trail.orderId = parent.orderId + 3
+        extra_trail.parentId = parent.orderId
+        extra_trail.action = "SELL" if parent_action == "BUY" else "BUY"
+        extra_trail.orderType = "TRAIL LIMIT"
+        extra_trail.totalQuantity = quantity
+        extra_trail.trailStopPrice = parent_price - 2.0
+        extra_trail.lmtPriceOffset = 1.0
+        extra_trail.auxPrice = parent_price - 1.0
+        extra_trail.transmit = True
 
-        self.placeOrder(orderId, stockCon, stkOrder)
+        self.placeOrder(parent.orderId, mycontract, parent)
+        self.placeOrder(profit_taker.orderId, mycontract, profit_taker)
+        self.placeOrder(stop_loss.orderId, mycontract, stop_loss)
+        self.placeOrder(extra_trail.orderId, mycontract, extra_trail)
+
 
     def openOrder(
         self,
@@ -75,7 +88,7 @@ class TestApp(EClient, EWrapper):
         remaining: Decimal,
         avgFillPrice: float,
         permId: int,
-        stkOrderId: int,
+        parentId: int,
         lastFillPrice: float,
         clientId: int,
         whyHeld: str,
@@ -89,7 +102,7 @@ class TestApp(EClient, EWrapper):
             f"remaining:{remaining}",
             f"avgFillPrice:{avgFillPrice}",
             # f"permId:{permId}",
-            f"stkOrderId:{stkOrderId}",
+            f"parentId:{parentId}",
             f"lastFillPrice:{lastFillPrice}",
             # f"clientId:{clientId}",
             # f"whyHeld:{whyHeld}",
