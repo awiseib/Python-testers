@@ -38,8 +38,8 @@ class TestApp(EClient, EWrapper):
     ):
         print("updateAccountValue.", key, val, currency, accountName)
 
-    # def updateAccountTime(self, timeStamp: str):
-    #     print("updateAccountTime.", timeStamp)
+    def updateAccountTime(self, timeStamp: str):
+        print("updateAccountTime.", timeStamp)
 
     def updatePortfolio(self, contract: Contract, position: Decimal, marketPrice: float, marketValue: float, averageCost: float, unrealizedPNL: float, realizedPNL: float, accountName: str):
         print(f"updatePortfolio. contract: {contract.symbol}@{contract.exchange}:{contract.secType}, position: {position}, marketPrice: {marketPrice}, marketValue: {marketValue}, averageCost: {averageCost}, unrealizedPNL: {unrealizedPNL}, realizedPNL: {realizedPNL}")
@@ -55,12 +55,12 @@ def run_loop():
 app = TestApp()
 app.connect("127.0.0.1", 7496, 1001)
 
-api_thread = threading.Thread(target=run_loop, daemon=True)
+api_thread = threading.Thread(target=run_loop)
 api_thread.start()
 
 time.sleep(1)
-
-app.reqAccountUpdates(False,acctCode="ALL")
+app.reqAccountUpdatesMulti(1, "DU74649", "", True)
+# app.reqAccountUpdates(False,acctCode="DU74649")
 # app.reqAccountUpdates(True,acctCode="DU74649")
 
 # time.sleep(10)

@@ -1,9 +1,6 @@
-from socket import timeout
-from symtable import Symbol
 from ibapi.client import *
 from ibapi.wrapper import *
 import datetime
-from ibapi.tag_value import TagValue
 
 datetime.datetime.now()
 port = 7496
@@ -16,9 +13,9 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
         
         mycontract = Contract()
-        mycontract.symbol = "INDU"
-        mycontract.secType = "IND"
-        mycontract.exchange = "CME"
+        mycontract.symbol = "TMUS"
+        mycontract.secType = "STK"
+        mycontract.exchange = "SMART"
         mycontract.currency = "USD"
 
         self.reqHeadTimeStamp(orderId, mycontract, "Trades", 1, 1)

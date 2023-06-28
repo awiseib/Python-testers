@@ -142,7 +142,7 @@ def stop_app(app: TestApp):
     exit()
 
 def main():
-        
+
     app = TestApp()
     app.connect("127.0.0.1", port, 1001)
     time.sleep(3)
