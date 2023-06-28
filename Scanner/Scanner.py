@@ -1,4 +1,5 @@
 from ibapi.client import *
+from ibapi.common import TickerId
 from ibapi.wrapper import *
 from ibapi.tag_value import *
 
@@ -14,7 +15,7 @@ class TestApp(EClient, EWrapper):
         # sub.instrument = "FUT.US"
         sub.instrument = "STK"
         sub.locationCode = "STK.US.MAJOR"
-        sub.scanCode = "MOST_ACTIVE_USD"
+        sub.scanCode = "TOP_PERC_GAIN"
         # sub.abovePrice = 1
         # sub.aboveVolume = 10000
         # sub.marketCapBelow = 1000
@@ -27,16 +28,17 @@ class TestApp(EClient, EWrapper):
             # TagValue("CHANGEOPENPERC","[]")
             # TagValue("colId", "55")
             # TagValue("STVOLUME_5MIN","100")
-            TagValue("hasOptionsIs", True)
+            # TagValue("hasOptionsIs", True)
             ]
         filter_options = [
             # TagValue("marketCapAbove1e6","100000"),
-            # TagValue("priceAbove", "3"),
-            # TagValue("priceBelow", 1000),
+            TagValue("priceAbove", 100),
+            TagValue("priceBelow", 109),
             # TagValue("esgWorkforceScoreAbove", 7)
             # TagValue("changePercAbove", 0.9),
             # TagValue("changePercBelow", -1),
-            # TagValue("volumeAbove", 0),
+            TagValue("sharesOutstandingAbove", 1000000),
+            TagValue("sharesOutstandingBelow", 100000000000),
             # TagValue("usdVolumeAbove", 500000),
             # TagValue("avgUsdVolumeAbove", 1000000),
             # TagValue("priceBelow", 1000),
@@ -61,6 +63,9 @@ class TestApp(EClient, EWrapper):
         print(f"scannerDataEnd. reqId:{reqId}")
         self.cancelScannerSubscription(reqId)
         self.disconnect()
+
+    def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(reqId, errorCode, errorString, advancedOrderRejectJson)
        
 
 app = TestApp()
