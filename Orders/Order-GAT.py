@@ -23,8 +23,8 @@ class TestApp(EClient, EWrapper):
         myorder.totalQuantity = 100
         # myorder.lmtPrice = 288.00
         myorder.orderType = "MKT"
-        myorder.tif = "DTC"
-        myorder.goodAfterTime = "20230414 18:00:00 US/Eastern"
+        myorder.tif = "DAY"
+        myorder.goodAfterTime = "20230609 18:00:00 US/Eastern"
         # myorder.goodTillDate = "20230425 18:00:00 US/Eastern"
         # myorder.whatIf = True
 
