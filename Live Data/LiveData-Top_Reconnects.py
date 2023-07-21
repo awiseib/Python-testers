@@ -43,15 +43,15 @@ class TestApp(EClient, EWrapper):
         )
         self.disconnect()
         time.sleep(2)
-        mdStart()
+        mdStart(reqId+1)
 
     def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
         print(reqId, errorCode, errorString, advancedOrderRejectJson)
 
-def mdStart():
+def mdStart(clientId):
     app = TestApp()
-    app.connect("127.0.0.1", port, 1002)
+    app.connect("127.0.0.1", port, clientId)
     app.run()
 
 if __name__ == "__main__":
-    mdStart()
+    mdStart(1000)

@@ -12,38 +12,19 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
 
         mycontract = Contract()
-        # mycontract.conId = 265598
-        # mycontract.exchange = "ISLAND"
-        # mycontract.currency = "USD"
+        mycontract.conId = 605247013
+        # mycontract.localSymbol = "ESU1"
 
-        # Forex Contract
-        # mycontract = Contract()
-        # mycontract.symbol = "AUD"
-        # mycontract.secType = "CASH"
-        # mycontract.exchange = "IDEALPRO"
-        # mycontract.currency = "USD"
-
-        # Stock Contract
-        mycontract = Contract()
-
-        mycontract.symbol = "SPXS"
-        mycontract.secType = "STK"
-        mycontract.currency = "USD"
-        mycontract.exchange = "SMART"
-        mycontract.primaryExchange = "ARCA"
-
-        # FUT Contract
-        # mycontract = Contract()
-        # mycontract.localSymbol = "NQH3"
-        # mycontract.secType = "FUT"
-        # mycontract.exchange = "CME"
+        # mycontract.symbol = "MTEK"
+        # mycontract.secType = "STK"
+        mycontract.exchange = "CBOT"
         # mycontract.currency = "USD"
 
         self.reqHistoricalTicks(
             reqId=123,
             contract=mycontract,
-            startDateTime="20221103 06:30:00 US/Eastern",
-            endDateTime="",
+            startDateTime="",
+            endDateTime="20230629 08:45:00 US/Central",
             numberOfTicks=1000,
             whatToShow="Bid_Ask",
             useRth=1,
@@ -73,9 +54,9 @@ class TestApp(EClient, EWrapper):
     ):
         for tick in ticks:
             print(
-                "historicalTicksLast.", 
-                f"reqId:{reqId}", 
-                datetime.datetime.fromtimestamp(tick.time),
+                "historicalTicksBidAsk.", 
+                # f"reqId:{reqId}", 
+                # datetime.datetime.fromtimestamp(tick.time),
                 f"ticks:{tick}"
             )
 

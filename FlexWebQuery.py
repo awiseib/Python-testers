@@ -16,7 +16,7 @@ csvPath = 'D:\\Downloads\\MINT.csv'
 
 requestBase = "https://www.interactivebrokers.com/Universal/servlet/FlexStatementService.SendRequest?"
 token = "t=220638997034176155165000" # Valid 2023-03-01, 10:13:43 EST — 2024-01-31, 10:13:43 EST
-queryId = "&q=776579"
+queryId = "&q=771568"
 version = "&v=3"
 
 # 4. Combine requestUrl, queryId, tokenId, and include version 3

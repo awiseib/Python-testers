@@ -7,7 +7,7 @@ from ibapi.contract import *
 import time
 import threading
 
-port = 7496
+port = 4002
 
 class TestApp(EWrapper, EClient):
 
@@ -15,7 +15,7 @@ class TestApp(EWrapper, EClient):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: int):
-        self.reqPositionsMulti(1, "lucastest1", "")
+        self.reqPositionsMulti(1, "Profile_ContractsShares", "")
 
     def positionMulti(self, reqId: int, account: str, modelCode: str, contract: Contract, pos: Decimal, avgCost: float):
         print(f"reqId: {reqId}, account: {account}, modelCode: {modelCode}, contract: {contract}, pos: {pos}, avgCost: {avgCost}")

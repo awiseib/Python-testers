@@ -27,8 +27,8 @@ class TestApp(EClient, EWrapper):
             reqId=123,
             contract=mycontract,
             endDateTime="",
-            durationStr= "300 S",
-            barSizeSetting = "10 secs",
+            durationStr= "3600",
+            barSizeSetting = "15 mins",
             whatToShow= "TRADES",
             useRTH=0,
             formatDate=1,
@@ -37,8 +37,8 @@ class TestApp(EClient, EWrapper):
         )
         
 
-    # def historicalData(self, reqId: int, bar: BarData):
-    #     print("DATA", reqId, bar)
+    def historicalData(self, reqId: int, bar: BarData):
+        print("DATA", reqId, bar)
 
     def historicalDataUpdate(self, reqId: int, bar: BarData):
         print("UPDATE: ", reqId, bar)

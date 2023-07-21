@@ -20,11 +20,11 @@ class TestApp(EClient, EWrapper):
 
         myorder = Order()
         myorder.action = "BUY"
-        myorder.totalQuantity = 11
+        myorder.totalQuantity = 50
         myorder.orderType = "MKT"
 
-        myorder.faGroup = "Test_2"
-        myorder.faMethod = "EqualQuantity"
+        myorder.faGroup = "Profile_ContractsShares"
+        myorder.faMethod = "ContractsOrShares"
 
         self.placeOrder(orderId, mycontract, myorder)
 
