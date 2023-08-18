@@ -1,13 +1,7 @@
-from socket import timeout
-from symtable import Symbol
 from ibapi.client import *
 from ibapi.wrapper import *
-import datetime
-import time
-from ibapi.tag_value import TagValue
 from ibapi.contract import ComboLeg
-import threading
-datetime.datetime.now()
+
 port = 7496
 
 
@@ -18,37 +12,36 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
         
         mycontract = Contract()
-        # mycontract.conId = 575209133
-        mycontract.localSymbol = "ESU1"
-
-        # mycontract.symbol = "DAX"
-        mycontract.secType = "FUT"
-        mycontract.exchange = "CME"
-        mycontract.currency = "USD"
-        mycontract.includeExpired = True
-
-        # mycontract.primaryExchange = "ARCA"
-        # mycontract.lastTradeDateOrContractMonth = 20230321
-        # mycontract.right = "C"
-        # mycontract.strike = 3850
-
+        mycontract.conId = 457068913
+        # mycontract.symbol = "AAPL"
+        # mycontract.secType = "STK"
+        # mycontract.currency = "USD"
+        mycontract.exchange = "SMART"
+        
+        
         self.reqHistoricalData(
             reqId=orderId,
             contract=mycontract,
-            endDateTime="20210913 14:35:00 US/Central",
-            # endDateTime="",
+            # endDateTime="20230724-15:52:00",
+            # endDateTime="20230728 13:56:00 UTC",
+            endDateTime="",
             durationStr= "1 D",
-            barSizeSetting = "1 hour",
-            whatToShow= "TRADES", 
-			useRTH=0, 
-			formatDate=1, 
-			keepUpToDate=0,
-			chartOptions=[]
+            barSizeSetting = "1 day",
+            whatToShow= "bid_ask", 
+            useRTH=0, 
+            formatDate=1, 
+            keepUpToDate=0,
+            chartOptions=[]
         )
 
     def historicalData(self, reqId: int, bar: BarData):
         # if bar.open == bar.close:
             print(reqId, bar)
+            bar.date
+            # print(bar.timeZoneId)
+        
+    # def historicalSchedule(self, reqId: int, startDateTime: str, endDateTime: str, timeZone: str, sessions: ListOfHistoricalSessions):
+    #      print(reqId, startDateTime, endDateTime, timeZone, sessions)
 
 
     def historicalDataEnd(self, reqId: int, start: str, end: str):

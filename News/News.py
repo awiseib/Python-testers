@@ -1,5 +1,7 @@
 from ibapi.client import *
 from ibapi.wrapper import *
+import threading
+import time
 
 # Change as necessary
 port = 7496
@@ -8,32 +10,6 @@ port = 7496
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
-
-    def nextValidId(self, orderId: OrderId):
-
-        # Creates a contract specific news source and denotes the news feed through 'genericTickList="mdoff,292:BRFG"'.
-        mycontract = Contract()
-        mycontract.symbol="TSLA"
-        mycontract.secType="STK"
-        mycontract.exchange="SMART"
-        mycontract.currency="USD"
-
-        # Creates a generic feed that provides all news articles sent by the resource
-        # Must set generic tick list to 'genericTickList="mdoff,292"' when using this request.
-        contract2 = Contract()
-        contract2.symbol = "DJNL:DJNL_ALL"
-        contract2.secType = "NEWS"
-        contract2.exchange = "DJNL"
-
-        # Places the request for news data. Note the generic tick list string.
-        self.reqMktData(
-            reqId=123,
-            contract=mycontract,
-            genericTickList="mdoff,292:BRFUPDN",
-            snapshot=False,
-            regulatorySnapshot=False,
-            mktDataOptions=[],
-        )
 
     # Only the necessary news-related callbacks are implemented below
 
@@ -67,6 +43,46 @@ class TestApp(EClient, EWrapper):
             f"newsProviders:{newsProviders}",
         )
 
+    def tickReqParams(self, tickerId: int, minTick: float, bboExchange: str, snapshotPermissions: int):
+        print(tickerId, minTick, bboExchange, snapshotPermissions)
+
 app = TestApp()
 app.connect("127.0.0.1", port, 1001)
-app.run()
+time.sleep(3)
+threading.Thread(target=app.run).start()
+
+# Creates a contract specific news source and denotes the news feed through 'genericTickList="mdoff,292:BRFG"'.
+# mycontract = Contract()
+# mycontract.symbol="SPY"
+# mycontract.secType="STK"
+# mycontract.exchange="SMART"
+# mycontract.currency="USD"
+
+# # Places the request for news data. Note the generic tick list string.
+# app.reqMktData(
+#     reqId=123,
+#     contract=mycontract,
+#     genericTickList="mdoff,292:BRFG+DJNL",
+#     snapshot=False,
+#     regulatorySnapshot=False,
+#     mktDataOptions=[],
+# )
+
+# Creates a generic feed that provides all news articles sent by the resource
+# Must set generic tick list to 'genericTickList="mdoff,292"' when using this request.
+contract2 = Contract()
+contract2.symbol = "DJNL:DJNL_ALL"
+contract2.secType = "NEWS"
+contract2.exchange = "DJNL"
+
+# Places the request for news data. Note the generic tick list string.
+app.reqMktData(
+    reqId=456,
+    contract=contract2,
+    genericTickList="mdoff,292",
+    snapshot=False,
+    regulatorySnapshot=False,
+    mktDataOptions=[],
+)
+
+# app.reqNewsProviders()

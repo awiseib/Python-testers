@@ -24,7 +24,7 @@ class TestApp(EClient, EWrapper):
         order = Order()
         order.action = "BUY"
         order.totalQuantity = 1
-        order.orderType = "IBALGO"
+        order.orderType = "MKT"
         # order.lmtPrice = 100
         order.algoStrategy = "Vwap"
 
@@ -34,13 +34,11 @@ class TestApp(EClient, EWrapper):
         order.algoParams.append(TagValue("endTime", "20230415 15:30:00 US/Eastern"))
         order.algoParams.append(TagValue("allowPastEndTime",int(0)))
         order.algoParams.append(TagValue("noTakeLiq", int(0)))
+        order.algoParams.append(TagValue("speedUp", int(1)))
 
         #order.algoParams.append(TagValue("monetaryValue", monetaryValue))
 
         self.placeOrder(orderId, contract, order)
-
-    # def marketRule(self, marketRuleId: int, priceIncrements: ListOfPriceIncrements):
-    #     print("Market Rule details: ", marketRuleId, priceIncrements)
 
     def openOrder(
         self,

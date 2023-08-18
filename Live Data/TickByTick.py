@@ -40,9 +40,6 @@ class TestApp(EClient, EWrapper):
     def tickSnapshotEnd(self, reqId: int):
         print(f"tickSnapshotEnd. reqId:{reqId}")
 
-    def error(self, reqId: TickerId, errorCode: int, errorString: str, tickAttrib):
-        print(f"error. reqId:{reqId} code:{errorCode} string:{errorString}")
-
 
 app = TestApp()
 app.connect("127.0.0.1", port, 1001)

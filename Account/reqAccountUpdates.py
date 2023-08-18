@@ -9,13 +9,10 @@ class TestApp(EClient, EWrapper):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: OrderId):
-        print(f"nextValidId. orderId={orderId}")
-
         self.reqAccountUpdates(True, "")
 
     def updateAccountValue(
-        self, key: str, val: str, currency: str, accountName: str
-    ):
+        self, key: str, val: str, currency: str, accountName: str):
         print("updateAccountValue.", key, val, currency, accountName)
 
     # def updateAccountTime(self, timeStamp: str):
