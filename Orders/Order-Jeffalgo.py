@@ -1,35 +1,14 @@
 from ibapi.client import *
+from ibapi.common import Decimal, OrderId, TickerId
+from ibapi.contract import Contract
+from ibapi.order import Order
+from ibapi.order_state import OrderState
+from ibapi.utils import Decimal
 from ibapi.wrapper import *
+from ibapi.contract import *
 from ibapi.tag_value import TagValue
-from datetime import datetime
-import time
 
 port = 7496
-
-# ! [jefferies_vwap_params]
-def FillJefferiesVWAPParams(baseOrder: Order, startTime: str,
-                            endTime: str, relativeLimit: float,
-                            maxVolumeRate: float, excludeAuctions: str,
-                            triggerPrice: float, wowPrice: float,
-                            minFillSize: int, wowOrderPct: float,
-                            wowMode: str, isBuyBack: bool, wowReference: str):
-    # must be direct-routed to "JEFFALGO"
-    baseOrder.algoStrategy = "VWAP"
-    baseOrder.algoParams = []
-    baseOrder.algoParams.append(TagValue("StartTime", startTime))
-    baseOrder.algoParams.append(TagValue("EndTime", endTime))
-    baseOrder.algoParams.append(TagValue("RelativeLimit", relativeLimit))
-    baseOrder.algoParams.append(TagValue("MaxVolumeRate", maxVolumeRate))
-    baseOrder.algoParams.append(TagValue("ExcludeAuctions", excludeAuctions))
-    baseOrder.algoParams.append(TagValue("TriggerPrice", triggerPrice))
-    baseOrder.algoParams.append(TagValue("WowPrice", wowPrice))
-    baseOrder.algoParams.append(TagValue("MinFillSize", minFillSize))
-    baseOrder.algoParams.append(TagValue("WowOrderPct", wowOrderPct))
-    baseOrder.algoParams.append(TagValue("WowMode", wowMode))
-    baseOrder.algoParams.append(TagValue("IsBuyBack", int(isBuyBack)))
-    baseOrder.algoParams.append(TagValue("WowReference", wowReference))
-    return baseOrder
-# ! [jefferies_vwap_params]
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
@@ -47,75 +26,36 @@ class TestApp(EClient, EWrapper):
         baseOrder.action = "BUY"
         baseOrder.totalQuantity = 10
         baseOrder.orderType = "LMT"
-        baseOrder.lmtPrice = 145
+        baseOrder.lmtPrice = 180
+        baseOrder.transmit = False
+        
+        baseOrder.algoStrategy = "VWAP"
+        baseOrder.algoParams = []
+        # baseOrder.algoParams.append(TagValue("StartTime", "11:00:00 US/Eastern"))
+        # baseOrder.algoParams.append(TagValue("EndTime", "15:59:59 US/Eastern"))
+        baseOrder.algoParams.append(TagValue("RelativeLimit", 1))
+        baseOrder.algoParams.append(TagValue("MaxVolumeRate", 5))
+        baseOrder.algoParams.append(TagValue("ExcludeAuctions", "Exclude_Both"))
+        baseOrder.algoParams.append(TagValue("TriggerPrice", 178))
+        baseOrder.algoParams.append(TagValue("WoWPrice", 183))
+        baseOrder.algoParams.append(TagValue("MinFillSize", 1))
+        baseOrder.algoParams.append(TagValue("WoWOrderPct", 0))
+        baseOrder.algoParams.append(TagValue("WoWMode", "VWAP_Day"))
+        # baseOrder.algoParams.append(TagValue("IsBuyBack", 1))
+        baseOrder.algoParams.append(TagValue("WoWReference", "Midpoint"))
 
-        # ! [jeff_vwap_algo]
-        baseOrder = FillJefferiesVWAPParams(baseOrder, "10:00:00 US/Eastern", "16:00:00 US/Eastern", 10, 10, "Exclude_Both", 130, 135, 1, 10, "Patience", False, "Midpoint")
         self.placeOrder(orderId, mycontract, baseOrder)
         # ! [jeff_vwap_algo]
 
 
-    def openOrder(
-        self,
-        orderId: OrderId,
-        contract: Contract,
-        order: Order,
-        orderState: OrderState,
-    ):
-        print(
-            datetime.now().strftime("%H:%M:%S.%f")[:-3],
-            "openOrder.",
-            f"orderId:{orderId}",
-            f"contract:{contract}",
-            f"order:{order}",
-            # f"orderState:{orderState}",
-        )
-
-    def orderStatus(
-        self,
-        orderId: OrderId,
-        status: str,
-        filled: Decimal,
-        remaining: Decimal,
-        avgFillPrice: float,
-        permId: int,
-        parentId: int,
-        lastFillPrice: float,
-        clientId: int,
-        whyHeld: str,
-        mktCapPrice: float,
-    ):
-        print(
-            datetime.now().strftime("%H:%M:%S.%f")[:-3],
-            "orderStatus.",
-            f"orderId:{orderId}",
-            f"status:{status}",
-            f"filled:{filled}",
-            f"remaining:{remaining}",
-            f"avgFillPrice:{avgFillPrice}",
-            # f"permId:{permId}",
-            f"parentId:{parentId}",
-            f"lastFillPrice:{lastFillPrice}",
-            # f"clientId:{clientId}",
-            # f"whyHeld:{whyHeld}",
-            # f"mktCapPrice:{mktCapPrice}",
-        )
-
-    def error(
-        self,
-        reqId: TickerId,
-        errorCode: int,
-        errorString: str,
-        advancedOrderRejectJson="",
-    ):
-        print(
-            datetime.now().strftime("%H:%M:%S.%f")[:-3],
-            "error.",
-            f"reqId:{reqId}",
-            f"errorCode:{errorCode}",
-            f"errorString:{errorString}",
-            f"advancedOrderRejectJson:{advancedOrderRejectJson}",
-        )
+    def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
+        print(orderId, contract, order, orderState)
+    
+    def orderStatus(self, orderId: OrderId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: int, parentId: int, lastFillPrice: float, clientId: int, whyHeld: str, mktCapPrice: float):
+        print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
+    
+    def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(reqId, errorCode, errorString, advancedOrderRejectJson)
 
 
 app = TestApp()
