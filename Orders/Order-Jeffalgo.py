@@ -27,12 +27,15 @@ class TestApp(EClient, EWrapper):
         baseOrder.totalQuantity = 10
         baseOrder.orderType = "LMT"
         baseOrder.lmtPrice = 180
-        baseOrder.transmit = False
+        baseOrder.transmit = False # Change this to True if you want the order to submit.
         
         baseOrder.algoStrategy = "VWAP"
         baseOrder.algoParams = []
-        # baseOrder.algoParams.append(TagValue("StartTime", "11:00:00 US/Eastern"))
-        # baseOrder.algoParams.append(TagValue("EndTime", "15:59:59 US/Eastern"))
+        # These timezones must correspond to your TWS-set timezone.
+        # This can be found at the login screen of TWS under "More Options".
+        baseOrder.algoParams.append(TagValue("StartTime", "11:00:00 America/Chicago"))
+        baseOrder.algoParams.append(TagValue("EndTime", "14:59:59 America/Chicago"))
+
         baseOrder.algoParams.append(TagValue("RelativeLimit", 1))
         baseOrder.algoParams.append(TagValue("MaxVolumeRate", 5))
         baseOrder.algoParams.append(TagValue("ExcludeAuctions", "Exclude_Both"))
@@ -41,7 +44,7 @@ class TestApp(EClient, EWrapper):
         baseOrder.algoParams.append(TagValue("MinFillSize", 1))
         baseOrder.algoParams.append(TagValue("WoWOrderPct", 0))
         baseOrder.algoParams.append(TagValue("WoWMode", "VWAP_Day"))
-        # baseOrder.algoParams.append(TagValue("IsBuyBack", 1))
+        baseOrder.algoParams.append(TagValue("IsBuyBack", "Yes")) # Must use "Yes" or "No" strings. 
         baseOrder.algoParams.append(TagValue("WoWReference", "Midpoint"))
 
         self.placeOrder(orderId, mycontract, baseOrder)
