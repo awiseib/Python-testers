@@ -1,4 +1,3 @@
-from decimal import Decimal
 from ibapi.client import *
 from ibapi.wrapper import *
 from datetime import datetime
@@ -35,7 +34,12 @@ class TestApp(EClient, EWrapper):
 
     # # whatToShow=AllLast
     def tickByTickAllLast(self, reqId: int, tickType: int, time: int, price: float, size: int, tickAttribLast: TickAttribLast, exchange: str, specialConditions: str):
-        print(f"reqId: {reqId}, tickType: {TickTypeEnum.to_str(tickType)}, time: {datetime.fromtimestamp(time)}, price: {price}, size: {size}, tickAttribLast: {tickAttribLast}, exchange: {exchange}, specialConditions: {specialConditions}")
+        # Tick type does not correspond to tickType.py
+        if tickType == 1:
+            print(f"Last. reqId: {reqId}, time: {datetime.fromtimestamp(time)}, price: {price}, size: {size}, tickAttribLast: {tickAttribLast}, exchange: {exchange}, specialConditions: {specialConditions}")
+        else:
+            print(f"AllLast. reqId: {reqId}, time: {datetime.fromtimestamp(time)}, price: {price}, size: {size}, tickAttribLast: {tickAttribLast}, exchange: {exchange}, specialConditions: {specialConditions}")
+        
 
     def tickSnapshotEnd(self, reqId: int):
         print(f"tickSnapshotEnd. reqId:{reqId}")
