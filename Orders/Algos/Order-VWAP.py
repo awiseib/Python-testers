@@ -1,9 +1,11 @@
 from decimal import Decimal
+from ibapi.tag_value import TagValue
 from ibapi.client import *
 from ibapi.wrapper import *
 from datetime import datetime
 from ibapi.contract import *
 from ibapi.order_state import *
+import time
 
 port = 7496
 
@@ -13,67 +15,30 @@ class TestApp(EClient, EWrapper):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: OrderId):
-        print(f"nextValidId. orderId={orderId}")
+        contract = Contract()
+        contract.symbol = "F"
+        contract.secType = "STK"
+        contract.exchange = "SMART"
+        contract.currency = "USD"
+        
+        order = Order()
+        order.action = "BUY"
+        order.totalQuantity = 1
+        order.orderType = "MKT"
+        # order.lmtPrice = 100
+        order.algoStrategy = "Vwap"
 
-        parentContract = Contract() 
-        parentContract.conId = 265598 # AAPL Options
-        parentContract.exchange = "SMART"
-        parentContract.currency = "USD"
+        order.algoParams = []
+        order.algoParams.append(TagValue("maxPctVol", .3))
+        order.algoParams.append(TagValue("startTime", "20230415 13:15:00 US/Eastern"))
+        order.algoParams.append(TagValue("endTime", "20230415 15:30:00 US/Eastern"))
+        order.algoParams.append(TagValue("allowPastEndTime",int(0)))
+        order.algoParams.append(TagValue("noTakeLiq", int(0)))
+        order.algoParams.append(TagValue("speedUp", int(1)))
 
-        child1 = Contract() 
-        child1.conId = 265598 # AAPL Options
-        child1.exchange = "SMART"
-        child1.currency = "USD"
+        #order.algoParams.append(TagValue("monetaryValue", monetaryValue))
 
-        child2 = Contract() 
-        child2.conId = 265598 # AAPL Options
-        child2.exchange = "SMART"
-        child2.currency = "USD"
-
-        parentOrder = Order()
-        parentOrder.orderId = orderId
-        parentOrder.action = "BUY"
-        parentOrder.orderType = "LMT"
-        parentOrder.lmtPrice = 154.50
-        parentOrder.totalQuantity = 1
-
-        parentOrder.ocaGroup = "TestOCA_", orderId
-        parentOrder.ocaType = 1
-
-        parentOrder.faGroup = "equalQty_test"
-        parentOrder.faMethod = "Equal"
-
-        chilldO1 = Order()
-        chilldO1.orderId = orderId + 1
-        chilldO1.action = "BUY"
-        chilldO1.orderType = "LMT"
-        chilldO1.lmtPrice = 154.80
-        chilldO1.totalQuantity = 1
-
-        chilldO1.ocaGroup = "TestOCA_", orderId
-        chilldO1.ocaType = 1
-
-        chilldO1.faGroup = "equalQty_test"
-        chilldO1.faMethod = "Equal"
-
-
-        chilldO2 = Order()
-        chilldO2.orderId = orderId + 2
-        chilldO2.action = "BUY"
-        chilldO2.orderType = "LMT"
-        chilldO2.lmtPrice = 155.00
-        chilldO2.totalQuantity = 1
-
-        chilldO2.ocaGroup = "TestOCA_", orderId
-        chilldO2.ocaType = 1
-
-        chilldO2.faGroup = "equalQty_test"
-        chilldO2.faMethod = "Equal"
-
-        self.placeOrder(orderId, parentContract, parentOrder)
-        self.placeOrder(chilldO1.orderId, child1, chilldO1)
-        self.placeOrder(chilldO2.orderId, child2, chilldO2)
-
+        self.placeOrder(orderId, contract, order)
 
     def openOrder(
         self,
@@ -87,7 +52,7 @@ class TestApp(EClient, EWrapper):
             f"orderId:{orderId}",
             f"contract:{contract}",
             f"order:{order}",
-            f"orderState:{orderState}",
+            # f"orderState:{orderState}",
             # "\n",
             # f"Margin Values: \n",
             # f"initMarginBefore: {orderState.initMarginBefore}; initMarginAfter: {orderState.initMarginAfter};initMarginChange: {orderState.initMarginChange}; \n",
@@ -115,13 +80,12 @@ class TestApp(EClient, EWrapper):
             f"filled:{filled}",
             f"remaining:{remaining}",
             f"avgFillPrice:{avgFillPrice}",
-            # f"permId:{permId}",
             f"parentId:{parentId}",
             f"lastFillPrice:{lastFillPrice}",
-            # f"clientId:{clientId}",
-            # f"whyHeld:{whyHeld}",
-            # f"mktCapPrice:{mktCapPrice}",
         )
+    
+    def openOrderEnd(self):
+        pass
 
     def error(
         self,
@@ -140,7 +104,7 @@ class TestApp(EClient, EWrapper):
         )
 
 
-
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 1006)
 app.run()
+

@@ -14,9 +14,9 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
 
         mycontract = Contract()
-        mycontract.symbol = "SPY"
+        mycontract.symbol = "K"
         mycontract.secType = "STK"
-        mycontract.exchange = "ARCA"
+        mycontract.exchange = "SMART"
         mycontract.currency = "USD"
 
 
@@ -49,7 +49,8 @@ class TestApp(EClient, EWrapper):
             f"open_:{open_}",
             f"high:{high}",
             f"low:{low}",
-            f"close:{close}" f"volume:{volume}",
+            f"close:{close}",
+            f"volume:{volume}",
             f"wap:{wap}",
             f"count:{count}",
         )

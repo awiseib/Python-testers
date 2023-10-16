@@ -16,23 +16,24 @@ class TestApp(EClient, EWrapper):
         order_id = orderId
 
         mycontract = Contract()
-        mycontract.symbol = "EUR"
-        mycontract.secType = "CASH"
-        mycontract.exchange = "IDEALPRO"
-        mycontract.currency = "USD"
+        mycontract.symbol = "BMW"
+        mycontract.secType = "STK"
+        mycontract.exchange = "SMART"
+        mycontract.primaryExchange = "IBIS"
+        mycontract.currency = "EUR"
         
         myorder = Order()
         myorder.action = "BUY"
         myorder.orderType = "LMT"
-        myorder.lmtPrice = 1.0295
-        myorder.totalQuantity = 5000
-
+        myorder.lmtPrice = 95
+        myorder.totalQuantity = 50
+        myorder.tif = "DAY"
         myorder.algoStrategy = "ArrivalPx"
         myorder.algoParams = []
         myorder.algoParams.append(TagValue("maxPctVol", 0.1))
         myorder.algoParams.append(TagValue("riskAversion", "Aggressive"))
-        myorder.algoParams.append(TagValue("startTime", "12:00:00 US/Eastern"))
-        myorder.algoParams.append(TagValue("endTime", "16:00:00 US/Eastern"))
+        myorder.algoParams.append(TagValue("startTime", "12:00:00 UTC"))
+        myorder.algoParams.append(TagValue("endTime", "13:00:00 UTC"))
         myorder.algoParams.append(TagValue("allowPastEndTime",1))
         myorder.algoParams.append(TagValue("forceCompletion",0))
 

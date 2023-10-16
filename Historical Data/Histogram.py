@@ -23,6 +23,8 @@ class TestApp(EClient, EWrapper):
 
     def histogramData(self, reqId: int, items: HistogramData):
         print(reqId, items)
+        print('\n')
+        print("HistogramData. ReqId:", reqId, "HistogramDataList:", "[%s]" % "; ".join(map(str, items)))
         self.cancelHistogramData(reqId)
         
 app = TestApp()

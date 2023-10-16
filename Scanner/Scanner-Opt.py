@@ -21,10 +21,7 @@ class TestApp(EClient, EWrapper):
             TagValue("hasOptionsIs", True)
             ]
         filter_options = [
-            TagValue("priceAbove", 10000),
-            TagValue("priceBelow", 10000),
-            TagValue("optVolumeAbove", 10000),
-            # TagValue("optVolumeBelow", 109),
+            TagValue("optVolumeAbove", 1000),
             
         ]
     
@@ -36,7 +33,7 @@ class TestApp(EClient, EWrapper):
         )
 
     def scannerData(self, reqId: int, rank: int, contractDetails: ContractDetails, distance: str, benchmark: str, projection: str, legsStr: str):
-        print(rank, contractDetails, distance, benchmark, projection, legsStr)
+        print(f"Rank: {rank+1}, Contract: {contractDetails.contract}")
 
 
     def scannerDataEnd(self, reqId: int):

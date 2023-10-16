@@ -18,7 +18,7 @@ class TestApp(EClient, EWrapper):
         eventData.fillPortfolio = False
         eventData.fillWatchlist = False
         eventData.totalLimit = 100
-        eventData.filter = '{"watchlist":["12200"],"country": "All", "wshe_ed": "true", "wshe_bod": "true"}'
+        eventData.filter = '{"watchlist":["12200"],"country": "All", "wshe_eps": "true"}'
 
         """
         Filters pulled from wshMetaData. Look for section header in response to find filter name.
@@ -27,13 +27,21 @@ class TestApp(EClient, EWrapper):
         wshe_bod    ==  Board of Directors
         wshe_ed     ==  Earnings Dates
         wshe_div    ==  Dividend Dates
+        wshe_eps    ==   
+        wshe_cc     ==
+        wshe_option ==
+        wshe_sec    == 
+        wshe_qe     ==  Quarterly Earnings
+        wshe_ic     ==
+        wshe_sh     == 
         """
         self.reqWshEventData(orderId, eventData)
 
     def wshEventData(self, reqId: int, dataJson: str):
         print("eventdata.")
-        jsonDict = json.dumps(json.loads(dataJson), indent=2)
+        jsonDict = json.dumps(json.loads(dataJson), indent=4)
         print(jsonDict)
+        self.disconnect()
 
 
 app = TestApp()

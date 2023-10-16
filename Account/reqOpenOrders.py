@@ -12,7 +12,7 @@ class TestApp(EClient, EWrapper):
         self.reqAllOpenOrders()
 
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
-        print("openOrder: ",orderId, contract, order.faGroup )
+        print("openOrder: ",orderId, contract, order)
 
     def orderStatus(self, orderId: OrderId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: int, parentId: int, lastFillPrice: float, clientId: int, whyHeld: str, mktCapPrice: float):
         print("openStatus: ",orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)

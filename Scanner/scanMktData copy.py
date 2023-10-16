@@ -58,9 +58,6 @@ class TestApp(EClient, EWrapper):
             lastPrice = globalDict[i][3]
             print(f"Rank: {i}; Symbol: {contract.symbol}; BID: {bidPrice}; ASK: {askPrice}; LAST: {lastPrice}")
         print("EOF")
-        
-    def error(self, reqId: TickerId, errorCode: int, errorString: str):
-        pass
 
     # Returned Market Scanner information (One rank at a time)
     def scannerData(self,reqId: int,rank: int,contractDetails: ContractDetails,distance: str,benchmark: str,projection: str,legsStr: str,):
