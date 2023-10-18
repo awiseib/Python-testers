@@ -39,7 +39,7 @@ class TestApp(EClient, EWrapper):
         myorder = Order()
         myorder.orderId = orderId
         myorder.action = "BUY"
-        myorder.orderType = "LMT"
+        myorder.orderType = "REL + LMT"
         myorder.totalQuantity = 1
 
         myorder.lmtPrice = -80
