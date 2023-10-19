@@ -23,13 +23,13 @@ class TestApp(EClient, EWrapper):
         leg1.conId = 265598 
         leg1.ratio = 1
         leg1.action = "BUY"
-        leg1.exchange = "ISLAND"
+        leg1.exchange = "SMART"
 
         leg2 = ComboLeg()
         leg2.conId = 76792991 
         leg2.ratio = 1
         leg2.action = "SELL"
-        leg2.exchange = "ISLAND"
+        leg2.exchange = "SMART"
 
         mycontract.comboLegs = []
         mycontract.comboLegs.append(leg1)
@@ -39,13 +39,13 @@ class TestApp(EClient, EWrapper):
         myorder = Order()
         myorder.orderId = orderId
         myorder.action = "BUY"
-        myorder.orderType = "REL + LMT"
+        myorder.orderType = "MKT"
         myorder.totalQuantity = 1
 
-        myorder.lmtPrice = -80
+        # myorder.lmtPrice = -80
 
         myorder.smartComboRoutingParams = []
-        myorder.smartComboRoutingParams.append(TagValue("NonGuaranteed", "1"))
+        myorder.smartComboRoutingParams.append(TagValue("NonGuaranteed", "0"))
 
 
         self.placeOrder(myorder.orderId, mycontract, myorder)
