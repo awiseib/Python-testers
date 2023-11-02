@@ -16,26 +16,27 @@ class TestApp(EClient, EWrapper):
         print(f"nextValidId. orderId={orderId}")
 
         mycontract = Contract()
-        # mycontract.conId = 422302967 # TMBR STK
-        mycontract.symbol = "AAPL"
+        # mycontract.conId = 632741835
+        mycontract.symbol = "CTLT"
         mycontract.secType = "STK"
-        mycontract.exchange = "SMART"
         mycontract.currency = "USD"
+        mycontract.exchange = "IBKRATS"
+        mycontract.primaryExchange = "NYSE"
 
         myorder = Order()
         myorder.orderId = orderId
         myorder.orderType = "PEG MID"
         myorder.action = "BUY"
-        myorder.totalQuantity = 10
-        myorder.lmtPrice = 151
-        myorder.lmtPriceOffset = 0.15
-        myorder.auxPrice = 3
-        # myorder.notHeld = True
+        myorder.totalQuantity = 3
+        myorder.lmtPrice = 44
+        # myorder.lmtPriceOffset = 0.15
+        myorder.auxPrice = 0
+        myorder.notHeld = True
 
         self.placeOrder(myorder.orderId, mycontract, myorder)
 
-    def marketRule(self, marketRuleId: int, priceIncrements: ListOfPriceIncrements):
-        print("Market Rule details: ", marketRuleId, priceIncrements)
+    # def marketRule(self, marketRuleId: int, priceIncrements: ListOfPriceIncrements):
+    #     print("Market Rule details: ", marketRuleId, priceIncrements)
 
     def openOrder(
         self,
@@ -80,7 +81,7 @@ class TestApp(EClient, EWrapper):
             # f"whyHeld:{whyHeld}",
             # f"mktCapPrice:{mktCapPrice}",
         )
-        self.disconnect()
+        # self.disconnect()
 
     def error(
         self,
