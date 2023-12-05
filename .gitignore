@@ -1,1 +1,7 @@
 /__pycache__
+Misc/varRef.py
+Misc/fundamentalData.py
+Misc/jsonCleanup.py
+Misc/positionMismatch.py
+ClientCode/
+ibapi_MD_QA.py
