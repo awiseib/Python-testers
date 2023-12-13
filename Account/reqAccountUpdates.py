@@ -23,7 +23,7 @@ class TestApp(EClient, EWrapper):
 
     def accountDownloadEnd(self, accountName: str):
         print("accountDownloadEnd.", accountName)
-        # self.disconnect()
+        self.disconnect()
 
 
 app = TestApp()

@@ -12,23 +12,18 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
 
         mycontract = Contract()
-        mycontract.conId = 605247013
-        # mycontract.localSymbol = "ESU1"
-
-        # mycontract.symbol = "MTEK"
-        # mycontract.secType = "STK"
-        mycontract.exchange = "CBOT"
-        # mycontract.currency = "USD"
+        mycontract.conId = 76792991
+        mycontract.exchange = "SMART"
 
         self.reqHistoricalTicks(
             reqId=123,
             contract=mycontract,
             startDateTime="",
-            endDateTime="20230629 08:45:00 US/Central",
+            endDateTime="20231030 14:00:03 US/Eastern",
             numberOfTicks=1000,
-            whatToShow="Bid_Ask",
+            whatToShow="TRADES",
             useRth=1,
-            ignoreSize=True,
+            ignoreSize=False,
             miscOptions=[],
         )
 
@@ -55,8 +50,8 @@ class TestApp(EClient, EWrapper):
         for tick in ticks:
             print(
                 "historicalTicksBidAsk.", 
-                # f"reqId:{reqId}", 
-                # datetime.datetime.fromtimestamp(tick.time),
+                f"reqId:{reqId}", 
+                datetime.datetime.fromtimestamp(tick.time),
                 f"ticks:{tick}"
             )
 
@@ -68,7 +63,7 @@ class TestApp(EClient, EWrapper):
     ):
         for tick in ticks:
             print(
-                "historicalTicksLast.", 
+                "historicalTicks.", 
                 f"reqId:{reqId}", 
                 datetime.datetime.fromtimestamp(tick.time),
                 f"ticks:{tick.price}"
@@ -76,5 +71,5 @@ class TestApp(EClient, EWrapper):
 
 
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 50)
 app.run()
