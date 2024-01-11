@@ -1,7 +1,11 @@
-/__pycache__
+./.gitignore
+*/__pycache__
+ClientCode/
 Misc/varRef.py
 Misc/fundamentalData.py
 Misc/jsonCleanup.py
 Misc/positionMismatch.py
-ClientCode/
+Orders/jcazel_ScaleOrder.py
+Wall_Street_Horizons/wshMetaData.xml
+FlexWebQuery_Yodlee.py
 ibapi_MD_QA.py
