@@ -11,16 +11,19 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
 
         mycontract = Contract()
-        mycontract.symbol = "AAL"
-        mycontract.secType = "STK"
-        mycontract.exchange = "SMART"
+        # mycontract.conId = 76792991
+        mycontract.symbol = "EUR"
+        mycontract.secType = "CASH"
+        mycontract.exchange = "IDEALPRO"
         mycontract.currency = "USD"
+
+        # self.reqMarketDataType(3)
 
         self.reqTickByTickData(
             reqId=123,
             contract=mycontract,
-            tickType="Last",
-            numberOfTicks=1,
+            tickType="  ",
+            numberOfTicks=1000,
             ignoreSize=False
         )
 

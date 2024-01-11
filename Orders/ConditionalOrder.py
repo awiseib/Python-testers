@@ -29,7 +29,7 @@ class TestApp(EClient, EWrapper):
 
         # time_condition = oc.Create(oc.OrderCondition.Time)
         # time_condition.isMore = True # After
-        # time_condition.time = "20220112"
+        # time_condition.time = "20230610 12:00:00 "
         # time_condition.isConjunctionConnection = True # And
 
         # percent_condition = oc.Create(oc.OrderCondition.PercentChange)
@@ -52,13 +52,13 @@ class TestApp(EClient, EWrapper):
             #     isMore=True, 
             #     changePercent=0.25
             # ).Or(),
-            oc.PriceCondition(
-                triggerMethod=2,
-                conId=4391,
-                exch="SMART",
-                isMore=False,
-                price=120,
-            )
+            # oc.PriceCondition(
+            #     triggerMethod=2,
+            #     conId=4391,
+            #     exch="SMART",
+            #     isMore=False,
+            #     price=120,
+            # )
             # .And(),
             # oc.TimeCondition(
             #     isMore=True, 
@@ -90,12 +90,9 @@ class TestApp(EClient, EWrapper):
         myorder.tif = "GTC"
         myorder.outsideRth = True
         myorder.conditions.append(
-            oc.PriceCondition(
-                triggerMethod=2,
-                conId=4391,
-                exch="SMART",
-                isMore=False,
-                price=120,
+            oc.TimeCondition(
+                isMore=True, 
+                time="20230610 12:00:00"
             ))
         # for c in conditions:
         #     myorder.conditions.append(c)

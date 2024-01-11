@@ -17,11 +17,10 @@ class TestApp(EClient, EWrapper):
         sub.scanCode = "TOP_PERC_GAIN"
 
         # Both are lists of TagValue objects: TagValue(tag, value)
-        scan_options = [
-            TagValue("hasOptionsIs", True)
-            ]
+        scan_options = []
         filter_options = [
-            TagValue("optVolumeAbove", 1000),
+            # TagValue("optVolumeAbove", 1000),
+            TagValue("hasOptionsIs", "true")
             
         ]
     

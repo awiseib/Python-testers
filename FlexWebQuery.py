@@ -4,7 +4,7 @@ import csv
 import xml.etree.ElementTree as ET
 
 # Update these to YOUR environment.
-csvPath = 'D:\\Downloads\\MINT.csv'
+csvPath = 'D:\\Downloads\\custFlex.xml'
 
 # Flex Web Serivce is only availble for LIVE accounts.
 # This example uses the trust test account.
@@ -15,12 +15,16 @@ csvPath = 'D:\\Downloads\\MINT.csv'
 # 3. Copy the "Query ID" under Activity Flex Query Details
 
 requestBase = "https://www.interactivebrokers.com/Universal/servlet/FlexStatementService.SendRequest?"
-token = "t=220638997034176155165000" # Valid 2023-03-01, 10:13:43 EST — 2024-01-31, 10:13:43 EST
-queryId = "&q=771568"
+# token = "t=220638997034176155165000" # Valid 2023-03-01, 10:13:43 EST — 2024-01-31, 10:13:43 EST
+# queryId = "&q=771568"
+
+token = "t=468323735188770213387953" # csdem9545
+queryId = "&q=800969" # Trades Flex Query
+
 version = "&v=3"
 
 # 4. Combine requestUrl, queryId, tokenId, and include version 3
-requestUrl = "".join([requestBase, token, queryId, version])
+requestUrl = "".join([requestBase, token, queryId, version, "&period=LastQuarter&noOfDays=100"])
 # Example: https://www.interactivebrokers.com/Universal/servlet/FlexStatementService.SendRequest?t=174034019902345466159208&q=771568&v=3
 
 # 5. Create a GET request for that URL
@@ -54,7 +58,7 @@ receiveUrl = "".join([receiveBase, "?",token, refCode, version])
 
 # Pause for sample
 print("Hold for Request.")
-time.sleep(10)
+time.sleep(20)
 
 # 9. Generate a GET request for the new URL
 receiveUrl = requests.get(url=receiveUrl, allow_redirects=True)
