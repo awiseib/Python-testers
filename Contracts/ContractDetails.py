@@ -12,14 +12,11 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
         
         mycontract = Contract()
-        # mycontract.conId = 617579246
-        mycontract.localSymbol = "ESU1"
-
-        # mycontract.symbol = "DAX"
-        mycontract.secType = "FUT"
-        mycontract.exchange = "CME"
+        mycontract.symbol = "AAPL"
+        mycontract.secType = "STK"
         mycontract.currency = "USD"
-        mycontract.includeExpired = True
+        mycontract.exchange = "SMART"
+        mycontract.primaryExchange = "NASDAQ"
 
         # mycontract.lastTradeDateOrContractMonth = 20230321
         # mycontract.right = "P"
@@ -38,10 +35,8 @@ class TestApp(EClient, EWrapper):
             "contractDetails.",
             f"reqId:{reqId}",
             "\n",
-            "\n".join(f"{name}: {value}" for name, value in attrs.items()),
-            contractDetails.contract.conId
+            "\n".join(f"{name}: {value}" for name, value in attrs.items())
         )
-        print(contractDetails.contract)
         
     def contractDetailsEnd(self, reqId: int):
         print(

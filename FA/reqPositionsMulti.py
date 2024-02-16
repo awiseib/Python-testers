@@ -14,7 +14,7 @@ class TestApp(EWrapper, EClient):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: int):
-        self.reqPositionsMulti(1, "TEST_2", "")
+        self.reqPositionsMulti(1, "DU5240685", "")
 
     def positionMulti(self, reqId: int, account: str, modelCode: str, contract: Contract, pos: Decimal, avgCost: float):
         print(f"reqId: {reqId}, account: {account}, modelCode: {modelCode}, contract: {contract}, pos: {pos}, avgCost: {avgCost}")

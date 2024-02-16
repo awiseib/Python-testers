@@ -14,19 +14,19 @@ class TestApp(EClient, EWrapper):
 
     def nextValidId(self, orderId: OrderId):
         mycontract = Contract()
-        mycontract.symbol = "AAPL,TSLA"
+        mycontract.symbol = "IBKR,MCD"
         mycontract.secType = "BAG"
         mycontract.currency = "USD"
         mycontract.exchange = "SMART"
 
         leg1 = ComboLeg()
-        leg1.conId = 265598 
+        leg1.conId = 43645865 
         leg1.ratio = 1
         leg1.action = "BUY"
         leg1.exchange = "SMART"
 
         leg2 = ComboLeg()
-        leg2.conId = 76792991 
+        leg2.conId = 9408 
         leg2.ratio = 1
         leg2.action = "SELL"
         leg2.exchange = "SMART"
@@ -39,13 +39,13 @@ class TestApp(EClient, EWrapper):
         myorder = Order()
         myorder.orderId = orderId
         myorder.action = "BUY"
-        myorder.orderType = "MKT"
+        myorder.orderType = "LMT"
         myorder.totalQuantity = 1
 
-        # myorder.lmtPrice = -80
+        myorder.lmtPrice = -80
 
         myorder.smartComboRoutingParams = []
-        myorder.smartComboRoutingParams.append(TagValue("NonGuaranteed", "0"))
+        myorder.smartComboRoutingParams.append(TagValue("NonGuaranteed", "1"))
 
 
         self.placeOrder(myorder.orderId, mycontract, myorder)
