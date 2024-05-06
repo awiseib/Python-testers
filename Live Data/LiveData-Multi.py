@@ -27,7 +27,7 @@ class contractApp(EClient, EWrapper):
         self.reqContractDetails(reqId=orderId, contract=mycontract)
         
     def contractDetails(self, reqId: int, contractDetails: ContractDetails):
-        FUTCONTRACT.append(contractDetails.contract)
+        FUTCONTRACT.append(contractDetails.contract.conId)
         
 
     def contractDetailsEnd(self, reqId: int):
@@ -51,14 +51,13 @@ class TestApp(EClient, EWrapper):
         for contract in range(len(FUTCONTRACT)):
             
             if nextConId < len(FUTCONTRACT):
-                
-                
+            
                 mycontract = Contract()
                 mycontract.symbol = "CL"
                 mycontract.secType = "BAG"
                 mycontract.exchange = "SMART"
                 mycontract.currency = "USD"
-
+                
                 leg1= ComboLeg()
                 leg1.conId = FUTCONTRACT[currentConId]
                 leg1.ratio = 1
@@ -75,7 +74,7 @@ class TestApp(EClient, EWrapper):
                 mycontract.comboLegs.append(leg1)
                 mycontract.comboLegs.append(leg2)
 
-
+                print(f"Requesting Pair: {FUTCONTRACT[currentConId]}; {FUTCONTRACT[nextConId]}")
                 self.reqMktData(requestId,mycontract,"",False,False,[])
 
                 requestId += 1

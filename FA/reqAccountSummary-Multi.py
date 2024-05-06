@@ -10,6 +10,9 @@ class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
 
+    def nextValidId(self, orderId: int):
+        self.reqAccountUpdatesMulti(orderId, "DU74649", "", False)
+        
     def updatePortfolio(
         self,
         contract: Contract,
@@ -48,20 +51,6 @@ class TestApp(EClient, EWrapper):
         print("accountDownloadEnd.", accountName)
         self.disconnect()
 
-
-def run_loop():
-    app.run()
-
 app = TestApp()
 app.connect("127.0.0.1", 7496, 1001)
-
-api_thread = threading.Thread(target=run_loop)
-api_thread.start()
-
-time.sleep(1)
-app.reqAccountUpdatesMulti(1, "DU74649", "", True)
-# app.reqAccountUpdates(False,acctCode="DU74649")
-# app.reqAccountUpdates(True,acctCode="DU74649")
-
-# time.sleep(10)
-# app.disconnect()
+app.run()

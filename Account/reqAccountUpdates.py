@@ -9,14 +9,14 @@ class TestApp(EClient, EWrapper):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: OrderId):
-        self.reqAccountUpdates(True, "")
+        self.reqAccountUpdates(True, "DU5240685")
 
     def updateAccountValue(
         self, key: str, val: str, currency: str, accountName: str):
         print("updateAccountValue.", key, val, currency, accountName)
 
-    # def updateAccountTime(self, timeStamp: str):
-    #     print("updateAccountTime.", timeStamp)
+    def updateAccountTime(self, timeStamp: str):
+        print("updateAccountTime.", timeStamp)
 
     def updatePortfolio(self, contract: Contract, position: Decimal, marketPrice: float, marketValue: float, averageCost: float, unrealizedPNL: float, realizedPNL: float, accountName: str):
         print(f"updatePortfolio. contract: {contract.symbol}@{contract.exchange}:{contract.secType}, position: {position}, marketPrice: {marketPrice}, marketValue: {marketValue}, averageCost: {averageCost}, unrealizedPNL: {unrealizedPNL}, realizedPNL: {realizedPNL}")

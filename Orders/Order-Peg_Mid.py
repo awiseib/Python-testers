@@ -17,20 +17,21 @@ class TestApp(EClient, EWrapper):
 
         mycontract = Contract()
         # mycontract.conId = 632741835
-        mycontract.symbol = "CTLT"
+        mycontract.symbol = "RDDT"
         mycontract.secType = "STK"
         mycontract.currency = "USD"
-        mycontract.exchange = "IBKRATS"
-        mycontract.primaryExchange = "NYSE"
+        mycontract.exchange = "IEX"
+        # mycontract.primaryExchange = "NYSE"
 
         myorder = Order()
         myorder.orderId = orderId
         myorder.orderType = "PEG MID"
         myorder.action = "BUY"
-        myorder.totalQuantity = 3
-        myorder.lmtPrice = 44
+        myorder.totalQuantity = 100
+        myorder.lmtPrice = 42.41
         # myorder.lmtPriceOffset = 0.15
         myorder.auxPrice = 0
+        myorder.outsideRth = True
         myorder.notHeld = True
 
         self.placeOrder(myorder.orderId, mycontract, myorder)

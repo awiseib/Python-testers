@@ -2,7 +2,7 @@ from ibapi.client import *
 from ibapi.wrapper import *
 import json
 
-port = 7497
+port = 7496
 
 
 class TestApp(EClient, EWrapper):
@@ -11,14 +11,14 @@ class TestApp(EClient, EWrapper):
 
     def nextValidId(self, orderId: OrderId):
         eventData = WshEventData()
-        # eventData.conId = "12200"
+        # eventData.conId = 265598
         # eventData.startDate = "20100101"
         # eventData.endDate = ""
-        eventData.fillCompetitors = False
-        eventData.fillPortfolio = False
-        eventData.fillWatchlist = False
-        eventData.totalLimit = 100
-        eventData.filter = '{"watchlist":["12200"],"country": "All", "wshe_eps": "true"}'
+        # eventData.fillCompetitors = False
+        # eventData.fillPortfolio = False
+        # eventData.fillWatchlist = False
+        # eventData.totalLimit = 100
+        eventData.filter = '{"watchlist":["265598"],"country": "All", "wshe_ed": "true", "wshe_div": "true"}'
 
         """
         Filters pulled from wshMetaData. Look for section header in response to find filter name.
@@ -35,7 +35,7 @@ class TestApp(EClient, EWrapper):
         wshe_ic     ==
         wshe_sh     == 
         """
-        self.reqWshEventData(orderId, eventData)
+        self.reqWshEventData(orderId, eventData, 173)
 
     def wshEventData(self, reqId: int, dataJson: str):
         print("eventdata.")

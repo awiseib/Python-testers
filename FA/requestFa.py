@@ -2,7 +2,7 @@ from decimal import Decimal
 from ibapi.client import *
 from ibapi.wrapper import *
 
-port = 7497
+port = 7496
 
 
 class TestApp(EClient, EWrapper):

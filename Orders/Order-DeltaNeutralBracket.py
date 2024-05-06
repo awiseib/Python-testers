@@ -1,6 +1,6 @@
 from ibapi.client import *
 from ibapi.wrapper import *
-
+import time
 port = 7496
 
 
@@ -13,9 +13,8 @@ class TestApp(EClient, EWrapper):
 
         # contract for an AAPL call
         mycontract = Contract()
-        mycontract.conId = 502056585
+        mycontract.conId = 682695687
         mycontract.exchange = "SMART"
-        mycontract.currency = "USD"
 
         # buying call with limit order
         parent = Order()
@@ -28,10 +27,8 @@ class TestApp(EClient, EWrapper):
 
         # make a contract for AAPL stock for hedge
         hedge_contract = Contract()
-        hedge_contract.symbol = "AAPL"
-        hedge_contract.secType = "STK"
+        hedge_contract.conId = 756733
         hedge_contract.exchange = "SMART"
-        hedge_contract.currency = "USD"
 
         # Child order to sell stock, triggered by parent fill.
         # Note that this is a LMT order with no limit price specified,
@@ -47,15 +44,16 @@ class TestApp(EClient, EWrapper):
         delta_hedge.orderId = orderId + 1
         delta_hedge.parentId = parent.orderId
         delta_hedge.hedgeType = "D"
+        delta_hedge.totalQuantity = 0
         # delta_hedge.hedgeParam = "50"
         # delta_hedge.hedgeType = "D" # D for delta hedge
         # delta_hedge.hedgeParam = "delta=50"
         delta_hedge.dontUseAutoPriceForHedge = True
-        delta_hedge.transmit = False # set to true to send whole "bracket"
+        delta_hedge.transmit = True # set to true to send whole "bracket"
 
-        print(delta_hedge.dontUseAutoPriceForHedge)
         # send both orders, with child's transmit=True submitting both
         self.placeOrder(parent.orderId, mycontract, parent)
+        time.sleep(1)
         self.placeOrder(delta_hedge.orderId, hedge_contract, delta_hedge)
 
     def openOrder(

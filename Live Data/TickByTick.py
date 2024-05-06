@@ -11,20 +11,20 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
 
         mycontract = Contract()
-        # mycontract.conId = 76792991
-        mycontract.symbol = "EUR"
-        mycontract.secType = "CASH"
-        mycontract.exchange = "IDEALPRO"
-        mycontract.currency = "USD"
+        mycontract.conId = 265598
+        # mycontract.symbol = "IBCID559139897"
+        # mycontract.secType = "BOND"
+        # mycontract.currency = "USD"
+        mycontract.exchange = "SMART"
 
-        # self.reqMarketDataType(3)
+
 
         self.reqTickByTickData(
             reqId=123,
             contract=mycontract,
-            tickType="  ",
-            numberOfTicks=1000,
-            ignoreSize=False
+            tickType="MidPoint",
+            numberOfTicks=50,
+            ignoreSize=0
         )
 
     # whatToShow=BidAsk
@@ -33,7 +33,7 @@ class TestApp(EClient, EWrapper):
 
     # whatToShow=MidPoint
     def tickByTickMidPoint(self, reqId: int, time: int, midPoint: float):
-        print(f"reqId: {reqId}", time, midPoint)
+        print(f"reqId: {reqId}, {datetime.fromtimestamp(time)}, {midPoint}")
 
     # # whatToShow=AllLast
     def tickByTickAllLast(self, reqId: int, tickType: int, time: int, price: float, size: int, tickAttribLast: TickAttribLast, exchange: str, specialConditions: str):

@@ -1,14 +1,8 @@
-from asyncio.windows_events import NULL
 from decimal import Decimal
-from pickle import FALSE, TRUE
-from queue import PriorityQueue
-from ibapi.tag_value import TagValue
-from tkinter.tix import Tree
+from datetime import datetime
 from ibapi.client import *
 from ibapi.wrapper import *
-from datetime import datetime
 from ibapi.contract import *
-from ibapi.order_condition import Create, OrderCondition
 from ibapi.order_state import *
 
 port = 7496
@@ -22,39 +16,47 @@ class TestApp(EClient, EWrapper):
         print(f"nextValidId. orderId={orderId}")
 
         parentContract = Contract() 
-        parentContract.conId = 438716131 # AAPL Options
+        parentContract.conId = 265598 # AAPL Options
         parentContract.exchange = "SMART"
         parentContract.currency = "USD"
 
         child1 = Contract() 
-        child1.conId = 438716131 # AAPL Options
+        child1.conId = 265598 # AAPL Options
         child1.exchange = "SMART"
         child1.currency = "USD"
 
         child2 = Contract() 
-        child2.conId = 438716131 # AAPL Options
+        child2.conId = 265598 # AAPL Options
         child2.exchange = "SMART"
         child2.currency = "USD"
 
         parentOrder = Order()
         parentOrder.orderId = orderId
         parentOrder.action = "BUY"
-        parentOrder.orderType = "MKT"
+        # parentOrder.orderType = "LMT"
+        # parentOrder.tif = "OPG"
+        parentOrder.orderType = "LOC"
+        parentOrder.tif = "DAY"
+        parentOrder.lmtPrice = "169"
         parentOrder.totalQuantity = 1
         parentOrder.ocaGroup = "TestOCA_", orderId
         parentOrder.ocaType = 1
-        parentOrder.transmit = False
+        parentOrder.transmit = True
 
         self.placeOrder(orderId, parentContract, parentOrder)
 
         chilldO1 = Order()
         chilldO1.orderId = orderId + 1
         chilldO1.action = "SELL"
-        chilldO1.orderType = "MKT"
+        # chilldO1.orderType = "LMT"
+        # chilldO1.tif = "OPG"
+        chilldO1.orderType = "LOC"
+        chilldO1.tif = "DAY"
+        chilldO1.lmtPrice = 180
         chilldO1.totalQuantity = 1
         chilldO1.ocaGroup = "TestOCA_", orderId
         chilldO1.ocaType = 1
-        chilldO1.transmit = False
+        chilldO1.transmit = True
 
         self.placeOrder(chilldO1.orderId, child1, chilldO1)
 
@@ -65,10 +67,10 @@ class TestApp(EClient, EWrapper):
         chilldO2.orderType = "MKT"
         chilldO2.totalQuantity = 1
         chilldO2.ocaGroup = "TestOCA_", orderId
-        chilldO2.ocaType = 1
+        chilldO2.ocaType = 3
         chilldO2.transmit = True
 
-        self.placeOrder(chilldO2.orderId, child2, chilldO2)
+        # self.placeOrder(chilldO2.orderId, child2, chilldO2)
 
 
     def openOrder(
