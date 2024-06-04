@@ -1,8 +1,7 @@
 from ibapi.client import *
 from ibapi.wrapper import *
 from datetime import datetime
-from threading import Thread
-import time
+from ibapi.contract import ComboLeg
 port = 7496
 
 class TestApp(EClient, EWrapper):
@@ -12,24 +11,15 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
         
         mycontract = Contract()
-        mycontract.symbol = "AAPL"
-        mycontract.secType = "STK"
-        mycontract.currency = "USD"
+        mycontract.conId = 39622938
+        # mycontract.secType = "BAG"
+        # mycontract.currency = "USD"
         mycontract.exchange = "SMART"
-        mycontract.primaryExchange = "NASDAQ"
-
-        # mycontract.lastTradeDateOrContractMonth = 20230321
-        # mycontract.right = "P"
-        # mycontract.strike = 3950
-        # mycontract.primaryExchange = "NYSE"
-        # mycontract.localSymbol = "CH3"
-        # mycontract.tradingClass = "SPXW"
 
         self.reqContractDetails(reqId=orderId, contract=mycontract)
         
     def contractDetails(self, reqId: int, contractDetails: ContractDetails):
         attrs = vars(contractDetails)
-        contractDetails.contract.conId
         print(
             datetime.now().strftime("%H:%M:%S.%f")[:-3],
             "contractDetails.",

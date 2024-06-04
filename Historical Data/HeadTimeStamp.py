@@ -19,11 +19,11 @@ class TestApp(EClient, EWrapper):
         mycontract.exchange = "SMART"
         mycontract.currency = "USD"
 
-        self.reqHeadTimeStamp(1, mycontract, "TRADES", 1, 1)
-        # self.reqHeadTimeStamp(1, mycontract, "TRADES", 1, 2)
+        self.reqHeadTimeStamp(1, mycontract, "TRADES", 1, 2)
 
-    def headTimestamp(self, reqId: int, headTimestamp: str):
+    def headTimestamp(self, reqId: int, headTimestamp):
         print(reqId, headTimestamp)
+        print(datetime.fromtimestamp(int(headTimestamp)))
         self.cancelHeadTimeStamp(reqId)
         
 app = TestApp()
