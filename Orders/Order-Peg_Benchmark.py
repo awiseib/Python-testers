@@ -1,17 +1,9 @@
-from asyncio.windows_events import NULL
 from decimal import Decimal
-from pickle import FALSE, TRUE
-from queue import PriorityQueue
-from threading import Timer
-from ibapi.tag_value import TagValue
-from tkinter.tix import Tree
 from ibapi.client import *
 from ibapi.wrapper import *
 from datetime import datetime
 from ibapi.contract import *
-from ibapi.order_condition import Create, OrderCondition
 from ibapi.order_state import *
-import time
 
 port = 7496
 
@@ -24,7 +16,7 @@ class TestApp(EClient, EWrapper):
         print(f"nextValidId. orderId={orderId}")
 
         mycontract = Contract()
-        mycontract.conId = 422302967 # TMBR STK
+        mycontract.conId = 8314 # IBM STK
         mycontract.exchange = "SMART"
         mycontract.currency = "USD"
 
@@ -33,25 +25,25 @@ class TestApp(EClient, EWrapper):
         myorder.orderType = "PEG BENCH"
         # BUY or SELL
         myorder.action = "BUY"
-        myorder.totalQuantity = 10000
+        myorder.totalQuantity = 100
         #Beginning with price...
-        # myorder.startingPrice = 12.60
+        myorder.startingPrice = 0
         #increase/decrease price..
-        myorder.isPeggedChangeAmountDecrease = True
+        myorder.isPeggedChangeAmountDecrease = False
         #by... (and likewise for price moving in opposite direction)
-        myorder.peggedChangeAmount = 0.001
+        myorder.peggedChangeAmount = 3
         #whenever there is a price change of...
-        myorder.referenceChangeAmount = 0.001
+        myorder.referenceChangeAmount = 1
         #in the reference contract...
-        myorder.referenceContractId = 47605491 # IGF STK
+        myorder.referenceContractId = 265598 # IGF STK
         #being traded at...
         myorder.referenceExchangeId = "SMART"
         #starting reference price is...
-        myorder.stockRefPrice = 46.74
+        myorder.stockRefPrice = 219
         #Keep myorder active as long as reference contract trades between...
-        myorder.stockRangeLower = 43.00
+        myorder.stockRangeLower = 200
         #and...
-        myorder.stockRangeUpper = 49.00
+        myorder.stockRangeUpper = 220
 
         self.placeOrder(myorder.orderId, mycontract, myorder)
 
@@ -72,6 +64,7 @@ class TestApp(EClient, EWrapper):
             f"order:{order}",
             f"orderState:{orderState}",
         )
+        print(order.startingPrice)
 
     def orderStatus(
         self,
@@ -101,7 +94,6 @@ class TestApp(EClient, EWrapper):
             # f"whyHeld:{whyHeld}",
             # f"mktCapPrice:{mktCapPrice}",
         )
-        self.disconnect()
 
     def error(
         self,

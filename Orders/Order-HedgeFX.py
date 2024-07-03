@@ -41,6 +41,7 @@ class TestApp(EClient, EWrapper):
         hedgeChildOrder.action = "SELL"
         hedgeChildOrder.orderType = "REL"
         hedgeChildOrder.hedgeType = "F"
+        hedgeChildOrder.totalQuantity = 0
         hedgeChildOrder.dontUseAutoPriceForHedge = False
         hedgeChildOrder.transmit = True
 
