@@ -3,9 +3,6 @@ from ibapi.tag_value import TagValue
 from ibapi.client import *
 from ibapi.wrapper import *
 from datetime import datetime
-from ibapi.contract import *
-from ibapi.order_state import *
-import time
 
 port = 7496
 
@@ -25,18 +22,15 @@ class TestApp(EClient, EWrapper):
         order.action = "BUY"
         order.totalQuantity = 1
         order.orderType = "MKT"
-        # order.lmtPrice = 100
         order.algoStrategy = "Vwap"
 
         order.algoParams = []
         order.algoParams.append(TagValue("maxPctVol", .3))
-        order.algoParams.append(TagValue("startTime", "20230415 13:15:00 US/Eastern"))
-        order.algoParams.append(TagValue("endTime", "20230415 15:30:00 US/Eastern"))
+        order.algoParams.append(TagValue("startTime", "20240703-16:00:00"))
+        order.algoParams.append(TagValue("endTime", "20240703-17:00:00"))
         order.algoParams.append(TagValue("allowPastEndTime",int(0)))
         order.algoParams.append(TagValue("noTakeLiq", int(0)))
         order.algoParams.append(TagValue("speedUp", int(1)))
-
-        #order.algoParams.append(TagValue("monetaryValue", monetaryValue))
 
         self.placeOrder(orderId, contract, order)
 
