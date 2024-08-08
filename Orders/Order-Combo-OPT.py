@@ -1,8 +1,10 @@
 from decimal import Decimal
 from ibapi.client import *
+from ibapi.common import OrderId
+from ibapi.order import Order
+from ibapi.order_state import OrderState
 from ibapi.wrapper import *
-from ibapi.tag_value import TagValue
-from ibapi.contract import ComboLeg
+from ibapi.contract import ComboLeg, Contract
 from ibapi.order import *
 
 port = 7496
@@ -14,21 +16,21 @@ class TestApp(EClient, EWrapper):
 
     def nextValidId(self, orderId: OrderId):
         mycontract = Contract()
-        mycontract.symbol = "SPX"
-        mycontract.secType = "BAG"
+        mycontract.symbol = "SPX,SPY" # Designate the symbols of both contracts in the combo.
+        mycontract.secType = "BAG" # BAG must always be used to designate a combo order.
         mycontract.currency = "USD"
         mycontract.exchange = "SMART"
 
         leg1 = ComboLeg()
-        leg1.conId = 659361127 # SPX NOV 08 4345 CALL
-        leg1.ratio = 1
+        leg1.conId = 654370534 # SPX OCT 18 5350 P
+        leg1.ratio = 1 # The leg's ration will be 1. This means leg1 will purchase (totalQuantiy * 1) shares.
         leg1.action = "BUY"
         leg1.exchange = "SMART"
 
         leg2 = ComboLeg()
-        leg2.conId = 657566325 # SPX NOV 08 4350 CALL
-        leg2.ratio = 1
-        leg2.action = "SELL"
+        leg2.conId = 700892035 # SPY OCT 18 525 P
+        leg2.ratio = 10 # The leg's ratio will be 10. This means leg2 will purchase (totalQuantity * 10) shares
+        leg2.action = "BUY"
         leg2.exchange = "SMART"
 
         mycontract.comboLegs = []
@@ -39,60 +41,27 @@ class TestApp(EClient, EWrapper):
         myorder = Order()
         myorder.orderId = orderId
         myorder.action = "BUY"
-        myorder.orderType = "LMT"
-        myorder.totalQuantity = 1
+        myorder.totalQuantity = 1 # This is the total number of combinations to buy. This example will result with me owning 1 SPX option and 10 SPY options.
 
-        myorder.lmtPrice = 6.20
+        myorder.orderType = "LMT" # Combos support a variety of order types, including LMT, MKT, and STP.
 
-        # myorder.smartComboRoutingParams = []
-        # myorder.smartComboRoutingParams.append(TagValue("NonGuaranteed", "0"))
-
+        '''
+        The pricing structure for combo orders is based on the total value of all legs.
+        In this case:
+            We are buying 1 SPX option, currently trading at about $200.
+            We are buying 10 SPY options, currently trading at about $14.
+            ($180 * 1)  +   ($14 * 10)  =   320
+            180         +   140         =   320
+        '''
+        myorder.lmtPrice = 320
 
         self.placeOrder(myorder.orderId, mycontract, myorder)
 
-    def openOrder(
-        self,
-        orderId: OrderId,
-        contract: Contract,
-        order: Order,
-        orderState: OrderState,
-    ):
-        print(
-            "openOrder.",
-            f"orderId:{orderId}",
-            f"contract:{contract}",
-            f"order:{order}",
-            # f"orderState:{orderState}",
-        )
+    def openOrder(self, orderId: int, contract: Contract, order: Order, orderState: OrderState):
+        print(f"openOrder. orderId:{orderId} contract:{contract} order:{order} orderState:{orderState}")
 
-    def orderStatus(
-        self,
-        orderId: OrderId,
-        status: str,
-        filled: Decimal,
-        remaining: Decimal,
-        avgFillPrice: float,
-        permId: int,
-        parentId: int,
-        lastFillPrice: float,
-        clientId: int,
-        whyHeld: str,
-        mktCapPrice: float,
-    ):
-        print(
-            "orderStatus.",
-            f"orderId:{orderId}",
-            f"status:{status}",
-            f"filled:{filled}",
-            f"remaining:{remaining}",
-            f"avgFillPrice:{avgFillPrice}",
-            # f"permId:{permId}",
-            f"parentId:{parentId}",
-            f"lastFillPrice:{lastFillPrice}",
-            # f"clientId:{clientId}",
-            # f"whyHeld:{whyHeld}",
-            # f"mktCapPrice:{mktCapPrice}",
-        )
+    def orderStatus(self, orderId: OrderId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: OrderId, parentId: OrderId, lastFillPrice: float, clientId: OrderId, whyHeld: str, mktCapPrice: float):
+        print(f"orderStatus. orderId:{orderId} status:{status} filled:{filled} remaining:{remaining} avgFillPrice:{avgFillPrice} permId:{permId} parentId:{parentId} lastFillPrice:{lastFillPrice} clientId:{clientId} whyHeld:{whyHeld} mktCapPrice:{mktCapPrice}")
 
 
 app = TestApp()
