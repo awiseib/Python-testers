@@ -48,7 +48,7 @@ class TestApp(EClient, EWrapper):
         '''
         The pricing structure for combo orders is based on the total value of all legs.
         In this case:
-            We are buying 1 SPX option, currently trading at about $200.
+            We are buying 1 SPX option, currently trading at about $180.
             We are buying 10 SPY options, currently trading at about $14.
             ($180 * 1)  +   ($14 * 10)  =   320
             180         +   140         =   320
