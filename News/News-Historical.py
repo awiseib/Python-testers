@@ -17,10 +17,10 @@ class TestApp(EClient, EWrapper):
 
         self.reqHistoricalNews(
             reqId=1234, 
-            conId=265598, # AAPL ConId
+            conId=4815747, # NVDA ConId
             providerCodes="BRFG+BRFUPDN+DJNL", #BRFG+BRFUPDN+DJNL 
-            startDateTime="", 
-            endDateTime="20230919-12:00:00", 
+            startDateTime="20200101 00:00:01", 
+            endDateTime="", 
             totalResults= 10, 
             historicalNewsOptions=[]
         )
