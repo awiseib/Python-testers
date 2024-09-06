@@ -53,7 +53,7 @@ threading.Thread(target=app.run).start()
 
 # Creates a contract specific news source and denotes the news feed through 'genericTickList="mdoff,292:BRFG"'.
 mycontract = Contract()
-mycontract.symbol="AAPL"
+mycontract.symbol="TSLA"
 mycontract.secType="STK"
 mycontract.exchange="SMART"
 mycontract.currency="USD"

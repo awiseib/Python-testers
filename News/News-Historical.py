@@ -12,16 +12,13 @@ class TestApp(EClient, EWrapper):
 
     def nextValidId(self, orderId: OrderId):
 
-        # Returns your subscribed news sources via newsProviders callback.
-        # self.reqNewsProviders()
-
         self.reqHistoricalNews(
-            reqId=1234, 
-            conId=265598, # AAPL ConId
+            reqId=orderId, 
+            conId=8314, # AAPL ConId
             providerCodes="BRFG+BRFUPDN+DJNL", #BRFG+BRFUPDN+DJNL 
-            startDateTime="", 
-            endDateTime="20230919-12:00:00", 
-            totalResults= 10, 
+            startDateTime="20200101 00:00:01", 
+            endDateTime="", 
+            totalResults= 300, 
             historicalNewsOptions=[]
         )
 
@@ -31,6 +28,7 @@ class TestApp(EClient, EWrapper):
 
     def historicalNewsEnd(self, requestId: int, hasMore: bool):
         print(requestId, hasMore)
+        self.disconnect()
 
 app = TestApp()
 app.connect("127.0.0.1", port, 1001)
