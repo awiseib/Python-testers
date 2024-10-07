@@ -92,11 +92,11 @@ class TestApp(EClient, EWrapper):
         myorder.conditions.append(
             oc.TimeCondition(
                 isMore=True, 
-                time="20230610 12:00:00"
+                time="12:00:00 America/Chicago"
             ))
         # for c in conditions:
         #     myorder.conditions.append(c)
-
+        myorder.conditionsCancelOrder 
         self.placeOrder(orderId, mycontract, myorder)
 
     def openOrder(
@@ -142,9 +142,6 @@ class TestApp(EClient, EWrapper):
             # f"whyHeld:{whyHeld}",
             # f"mktCapPrice:{mktCapPrice}",
         )
-
-    def error(self, reqId: TickerId, errorCode: int, errorString: str, no):
-        print(f"error. reqId:{reqId} code:{errorCode} string:{errorString}")
 
 
 app = TestApp()

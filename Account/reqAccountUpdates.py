@@ -1,5 +1,6 @@
 from decimal import Decimal
 from ibapi.client import *
+from ibapi.common import TickerId
 from ibapi.wrapper import *
 
 port = 7496
@@ -15,6 +16,12 @@ class TestApp(EClient, EWrapper):
         self, key: str, val: str, currency: str, accountName: str):
         print("updateAccountValue.", key, val, currency, accountName)
 
+    def accountUpdateMulti(self, reqId: TickerId, account: str, modelCode: str, key: str, value: str, currency: str):
+        print("updateAccountValue.", key, value, currency, account)
+    
+    def accountUpdateMultiEnd(self, reqId: TickerId):
+        print("End of "+str(reqId))
+
     def updateAccountTime(self, timeStamp: str):
         print("updateAccountTime.", timeStamp)
 
@@ -23,9 +30,18 @@ class TestApp(EClient, EWrapper):
 
     def accountDownloadEnd(self, accountName: str):
         print("accountDownloadEnd.", accountName)
-        self.disconnect()
+        # self.disconnect()
+
+    def error(self, reqId: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(reqId, errorCode, errorString, advancedOrderRejectJson)
 
 
+import threading, time
 app = TestApp()
 app.connect("127.0.0.1", port, 1001)
-app.run()
+time.sleep(3)
+threading.Thread(target=app.run).start()
+time.sleep(1)
+
+# app.reqAccountUpdatesMulti(1, "DU74649", "", False)
+app.reqAccountUpdatesMulti(2, "DU74650", "", False)

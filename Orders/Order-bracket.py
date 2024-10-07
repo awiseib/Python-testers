@@ -1,5 +1,7 @@
 from decimal import Decimal
 from ibapi.client import *
+from ibapi.contract import Contract
+from ibapi.execution import Execution
 from ibapi.wrapper import *
 
 port = 7496
@@ -20,16 +22,17 @@ class TestApp(EClient, EWrapper):
         mycontract.conId = 265598
         mycontract.exchange = "SMART"
 
-        parent_price = 178
+        parent_price = 194.50
         parent_action = "BUY"
         quantity = 10.0
 
         parent = Order()
         parent.orderId = orderId
         parent.action = parent_action
-        parent.orderType = "LMT"
+        parent.orderType = "MKT"
         parent.totalQuantity = quantity
-        parent.lmtPrice = parent_price
+        # parent.outsideRth = True
+        # parent.lmtPrice = parent_price
         parent.transmit = False
 
         profit_taker = Order()
@@ -38,8 +41,9 @@ class TestApp(EClient, EWrapper):
         profit_taker.action = "SELL" if parent_action == "BUY" else "BUY"
         profit_taker.orderType = "LMT"
         profit_taker.totalQuantity = quantity
-        profit_taker.lmtPrice = parent_price + 100
+        profit_taker.lmtPrice = parent_price + 5
         # profit_taker.lmtPrice = 140
+        # profit_taker.outsideRth = True
         profit_taker.transmit = False
 
         stop_loss = Order()
@@ -48,8 +52,9 @@ class TestApp(EClient, EWrapper):
         stop_loss.action = "SELL" if parent_action == "BUY" else "BUY"
         stop_loss.orderType = "STP"
         stop_loss.totalQuantity = quantity
-        stop_loss.auxPrice = parent_price - 100
+        stop_loss.auxPrice = parent_price - 5
         # stop_loss.auxPrice = 135.18
+        # stop_loss.outsideRth = True
         stop_loss.transmit = True
 
         self.placeOrder(parent.orderId, mycontract, parent)
@@ -100,6 +105,9 @@ class TestApp(EClient, EWrapper):
             # f"mktCapPrice:{mktCapPrice}",
         )
 
+    def execDetails(self, reqId: int, contract: Contract, execution: Execution):
+        print(reqId, contract, execution)
+    
     def error(self, reqId: TickerId, errorCode: int, errorString: str, tickAttrib):
         print(f"error. reqId:{reqId} code:{errorCode} string:{errorString}")
 

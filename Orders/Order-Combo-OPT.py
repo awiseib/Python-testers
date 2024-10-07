@@ -16,7 +16,7 @@ class TestApp(EClient, EWrapper):
 
     def nextValidId(self, orderId: OrderId):
         mycontract = Contract()
-        mycontract.symbol = "SPX,SPY" # Designate the symbols of both contracts in the combo.
+        mycontract.symbol = "SPX,VIX" # Designate the symbols of both contracts in the combo.
         mycontract.secType = "BAG" # BAG must always be used to designate a combo order.
         mycontract.currency = "USD"
         mycontract.exchange = "SMART"
@@ -28,9 +28,9 @@ class TestApp(EClient, EWrapper):
         leg1.exchange = "SMART"
 
         leg2 = ComboLeg()
-        leg2.conId = 700892035 # SPY OCT 18 525 P
+        leg2.conId = 680380477 # SPY OCT 18 525 P
         leg2.ratio = 10 # The leg's ratio will be 10. This means leg2 will purchase (totalQuantity * 10) shares
-        leg2.action = "BUY"
+        leg2.action = "Sell"
         leg2.exchange = "SMART"
 
         mycontract.comboLegs = []
@@ -48,7 +48,7 @@ class TestApp(EClient, EWrapper):
         '''
         The pricing structure for combo orders is based on the total value of all legs.
         In this case:
-            We are buying 1 SPX option, currently trading at about $200.
+            We are buying 1 SPX option, currently trading at about $180.
             We are buying 10 SPY options, currently trading at about $14.
             ($180 * 1)  +   ($14 * 10)  =   320
             180         +   140         =   320

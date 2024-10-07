@@ -1,4 +1,6 @@
+from decimal import Decimal
 from ibapi.client import *
+from ibapi.contract import Contract
 from ibapi.wrapper import *
 from ibapi.contract import *
 import time
@@ -12,7 +14,8 @@ class TestApp(EWrapper, EClient):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: int):
-        self.reqPositions()
+        # self.reqPositions()
+        self.reqPositionsMulti(reqId=25, account="DU74650", modelCode="")
 
     def position(self, account: str, contract: Contract, position: Decimal, avgCost: float):
         print(account, contract, position, avgCost)
@@ -20,6 +23,13 @@ class TestApp(EWrapper, EClient):
     def positionEnd(self):
         self.cancelPositions()
         print("End of positions")
+
+        
+    def positionMulti(self, reqId: int, account: str, modelCode: str, contract: Contract, pos: Decimal, avgCost: float):
+        print(reqId, account, modelCode, contract, pos, avgCost)
+    
+    def positionMultiEnd(self, reqId: int):
+        self.disconnect()
 
     def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
         print("Error.", errorCode, errorString, advancedOrderRejectJson)

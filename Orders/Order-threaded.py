@@ -6,13 +6,13 @@ import time
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
-        # self.nextOrderId = 0
 
     def nextValidId(self, orderId: OrderId):
-        super().nextValidId(orderId)
-        self.nextOrderId = orderId
-        
-
+        self.orderId = orderId
+    
+    def nextId(self):
+        self.orderId += 1
+        return self.orderId
 
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
         print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}") 
@@ -29,22 +29,24 @@ class TestApp(EClient, EWrapper):
 
 app = TestApp()
 app.connect("127.0.0.1", 7496, 100)
+time.sleep(3)
 threading.Thread(target=app.run).start()
 
-app.reqCurrentTime()
-# time.sleep(3)
-mycontract = Contract()
-mycontract.symbol = "AAPL"
-mycontract.secType = "STK"    
-mycontract.exchange = "SMART"
-mycontract.currency = "USD"
 time.sleep(1)
-print(app.nextOrderId)
+
+mycontract = Contract()
+mycontract.conId = 103255368 
+mycontract.exchange = "SMART"
+
+app.reqMktData(app.nextId(), mycontract, "", False, False, [])
+
+time.sleep(3)
 
 myorder = Order()
-myorder.orderId = app.nextOrderId
 myorder.action = "BUY"
+myorder.totalQuantity = 1000
 myorder.orderType = "MKT"
-myorder.totalQuantity = 10
+# myorder.lmtPrice = 97.629
+myorder.tif = "DAY"
 
-app.placeOrder(myorder.orderId, mycontract, myorder)
+app.placeOrder(app.nextId(), mycontract, myorder)

@@ -14,11 +14,11 @@ class TestApp(EClient, EWrapper):
 
         self.reqHistoricalNews(
             reqId=orderId, 
-            conId=8314, # AAPL ConId
+            conId=4815747, # AAPL ConId
             providerCodes="BRFG+BRFUPDN+DJNL", #BRFG+BRFUPDN+DJNL 
-            startDateTime="20200101 00:00:01", 
-            endDateTime="", 
-            totalResults= 300, 
+            startDateTime="20220101 00:00:01", 
+            endDateTime="20200101 00:00:01", 
+            totalResults= 5, 
             historicalNewsOptions=[]
         )
 

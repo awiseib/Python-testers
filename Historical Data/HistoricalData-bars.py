@@ -1,6 +1,8 @@
 from ibapi.client import *
 from ibapi.wrapper import *
-from ibapi.contract import ComboLeg
+import datetime
+import time
+import threading
 
 port = 7496
 
@@ -10,39 +12,33 @@ class TestApp(EClient, EWrapper):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: OrderId):
-        
-        contract = Contract()
-        contract.exchange = "OVERNIGHT"
-        contract.symbol = "AAPL"
-        contract.secType = "STK"
-        contract.currency = "USD"
-        # contract.lastTradeDateOrContractMonth = "202406"
-        # contract.includeExpired = True
-
-        self.reqHistoricalData(
-            reqId=14,
-            contract=contract,
-            # endDateTime="20240327 14:00:00 UTC",
-            endDateTime="",
-            durationStr="6 D",
-            barSizeSetting="1 day",
-            whatToShow="schedule",
-            useRTH=1,
-            formatDate=1,
-            keepUpToDate=False,
-            chartOptions=[]
-        )
-
-    def historicalData(self, reqId: int, bar: BarData):
+        self.orderId = orderId
+    
+    def nextId(self):
+        self.orderId += 1
+        return self.orderId
+    
+    def error(self, reqId, errorCode, errorString, advancedOrderReject=""):
+        print(f"reqId: {reqId}, errorCode: {errorCode}, errorString: {errorString},  {advancedOrderReject}")
+    
+    def historicalData(self, reqId, bar):
         print(reqId, bar)
-        
-    def historicalSchedule(self, reqId: int, startDateTime: str, endDateTime: str, timeZone: str, sessions: ListOfHistoricalSessions):
-         print(reqId, startDateTime, endDateTime, timeZone, sessions)
-
-    def historicalDataEnd(self, reqId: int, start: str, end: str):
-        print(reqId, start, end)
+    
+    def historicalDataEnd(self, reqId, start, end):
+        print(f"Historical Data Ended for {reqId}. Started at {start}, ending at {end}")
+        self.cancelHistoricalData(reqId)
         self.disconnect()
 
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
-app.run()
+app.connect("127.0.0.1", port, 0)
+threading.Thread(target=app.run).start()
+time.sleep(1)
+
+mycontract = Contract()
+# mycontract.conId = 265598
+mycontract.symbol = "ES"
+mycontract.secType = "CONTFUT"
+mycontract.exchange = "CME"
+mycontract.currency = "USD"
+
+app.reqHistoricalData(app.nextId(), mycontract, "", "3 M", "1 min", "TRADES", 1, 1, False, [])

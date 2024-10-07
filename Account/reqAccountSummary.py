@@ -1,8 +1,6 @@
 from ibapi.client import *
 from ibapi.wrapper import *
 from ibapi.account_summary_tags import *
-from functools import partial
-# from printcalls import *
 
 
 port = 7496
@@ -15,7 +13,7 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
         
         self.reqAccountSummary(
-            reqId=12345,
+            reqId=1,
             groupName="All",
             tags=AccountSummaryTags.AllTags
         )
