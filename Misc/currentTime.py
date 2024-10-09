@@ -14,6 +14,7 @@ class TestApp(EClient, EWrapper):
 
     def currentTime(self, time: int):
         print("Current time: ", datetime.datetime.fromtimestamp(time), "US")
+        self.disconnect()
 
     def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
         print(reqId, errorCode, errorString, advancedOrderRejectJson)
