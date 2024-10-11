@@ -1,35 +1,69 @@
 import requests
-import time
+import json
 import csv
+import time
 import xml.etree.ElementTree as ET
+import pprint
 
 # Update these to YOUR environment.
-csvPath = 'D:\\Downloads\\custFlex.xml'
+# Please note this sample assumes you are using CSV formatting, though the only change will be in writing to your file.
+csvPath = "./sample.csv"
 
 # Flex Web Serivce is only availble for LIVE accounts.
 # This example uses the trust test account.
 # Because the trust account is Read-Only, no contents will show besides the header
 
-# 1. Build your flex query in Client Portal
+# 1. Build your flex query in Client Portal. 
 # 2. Click the Info button to the left of your Flex Query
 # 3. Copy the "Query ID" under Activity Flex Query Details
 
-requestBase = "https://www.interactivebrokers.com/Universal/servlet/FlexStatementService.SendRequest?"
-# token = "t=220638997034176155165000" # Valid 2023-03-01, 10:13:43 EST — 2024-01-31, 10:13:43 EST
-# queryId = "&q=771568"
+requestBase = "https://ndcdyn.interactivebrokers.com/AccountManagement/FlexWebService"
+token = 528191644107458877539776
+queryId = 1080086
+flex_version = 3
 
-token = "t=468323735188770213387953" # csdem9545
-queryId = "&q=800969" # Trades Flex Query
+# List of response headers to print (all others discarded)
+RESP_HEADERS_TO_PRINT = ["Content-Type", "Content-Length", "Date", "Set-Cookie", "User-Agent"]
 
-version = "&v=3"
+def pretty_request_response(resp: requests.Response) -> str:
+    """Print request and response legibly."""
+    req = resp.request
+    rqh = '\n'.join(f"{k}: {v}" for k, v in req.headers.items())
+    rqh = rqh.replace(', ', ',\n    ')
+    rqb = f"\n{pprint.pformat(json.loads(req.body))}\n" if req.body else ""
+    try:
+        rsb = f"\n{pprint.pformat(resp.json())}\n" if resp.text else ""
+    except json.JSONDecodeError:
+        rsb = resp.text
+    rsh = '\n'.join([f"{k}: {v}" for k, v in resp.headers.items() if k in RESP_HEADERS_TO_PRINT])
+    return_str = '\n'.join([
+        80*'-',
+        '-----------REQUEST-----------',
+        f"{req.method} {req.url}",
+        rqh,
+        f"{rqb}",
+        '-----------RESPONSE-----------',
+        f"{resp.status_code} {resp.reason}",
+        rsh,
+        f"{rsb}\n",
+    ])
+    return return_str
 
-# 4. Combine requestUrl, queryId, tokenId, and include version 3
-requestUrl = "".join([requestBase, token, queryId, version, "&period=LastQuarter&noOfDays=100"])
-# Example: https://www.interactivebrokers.com/Universal/servlet/FlexStatementService.SendRequest?t=174034019902345466159208&q=771568&v=3
+send_slug = "/SendRequest"
+
+send_params = {
+    "t":token, 
+    "q":queryId, 
+    "v":flex_version
+}
 
 # 5. Create a GET request for that URL
-flexReq = requests.get(url=requestUrl)
-
+try:
+    flexReq = requests.get(url=requestBase+send_slug, params=send_params)
+    print(pretty_request_response(flexReq))
+except Exception as e:
+    print("Request failed with exception: %s" % {e})
+    
 # Read XML
 tree = ET.ElementTree(ET.fromstring(flexReq.text))
 root = tree.getroot()
@@ -40,29 +74,26 @@ root = tree.getroot()
 for child in root:
     if child.tag == "Status":
         if child.text != "Success":
-            print("Failed to request")
-            print(child)
-            break
+            print(f"Failed to generate Flex statement. Stopping...")
+            exit()
     elif child.tag == "ReferenceCode":
-        refCode = "&q="+child.text
-    elif child.tag == "Url":
-        receiveBase = child.text
-    else:
-        print(child.tag, ":", child.text)
+        refCode = child.text
 
-
-# 8. Combine your new url, reference code, and your previous token and version number
-
-receiveUrl = "".join([receiveBase, "?",token, refCode, version])
-# Example: https://gdcdyn.interactivebrokers.com/Universal/servlet/FlexStatementService.GetStatement?t=174034019902345466159208&q=5773202049&v=3
 
 # Pause for sample
 print("Hold for Request.")
 time.sleep(20)
 
-# 9. Generate a GET request for the new URL
-receiveUrl = requests.get(url=receiveUrl, allow_redirects=True)
+receive_slug = "/GetStatement"
+receive_params = {
+    "t":token, 
+    "q":refCode, 
+    "v":flex_version
+}
 
+# 9. Generate a GET request for the new URL
+receiveUrl = requests.get(url=requestBase+receive_slug, params=receive_params, allow_redirects=True)
+print(pretty_request_response(receiveUrl))
 # 10. CSV value returned
 open(csvPath, 'wb').write(receiveUrl.content)
 
