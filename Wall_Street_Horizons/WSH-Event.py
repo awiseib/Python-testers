@@ -35,6 +35,8 @@ class TestApp(EClient, EWrapper):
         wshe_ic     ==
         wshe_sh     == 
         """
+        # Please note, the third param for self.serverVersion is only necessary for the TWS API Latest release.
+        # This would be anything beyond 10.19.
         self.reqWshEventData(orderId, eventData, self.serverVersion())
 
     def wshEventData(self, reqId: int, dataJson: str):
