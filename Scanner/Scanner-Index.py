@@ -10,18 +10,15 @@ class TestApp(EClient, EWrapper):
 
     def nextValidId(self, orderId: int):
         sub = ScannerSubscription()
-        sub.instrument = "FUT.US"
-        sub.locationCode = "FUT.US"
+        sub.instrument = "IND.US"
+        sub.locationCode = "IND.US"
         sub.scanCode = "TOP_PERC_GAIN"
         sub.numberOfRows = 100
 
-        scan_options = [
-            TagValue("prodCatIs","Commodity Index")
-        ]
+        scan_options = [ ]
+        
         filter_options = [
-            # TagValue("volumeAbove","10000"),
-            # TagValue("marketCapBelow1e6", "1000"),
-            # TagValue("priceAbove", '1')
+            TagValue("hasOptionsIs", "true")
         ]
 
         self.reqScannerSubscription(orderId, sub, scan_options, filter_options)

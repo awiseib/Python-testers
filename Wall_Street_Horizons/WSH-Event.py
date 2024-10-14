@@ -35,7 +35,7 @@ class TestApp(EClient, EWrapper):
         wshe_ic     ==
         wshe_sh     == 
         """
-        self.reqWshEventData(orderId, eventData, 173)
+        self.reqWshEventData(orderId, eventData, self.serverVersion())
 
     def wshEventData(self, reqId: int, dataJson: str):
         print("eventdata.")
