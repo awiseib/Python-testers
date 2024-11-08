@@ -1,12 +1,7 @@
 from ibapi.client import *
-from ibapi.common import OrderId
-from ibapi.order import Order
 from ibapi.order_state import OrderState
 from ibapi.wrapper import *
 from ibapi.tag_value import TagValue
-from datetime import datetime
-from ibapi.contract import ComboLeg, Contract
-import time
 
 port = 7496
 
