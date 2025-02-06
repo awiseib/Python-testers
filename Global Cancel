@@ -1,0 +1,18 @@
+from ibapi.client import EClient
+from ibapi.wrapper import EWrapper
+from ibapi.order_cancel import OrderCancel
+import time
+
+port = 7497
+
+class TestApp(EClient, EWrapper):
+
+    def __init__(self):
+        EClient.__init__(self, self)
+
+app = TestApp()
+app.connect("127.0.0.1", port, 0)
+time.sleep(3)
+app.reqGlobalCancel(OrderCancel())
+app.disconnect()
+print("Canceled all outstanding orders")
