@@ -27,10 +27,16 @@ class TestApp(EClient, EWrapper):
 
     def orderStatus(self, orderId: OrderId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: int, parentId: int, lastFillPrice: float, clientId: int, whyHeld: str, mktCapPrice: float):
         print(f"orderStatus. orderId: {orderId}, status: {status}, filled: {filled}, remaining: {remaining}, avgFillPrice: {avgFillPrice}, permId: {permId}, parentId: {parentId}, lastFillPrice: {lastFillPrice}, clientId: {clientId}, whyHeld: {whyHeld}, mktCapPrice: {mktCapPrice}")
-        self.cancelOrder(orderId, OrderCancel())
+        # Please be aware this will iteratively cancel all open orders on the clientID!!
+        if status == "PreSubmitted" or status == "Submitted":
+            ocObj = OrderCancel()
+            ocObj.extOperator = ""
+            ocObj.manualOrderCancelTime = "20250212-17:00:00"
+            ocObj.manualOrderIndicator = 1
+            self.cancelOrder(orderId+clientId, ocObj)
 
 app = TestApp()
-app.connect("127.0.0.1", port, 10)
+app.connect("127.0.0.1", port, 0)
 time.sleep(1)
 threading.Thread(target=app.run).start()
 time.sleep(1)
