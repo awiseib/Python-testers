@@ -50,6 +50,7 @@ We will again prepend `ibapi.protobuf.`.
 
 ## ibapi/protobuf/ExecutionRequest_pb2.py
 And for the final time, we can prepend `ibapi.protobuf.`.
+Update line 25, `import ibapi.protobuf.ExecutionFilter_pb2 as ExecutionFilter__pb2`
 
 ## Installing the updated version.
 Once all 6 files have been updated, we will need to run the setup.py script to update the python interpreter. 
