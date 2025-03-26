@@ -1,9 +1,6 @@
-from decimal import Decimal
 from ibapi.tag_value import TagValue
 from ibapi.client import *
 from ibapi.wrapper import *
-from datetime import datetime
-import ibapi.order_condition as oc
 
 port = 7496
 
@@ -37,84 +34,20 @@ class TestApp(EClient, EWrapper):
         order.algoParams.append(TagValue("giveUp", 0))
         order.algoParams.append(TagValue("catchUp", int(1)))
         order.algoParams.append(TagValue("waitForFill", int(0)))
-        
-        # order.conditions = [
-        #     oc.OperatorCondition(
-
-        #     )
-        # ]
-
-
+    
         self.placeOrder(orderId, contract, order)
 
-    def openOrder(
-        self,
-        orderId: OrderId,
-        contract: Contract,
-        order: Order,
-        orderState: OrderState,
-    ):
-        print(
-            "openOrder.",
-            f"orderId:{orderId}",
-            f"contract:{contract}",
-            f"order:{order}",
-            f"\nAlgo: {order.algoStrategy}",
-            f"\nAlgo Params: {order.algoParams}",
-            f"\nConditions: {order.conditions}",
-            f"\nMisc Options: {order.orderMiscOptions}"
-            # f"orderState:{orderState}",
-            # "\n",
-            # f"Margin Values: \n",
-            # f"initMarginBefore: {orderState.initMarginBefore}; initMarginAfter: {orderState.initMarginAfter};initMarginChange: {orderState.initMarginChange}; \n",
-            # f"maintMarginBefore: {orderState.maintMarginBefore }; maintMarginAfter: {orderState.maintMarginAfter};maintMarginChange: {orderState.maintMarginChange}; \n",
-        )
+    def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
+        print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 
 
-    def orderStatus(
-        self,
-        orderId: OrderId,
-        status: str,
-        filled: Decimal,
-        remaining: Decimal,
-        avgFillPrice: float,
-        permId: int,
-        parentId: int,
-        lastFillPrice: float,
-        clientId: int,
-        whyHeld: str,
-        mktCapPrice: float,
-    ):
-        print(
-            "orderStatus.",
-            f"orderId:{orderId}",
-            f"status:{status}",
-            f"filled:{filled}",
-            f"remaining:{remaining}",
-            f"avgFillPrice:{avgFillPrice}",
-            f"parentId:{parentId}",
-            f"lastFillPrice:{lastFillPrice}",
-        )
-    
-    def openOrderEnd(self):
-        pass
+    def orderStatus(self, orderId: TickerId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: TickerId, parentId: TickerId, lastFillPrice: float, clientId: TickerId, whyHeld: str, mktCapPrice: float):
+        print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
 
-    def error(
-        self,
-        reqId: TickerId,
-        errorCode: int,
-        errorString: str,
-        advancedOrderRejectJson="",
-    ):
-        print(
-            datetime.now().strftime("%H:%M:%S.%f")[:-3],
-            "error.",
-            f"reqId:{reqId}",
-            f"errorCode:{errorCode}",
-            f"errorString:{errorString}",
-            f"advancedOrderRejectJson:{advancedOrderRejectJson}",
-        )
-
-
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+            
 app = TestApp()
 app.connect("127.0.0.1", port, 0)
 app.run()

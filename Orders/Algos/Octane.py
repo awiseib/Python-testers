@@ -2,7 +2,6 @@ from ibapi.client import *
 from ibapi.wrapper import *
 from ibapi.tag_value import TagValue
 
-
 port = 7496
 
 class TestApp(EClient, EWrapper):
@@ -35,17 +34,17 @@ class TestApp(EClient, EWrapper):
 
         self.placeOrder(orderId, mycontract, baseOrder)
 
-
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
-        print(orderId, contract, order, orderState)
-    
-    def orderStatus(self, orderId: OrderId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: int, parentId: int, lastFillPrice: float, clientId: int, whyHeld: str, mktCapPrice: float):
+        print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 
+
+    def orderStatus(self, orderId: TickerId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: TickerId, parentId: TickerId, lastFillPrice: float, clientId: TickerId, whyHeld: str, mktCapPrice: float):
         print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
-    
-    def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        print(reqId, errorCode, errorString, advancedOrderRejectJson)
 
-
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+            
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

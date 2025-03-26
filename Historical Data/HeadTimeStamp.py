@@ -1,9 +1,5 @@
 from ibapi.client import *
-from ibapi.common import HistogramData
 from ibapi.wrapper import *
-from datetime import datetime
-from threading import Thread
-import time
 port = 7496
 
 class TestApp(EClient, EWrapper):
@@ -13,19 +9,22 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
         
         mycontract = Contract()
-
         mycontract.symbol = "AAPL"
         mycontract.secType = "STK"
-        mycontract.exchange = "SMART"
         mycontract.currency = "USD"
+        mycontract.exchange = "SMART"
 
-        self.reqHeadTimeStamp(1, mycontract, "TRADES", 1, 2)
+        self.reqHeadTimeStamp(1, mycontract, "TRADES", 1, 1)
 
     def headTimestamp(self, reqId: int, headTimestamp):
-        print(reqId, headTimestamp)
-        print(datetime.fromtimestamp(int(headTimestamp)))
+        print(f"headTimeStamp. reqId: {reqId}, headTimestamp: {headTimestamp}")
         self.cancelHeadTimeStamp(reqId)
         
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+
 app = TestApp()
-app.connect("127.0.0.1", port, 999)
+app.connect("127.0.0.1", port, 0)
 app.run()

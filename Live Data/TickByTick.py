@@ -12,20 +12,9 @@ class TestApp(EClient, EWrapper):
 
         mycontract = Contract()
         mycontract.conId = 265598
-        # mycontract.symbol = "IBCID559139897"
-        # mycontract.secType = "BOND"
-        # mycontract.currency = "USD"
         mycontract.exchange = "SMART"
 
-
-
-        self.reqTickByTickData(
-            reqId=123,
-            contract=mycontract,
-            tickType="MidPoint",
-            numberOfTicks=50,
-            ignoreSize=0
-        )
+        self.reqTickByTickData(orderId, mycontract, "AllLast", 50, 0)
 
     # whatToShow=BidAsk
     def tickByTickBidAsk(self, reqId: int, time: int, bidPrice: float, askPrice: float, bidSize: int, askSize: int, tickAttribBidAsk: TickAttribBidAsk):
@@ -42,12 +31,13 @@ class TestApp(EClient, EWrapper):
             print(f"Last. reqId: {reqId}, time: {datetime.fromtimestamp(time)}, price: {price}, size: {size}, tickAttribLast: {tickAttribLast}, exchange: {exchange}, specialConditions: {specialConditions}")
         else:
             print(f"AllLast. reqId: {reqId}, time: {datetime.fromtimestamp(time)}, price: {price}, size: {size}, tickAttribLast: {tickAttribLast}, exchange: {exchange}, specialConditions: {specialConditions}")
+
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {datetime.fromtimestamp(errorTime)}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
         
 
-    def tickSnapshotEnd(self, reqId: int):
-        print(f"tickSnapshotEnd. reqId:{reqId}")
-
-
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

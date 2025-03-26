@@ -1,5 +1,6 @@
 from decimal import Decimal
 from ibapi.client import *
+from ibapi.common import TickerId
 from ibapi.wrapper import *
 from ibapi.tag_value import *
 from datetime import datetime
@@ -14,51 +15,19 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
 
         mycontract = Contract()
-        mycontract.symbol = "K"
-        mycontract.secType = "STK"
+        mycontract.conId = 265598
         mycontract.exchange = "SMART"
-        mycontract.currency = "USD"
 
+        self.reqRealTimeBars(orderId, mycontract, 5, "TRADES", True, [])
 
-        self.reqRealTimeBars(
-            reqId=123,
-            contract=mycontract,
-            barSize=5,
-            whatToShow="TRADES",
-            useRTH=False,
-            realTimeBarsOptions=[],
-        )
+    def realtimeBar(self, reqId: int, time: int, open_: float, high: float, low: float, close: float, volume: Decimal, wap: Decimal, count: int):
+        print(f"reqId: {reqId}, Bar Time: {time}, Open: {open_}, High: {high}, Low: {low}, Close: {close}, Volume: {volume}, Weighted Average Price: {wap}, Count: {count}")
 
-    def realtimeBar(
-        self,
-        reqId: TickerId,
-        time: int,
-        open_: float,
-        high: float,
-        low: float,
-        close: float,
-        volume: Decimal,
-        wap: Decimal,
-        count: int,
-    ):
-        print(
-            datetime.now().strftime("%H:%M:%S.%f")[:-3],
-            "realtimeBar.",
-            f"reqId:{reqId}",
-            f"time:{time}",
-            f"open_:{open_}",
-            f"high:{high}",
-            f"low:{low}",
-            f"close:{close}",
-            f"volume:{volume}",
-            f"wap:{wap}",
-            f"count:{count}",
-        )
-
-    def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        print(reqId, errorCode, errorString, advancedOrderRejectJson)
-
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

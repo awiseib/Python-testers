@@ -10,13 +10,12 @@ class TestApp(EClient, EWrapper):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: OrderId):
-        self.reqCurrentTime()
+        self.reqCurrentTimeInMillis()
 
-    def currentTime(self, time: int):
-        print("Current time: ", datetime.datetime.fromtimestamp(time), "US")
-        self.disconnect()
+    def currentTimeInMillis(self, timeInMillis: int):
+        print(timeInMillis)
 
-    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+    def error(self, reqId: TickerId, et, errorCode: int, errorString: str, advancedOrderRejectJson=""):
         print(reqId, errorCode, errorString, advancedOrderRejectJson)
 
 

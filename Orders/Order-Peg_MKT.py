@@ -1,4 +1,3 @@
-from ibapi.tag_value import TagValue
 from ibapi.client import *
 from ibapi.wrapper import *
 
@@ -10,27 +9,22 @@ class TestApp(EClient, EWrapper):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: OrderId):
-        contract = Contract()
-        contract.symbol = "AAPL"
-        contract.secType = "STK"
-        contract.exchange = "SMART"
-        contract.currency = "USD"
-        
-        order = Order()
-        order.action = "BUY"
-        order.totalQuantity = 10
-        order.orderType = "LMT" # 
-        order.lmtPrice = 220
-        order.tif = "DAY"
-        order.algoStrategy = "Twap"
+        mycontract = Contract()
+        mycontract.symbol = "AAPL"
+        mycontract.secType = "STK"
+        mycontract.currency = "USD"
+        mycontract.exchange = "IBKRATS"
 
-        order.algoParams = []
-        order.algoParams.append(TagValue("startTime", "15:00:00 US/Eastern"))
-        order.algoParams.append(TagValue("endTime", "17:00:00 US/Eastern"))
-        order.algoParams.append(TagValue("allowPastEndTime", 0))
-        order.algoParams.append(TagValue("catchUp", 0))
-        
-        self.placeOrder(orderId, contract, order)
+        myorder = Order()
+        myorder.orderId = orderId
+        myorder.orderType = "PEG MKT"
+        myorder.action = "BUY"
+        myorder.totalQuantity = 100
+        myorder.lmtPrice = 172.41
+        myorder.notHeld = True
+
+        self.placeOrder(myorder.orderId, mycontract, myorder)
+
 
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
         print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 

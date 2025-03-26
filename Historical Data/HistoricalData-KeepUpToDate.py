@@ -1,9 +1,5 @@
-from socket import timeout
-from symtable import Symbol
 from ibapi.client import *
 from ibapi.wrapper import *
-import datetime
-from ibapi.tag_value import TagValue
 
 
 port = 7496
@@ -27,10 +23,10 @@ class TestApp(EClient, EWrapper):
             reqId=123,
             contract=mycontract,
             endDateTime="",
-            durationStr= "3600",
-            barSizeSetting = "15 mins",
+            durationStr= "1 W",
+            barSizeSetting = "1 day",
             whatToShow= "TRADES",
-            useRTH=0,
+            useRTH=1,
             formatDate=1,
             keepUpToDate=True,
             chartOptions=[],
@@ -42,15 +38,16 @@ class TestApp(EClient, EWrapper):
 
     def historicalDataUpdate(self, reqId: int, bar: BarData):
         print("UPDATE: ", reqId, bar)
-        # self.cancelHistoricalData(reqId)
         
     def historicalDataEnd(self, reqId: int, start: str, end: str):
         print("historicalDataEnd")
 
-    def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        print(reqId, errorCode, errorString, advancedOrderRejectJson)
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 app = TestApp()
-app.connect("127.0.0.1", port, 101)
+app.connect("127.0.0.1", port, 0)
 app.run()
  

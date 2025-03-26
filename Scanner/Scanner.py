@@ -12,26 +12,29 @@ class TestApp(EClient, EWrapper):
         sub = ScannerSubscription()
         sub.instrument = "STK"
         sub.locationCode = "STK.US.MAJOR"
-        sub.scanCode = "TOP_PERC_GAIN"
+        sub.scanCode = "MOST_ACTIVE"
 
         scan_options = []
         filter_options = [
-            TagValue("volumeAbove","10000"),
-            TagValue("marketCapBelow1e6", "1000"),
-            TagValue("priceAbove", '1')
+            TagValue("marketCapAbove1e6", 1000),
+            TagValue("marketCapBelow1e6", 1000000000)
         ]
 
         self.reqScannerSubscription(orderId, sub, scan_options, filter_options)
 
     def scannerData(self, reqId, rank, contractDetails, distance, benchmark, projection, legsStr):
-        print(f"scannerData. reqId: {reqId}, rank: {rank}, contractDetails: {contractDetails}, distance: {distance}, benchmark: {benchmark}, projection: {projection}, legsStr: {legsStr}.")
+        print(f"Rank: {rank+1}, Contract: {contractDetails.contract}")
 
     def scannerDataEnd(self, reqId):
-        print("ScannerDataEnd!")
+        print("Market Scanner End")
         self.cancelScannerSubscription(reqId)
         self.disconnect()
 
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

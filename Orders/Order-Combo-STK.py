@@ -1,9 +1,7 @@
-from decimal import Decimal
 from ibapi.client import *
 from ibapi.wrapper import *
 from ibapi.tag_value import TagValue
 from ibapi.contract import ComboLeg
-from ibapi.order import *
 
 port = 7496
 
@@ -14,26 +12,22 @@ class TestApp(EClient, EWrapper):
 
     def nextValidId(self, orderId: OrderId):
         mycontract = Contract()
-        mycontract.symbol = "IBKR,MCD"
+        mycontract.symbol = "GOOG,AAPL"
         mycontract.secType = "BAG"
+        mycontract.exchange = "BLUEOCEAN"
         mycontract.currency = "USD"
-        mycontract.exchange = "SMART"
 
         leg1 = ComboLeg()
-        leg1.conId = 43645865 
-        leg1.ratio = 1
+        leg1.conId = 208813720
+        leg1.exchange = "BLUEOCEAN"
         leg1.action = "BUY"
-        leg1.exchange = "SMART"
+        leg1.ratio = 1
 
         leg2 = ComboLeg()
-        leg2.conId = 9408 
-        leg2.ratio = 1
+        leg2.conId = 265598
+        leg2.exchange = "BLUEOCEAN"
         leg2.action = "SELL"
-        leg2.exchange = "SMART"
-
-        mycontract.comboLegs = []
-        mycontract.comboLegs.append(leg1)
-        mycontract.comboLegs.append(leg2)
+        leg2.ratio = 1
         
 
         myorder = Order()
@@ -41,8 +35,10 @@ class TestApp(EClient, EWrapper):
         myorder.action = "BUY"
         myorder.orderType = "LMT"
         myorder.totalQuantity = 1
+        myorder.tif = "DAY"
+        mycontract.comboLegs = [leg1, leg2]
 
-        myorder.lmtPrice = -80
+        # myorder.lmtPrice = -80
 
         myorder.smartComboRoutingParams = []
         myorder.smartComboRoutingParams.append(TagValue("NonGuaranteed", "1"))
@@ -50,51 +46,17 @@ class TestApp(EClient, EWrapper):
 
         self.placeOrder(myorder.orderId, mycontract, myorder)
 
-    def openOrder(
-        self,
-        orderId: OrderId,
-        contract: Contract,
-        order: Order,
-        orderState: OrderState,
-    ):
-        print(
-            "openOrder.",
-            f"orderId:{orderId}",
-            f"contract:{contract}",
-            f"order:{order}",
-            # f"orderState:{orderState}",
-        )
+    def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
+        print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 
 
-    def orderStatus(
-        self,
-        orderId: OrderId,
-        status: str,
-        filled: Decimal,
-        remaining: Decimal,
-        avgFillPrice: float,
-        permId: int,
-        parentId: int,
-        lastFillPrice: float,
-        clientId: int,
-        whyHeld: str,
-        mktCapPrice: float,
-    ):
-        print(
-            "orderStatus.",
-            f"orderId:{orderId}",
-            f"status:{status}",
-            f"filled:{filled}",
-            f"remaining:{remaining}",
-            f"avgFillPrice:{avgFillPrice}",
-            # f"permId:{permId}",
-            f"parentId:{parentId}",
-            f"lastFillPrice:{lastFillPrice}",
-            # f"clientId:{clientId}",
-            # f"whyHeld:{whyHeld}",
-            # f"mktCapPrice:{mktCapPrice}",
-        )
+    def orderStatus(self, orderId: TickerId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: TickerId, parentId: TickerId, lastFillPrice: float, clientId: TickerId, whyHeld: str, mktCapPrice: float):
+        print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
 
-
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+            
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

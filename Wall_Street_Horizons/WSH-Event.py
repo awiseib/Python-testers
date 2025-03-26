@@ -13,14 +13,15 @@ class TestApp(EClient, EWrapper):
 
         # Either ConID or Filter may be passed, but not both.
         eventData = WshEventData()
-        # eventData.conId = 265598
-        eventData.startDate = "20241109"
-        eventData.endDate = "20241120"
-        eventData.fillCompetitors = False
-        eventData.fillPortfolio = False
-        eventData.fillWatchlist = False
-        eventData.totalLimit = 100
-        eventData.filter = '{"country": "All","watchlist":["265598"], "wshe_fq":"true"}'
+        # eventData.conId = 195014116
+        eventData.startDate = "20241001"
+        # eventData.endDate = ""
+        # eventData.fillCompetitors = False
+        # eventData.fillPortfolio = False
+        # eventData.fillWatchlist = False
+        eventData.totalLimit = 0
+        eventData.filter = ''
+        eventData.filter = '{"country": "All","watchlist":["265598"], "wshe_div":"true"}'
 
         """
         Filters pulled from wshMetaData. Look for section header in response to find filter name.
@@ -32,7 +33,7 @@ class TestApp(EClient, EWrapper):
         wshe_qe     ==  Quarterly Earnings
         """
         # Please note, the third param for self.serverVersion is not necessary for API releases prior to 10.20.
-        self.reqWshEventData(orderId, eventData, self.serverVersion())
+        self.reqWshEventData(orderId, eventData)
 
     def wshEventData(self, reqId: int, dataJson: str):
         print("eventdata.")
@@ -42,5 +43,5 @@ class TestApp(EClient, EWrapper):
 
 
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

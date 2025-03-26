@@ -1,36 +1,26 @@
-from ibapi.tag_value import TagValue
 from ibapi.client import *
 from ibapi.wrapper import *
-
-port = 7496
-
+import time, threading
+port=7496
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: OrderId):
-        contract = Contract()
-        contract.symbol = "AAPL"
-        contract.secType = "STK"
-        contract.exchange = "SMART"
-        contract.currency = "USD"
-        
-        order = Order()
-        order.action = "BUY"
-        order.totalQuantity = 10
-        order.orderType = "LMT" # 
-        order.lmtPrice = 220
-        order.tif = "DAY"
-        order.algoStrategy = "Twap"
+        self.reqOpenOrders()
 
-        order.algoParams = []
-        order.algoParams.append(TagValue("startTime", "15:00:00 US/Eastern"))
-        order.algoParams.append(TagValue("endTime", "17:00:00 US/Eastern"))
-        order.algoParams.append(TagValue("allowPastEndTime", 0))
-        order.algoParams.append(TagValue("catchUp", 0))
-        
-        self.placeOrder(orderId, contract, order)
+    def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
+        print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 
+
+    def orderStatus(self, orderId: OrderId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: int, parentId: int, lastFillPrice: float, clientId: int, whyHeld: str, mktCapPrice: float):
+        print(f"orderStatus. orderId: {orderId}, status: {status}, filled: {filled}, remaining: {remaining}, avgFillPrice: {avgFillPrice}, permId: {permId}, parentId: {parentId}, lastFillPrice: {lastFillPrice}, clientId: {clientId}, whyHeld: {whyHeld}, mktCapPrice: {mktCapPrice}")
+        if status == "PreSubmitted" or status == "Submitted":
+            ocObj = OrderCancel()
+            ocObj.extOperator = ""
+            ocObj.manualOrderCancelTime = ""
+            ocObj.manualOrderIndicator = 0
+            self.cancelOrder(orderId+clientId, ocObj)
 
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
         print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 
@@ -46,4 +36,3 @@ class TestApp(EClient, EWrapper):
 app = TestApp()
 app.connect("127.0.0.1", port, 0)
 app.run()
-

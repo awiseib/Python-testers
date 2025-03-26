@@ -29,15 +29,16 @@ class TestApp(EClient, EWrapper):
         hedge_contract = Contract()
         hedge_contract.conId = 756733
         hedge_contract.exchange = "SMART"
-
-        # Child order to sell stock, triggered by parent fill.
-        # Note that this is a LMT order with no limit price specified,
-        # which means the limit price will be taken from current best bid
-        # at the time of parent fill (or ask if buying). I don't think
-        # you can use a MKT order here when paired with parent LMT, but
-        # you could specify a different limit price to guarantee a fill.
-        # The hedged delta will be taken from the parent order option's 
-        # delta at time of order fill and used to generate an order quantity. 
+        '''
+        Child order to sell stock, triggered by parent fill.
+        Note that this is a LMT order with no limit price specified,
+        which means the limit price will be taken from current best bid
+        at the time of parent fill (or ask if buying). I don't think
+        you can use a MKT order here when paired with parent LMT, but
+        you could specify a different limit price to guarantee a fill.
+        The hedged delta will be taken from the parent order option's 
+        delta at time of order fill and used to generate an order quantity. 
+        '''
         delta_hedge = Order()
         delta_hedge.action = "SELL"
         delta_hedge.orderType = "MKT"
@@ -56,54 +57,17 @@ class TestApp(EClient, EWrapper):
         time.sleep(1)
         self.placeOrder(delta_hedge.orderId, hedge_contract, delta_hedge)
 
-    def openOrder(
-        self,
-        orderId: OrderId,
-        contract: Contract,
-        order: Order,
-        orderState: OrderState,
-    ):
-        print(
-            "openOrder.",
-            f"orderId:{orderId}",
-            f"contract:{contract}",
-            f"order:{order}",
-            # f"orderState:{orderState}",
-        )
+    def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
+        print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 
 
-    def orderStatus(
-        self,
-        orderId: OrderId,
-        status: str,
-        filled: Decimal,
-        remaining: Decimal,
-        avgFillPrice: float,
-        permId: int,
-        parentId: int,
-        lastFillPrice: float,
-        clientId: int,
-        whyHeld: str,
-        mktCapPrice: float,
-    ):
-        print(
-            "orderStatus.",
-            f"orderId:{orderId}",
-            f"status:{status}",
-            f"filled:{filled}",
-            f"remaining:{remaining}",
-            f"avgFillPrice:{avgFillPrice}",
-            # f"permId:{permId}",
-            f"parentId:{parentId}",
-            f"lastFillPrice:{lastFillPrice}",
-            # f"clientId:{clientId}",
-            # f"whyHeld:{whyHeld}",
-            # f"mktCapPrice:{mktCapPrice}",
-        )
+    def orderStatus(self, orderId: TickerId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: TickerId, parentId: TickerId, lastFillPrice: float, clientId: TickerId, whyHeld: str, mktCapPrice: float):
+        print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
 
-    def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        return super().error(reqId, errorCode, errorString, advancedOrderRejectJson)
-
-
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+            
 app = TestApp()
 app.connect("127.0.0.1", 7496, 1001)
 app.run()

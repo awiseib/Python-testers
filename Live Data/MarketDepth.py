@@ -1,7 +1,7 @@
 from decimal import Decimal
 from ibapi.client import *
+from ibapi.common import TickerId
 from ibapi.wrapper import *
-from datetime import datetime
 
 port = 7496
 
@@ -13,60 +13,29 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
 
         mycontract = Contract()
-        mycontract.symbol = "CMF"
-        mycontract.secType = "STK"
-        # mycontract.conId = 515416607
+        mycontract.conId = 265598
         mycontract.exchange = "SMART"
-        mycontract.currency = "USD"
-        # mycontract.lastTradeDateOrContractMonth = "20230224"
 
         self.reqMktDepth(
-            reqId=12345,
+            reqId=orderId,
             contract=mycontract,
-            numRows=5,
+            numRows=100,
             isSmartDepth=True,
             mktDepthOptions=[]
         )
 
-    def updateMktDepth(
-        self,
-        reqId: TickerId,
-        position: int,
-        operation: int,
-        side: int,
-        price: float,
-        size: Decimal,
-    ):
-        print(datetime.now().strftime("%H:%M:%S.%f")[:-3],
-        "updateMktDepth.",
-        f"reqId:{reqId}",
-        f"position:{position}",
-        f"operation:{operation}",
-        f"side:{side}",
-        f"price:{price}",
-        f"size:{size}",)
+    def updateMktDepth(self, reqId: TickerId, position: TickerId, operation: TickerId, side: TickerId, price: float, size: Decimal):
+        print(f"updateMktDepth. position: {position}, operation: {operation}, side: {'BUY' if side == 1 else 'SELL'}, price: {price}, size: {size}")
 
-    def updateMktDepthL2(
-        self,
-        reqId: TickerId,
-        position: int,
-        marketMaker: str,
-        operation: int,
-        side: int,
-        price: float,
-        size: Decimal,
-        isSmartDepth: bool,
-    ):print(datetime.now().strftime("%H:%M:%S.%f")[:-3],
-        "updateMktDepth L2.",
-        f"reqId:{reqId}",
-        f"position:{position}",
-        f"marketMaker {marketMaker}",
-        f"operation:{operation}",
-        f"side:{side}",
-        f"price:{price}",
-        f"size:{size}",)
+    def updateMktDepthL2(self, reqId: TickerId, position: TickerId, marketMaker: str, operation: TickerId, side: TickerId, price: float, size: Decimal, isSmartDepth: bool):
+        print(f"updateMktDepthL2. position: {position}, marketMaker: {marketMaker}, operation: {operation}, side: {'BUY' if side == 1 else 'SELL'}, price: {price}, size: {size}")
 
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+        
 
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

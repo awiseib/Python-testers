@@ -1,9 +1,6 @@
-from concurrent.futures import thread
 from ibapi.client import *
 from ibapi.wrapper import *
-import threading
 
-# Change as necessary
 port = 7496
 
 
@@ -17,11 +14,16 @@ class TestApp(EClient, EWrapper):
     # Subscribed news sources are delivered here after reqNewsProviders
     def newsProviders(self, newsProviders: ListOfNewsProviders):
         print(
-            "newsProviders.",
-            f"newsProviders:{newsProviders}",
+            "newsProviders:\n\t"+ 
+            '\n\t'.join(f'{provider.code}: {provider.name}' for provider in newsProviders)
         )
+        self.disconnect()
 
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

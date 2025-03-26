@@ -9,13 +9,13 @@ class TestApp(EClient, EWrapper):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: OrderId):
-        self.reqPnL(orderId, "DU5240685", "")
+        self.reqPnLSingle(orderId, "DU5240685", "", 265598) # This request will check my account's AAPL position.
 
-    def pnl(self, reqId: int, dailyPnL: float, unrealizedPnL: float, realizedPnL: float):
-        print(f"pnl. reqId: {reqId}, dailyPnL: {dailyPnL}, unrealizedPnL: {round(unrealizedPnL,2)}, realizedPnL: {round(realizedPnL,2)}")
+    def pnlSingle(self, reqId: int, pos: Decimal, dailyPnL: float, unrealizedPnL: float, realizedPnL: float, value: float):
+        print(f"pnlSingle. pos: {pos}, dailyPnL: {dailyPnL}, unrealizedPnL: {round(unrealizedPnL,2)}, realizedPnL: {round(realizedPnL,2)}, value: {round(value,2)}")
 
     def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        print(f"Error., Time of Error: {errorTime} Error Code: {errorCode}, Error Message: {errorString}")
         if advancedOrderRejectJson != "":
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
         

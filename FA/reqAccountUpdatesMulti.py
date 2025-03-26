@@ -3,6 +3,8 @@ from ibapi.client import *
 from ibapi.common import TickerId
 from ibapi.wrapper import *
 
+import threading, time
+
 port = 7496
 
 class TestApp(EClient, EWrapper):
@@ -10,11 +12,7 @@ class TestApp(EClient, EWrapper):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: OrderId):
-        self.reqAccountUpdates(True, "DU5240685")
-
-    def updateAccountValue(
-        self, key: str, val: str, currency: str, accountName: str):
-        print("updateAccountValue.", key, val, currency, accountName)
+        self.reqAccountUpdatesMulti(orderId, "DU74649", "")
 
     def accountUpdateMulti(self, reqId: TickerId, account: str, modelCode: str, key: str, value: str, currency: str):
         print("updateAccountValue.", key, value, currency, account)
@@ -26,7 +24,7 @@ class TestApp(EClient, EWrapper):
         print("updateAccountTime.", timeStamp)
 
     def updatePortfolio(self, contract: Contract, position: Decimal, marketPrice: float, marketValue: float, averageCost: float, unrealizedPNL: float, realizedPNL: float, accountName: str):
-        print(f"updatePortfolio. contract: {contract.symbol}@{contract.exchange}:{contract.secType}, position: {position}, marketPrice: {marketPrice}, marketValue: {marketValue}, averageCost: {averageCost}, unrealizedPNL: {unrealizedPNL}, realizedPNL: {realizedPNL}")
+        print(f"{time.strftime('%Y-%m-%d %H:%M:%S US/Central', time.localtime())}updatePortfolio. contract: {contract.symbol}@{contract.exchange}:{contract.secType}, position: {position}, marketPrice: {marketPrice}, marketValue: {marketValue}, averageCost: {averageCost}, unrealizedPNL: {unrealizedPNL}, realizedPNL: {realizedPNL}")
     
     def accountDownloadEnd(self, accountName: str):
         print("accountDownloadEnd.", accountName)
@@ -37,7 +35,7 @@ class TestApp(EClient, EWrapper):
         if advancedOrderRejectJson != "":
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
-
-app = TestApp()
-app.connect("127.0.0.1", port, 0)
-app.run()
+if __name__ == "__main__":
+    app = TestApp()
+    app.connect("127.0.0.1", port, 0)
+    app.run()
