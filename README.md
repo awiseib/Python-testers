@@ -6,6 +6,8 @@ While the new features are exciting, we have observed that Python requires some 
 
 Interactive Brokers is actively working to improve the file installation to automate this process. Though for now, the steps mentioned below wold otherwise need to be modified manually.
 
+As mentionedin the *Installing the updated version* section, please ***run the setup.py after making all of the changes below***, or the protobuf errors will persist. 
+
 ## Files To Be Modified In Python Source:
  * setup.py
  * ibapi/client.py
