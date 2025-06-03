@@ -1,9 +1,7 @@
+from ibapi.tag_value import TagValue
 from ibapi.client import *
 from ibapi.wrapper import *
-from ibapi.tag_value import TagValue
-from datetime import datetime
 from ibapi.contract import ComboLeg
-import time
 
 port = 7496
 
@@ -15,100 +13,45 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
 
         mycontract = Contract()
-        # mycontract.conId = 495512552
-        # mycontract.exchange = "CME"
-        mycontract.symbol = "ES"
-        mycontract.secType = "BAG"
+        mycontract.symbol = "AAPL"
+        mycontract.secType = "STK"
         mycontract.currency = "USD"
         mycontract.exchange = "SMART"
 
-        leg1 = ComboLeg()
-        leg1.conId = 495512552
-        leg1.ratio = 1
-        leg1.action = "BUY"
-        leg1.exchange = "CME"
-
-        leg2 = ComboLeg()
-        leg2.conId = 551601561
-        leg2.ratio = 1
-        leg2.action = "SELL"
-        leg2.exchange = "CME"
-
-        mycontract.comboLegs = []
-        mycontract.comboLegs.append(leg1)
-        mycontract.comboLegs.append(leg2)
         
         myorder = Order()
         myorder.action = "BUY"
-        myorder.orderType = "LMT"
-        myorder.lmtPrice = 100
-        myorder.totalQuantity = 50
+        myorder.orderType = "MKT"
+        # myorder.lmtPrice = 190
+        myorder.totalQuantity = 2
         # myorder.outsideRth = True
-        # myorder.goodAfterTime = "20231128-16:30:00"
         myorder.algoStrategy = "AccuDistr"
         myorder.algoParams = []
         myorder.algoParams.append(TagValue("componentSize", 5))
         myorder.algoParams.append(TagValue("timeBetweenOrders", 30))
-        myorder.algoParams.append(TagValue("randomizeTime20", int(0)))
-        myorder.algoParams.append(TagValue("randomizeSize55", int(0)))
-        # myorder.algoParams.append(TagValue("giveUp", 1))
-        myorder.algoParams.append(TagValue("catchUp", int(1)))
-        myorder.algoParams.append(TagValue("waitForFill", int(0)))
-        myorder.algoParams.append(TagValue("activeTimeStart", "20:30:00"))
-        myorder.algoParams.append(TagValue("activeTimeEnd", "21:35:00"))
+        myorder.algoParams.append(TagValue("randomizeTime20", 0))
+        myorder.algoParams.append(TagValue("randomizeSize55", 0))
+        myorder.algoParams.append(TagValue("routeOrderType", "MKT"))
+        # myorder.algoParams.append(TagValue("routePercentOffset", 0.0025))
+        # myorder.algoParams.append(TagValue("routeOffset", 1.25))
+        myorder.algoParams.append(TagValue("catchUp", 1))
+        myorder.algoParams.append(TagValue("waitForFill", 1))
+        myorder.algoParams.append(TagValue("activeTimeStart", "09:30:00 US/Eastern"))
+        myorder.algoParams.append(TagValue("activeTimeEnd", "10:20:00 US/Eastern"))
 
         self.placeOrder(orderId, mycontract, myorder)
 
-    def openOrder(
-        self,
-        orderId: OrderId,
-        contract: Contract,
-        order: Order,
-        orderState: OrderState,
-    ):
-        print(
-            datetime.now().strftime("%H:%M:%S.%f")[:-3],
-            "openOrder.",
-            f"orderId:{orderId}",
-            f"contract:{contract}",
-            f"order:{order}",
-            # f"orderState:{orderState}",
-        )
+    def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
+        print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, Algo Details: {order.algoParams}") 
 
-    def orderStatus(
-        self,
-        orderId: OrderId,
-        status: str,
-        filled: Decimal,
-        remaining: Decimal,
-        avgFillPrice: float,
-        permId: int,
-        parentId: int,
-        lastFillPrice: float,
-        clientId: int,
-        whyHeld: str,
-        mktCapPrice: float,
-    ):
-        print(
-            datetime.now().strftime("%H:%M:%S.%f")[:-3],
-            "orderStatus.",
-            f"orderId:{orderId}",
-            f"status:{status}",
-            f"filled:{filled}",
-            f"remaining:{remaining}",
-            f"avgFillPrice:{avgFillPrice}",
-            # f"permId:{permId}",
-            f"parentId:{parentId}",
-            f"lastFillPrice:{lastFillPrice}",
-            # f"clientId:{clientId}",
-            # f"whyHeld:{whyHeld}",
-            # f"mktCapPrice:{mktCapPrice}",
-        )
+    def orderStatus(self, orderId: TickerId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: TickerId, parentId: TickerId, lastFillPrice: float, clientId: TickerId, whyHeld: str, mktCapPrice: float):
+        print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
 
-    def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        print("ERROR: ",errorCode, errorString)
-
-
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+            
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

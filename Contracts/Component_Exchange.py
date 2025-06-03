@@ -15,6 +15,11 @@ class TestApp(EClient, EWrapper):
         for i in smartComponentMap:
             print(f"Exchange: {i.exchange}, Exchange Letter: {i.exchangeLetter}")
         
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+
 app = TestApp()
-app.connect("127.0.0.1", port, 999)
+app.connect("127.0.0.1", port, 0)
 app.run()

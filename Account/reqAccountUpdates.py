@@ -27,21 +27,17 @@ class TestApp(EClient, EWrapper):
 
     def updatePortfolio(self, contract: Contract, position: Decimal, marketPrice: float, marketValue: float, averageCost: float, unrealizedPNL: float, realizedPNL: float, accountName: str):
         print(f"updatePortfolio. contract: {contract.symbol}@{contract.exchange}:{contract.secType}, position: {position}, marketPrice: {marketPrice}, marketValue: {marketValue}, averageCost: {averageCost}, unrealizedPNL: {unrealizedPNL}, realizedPNL: {realizedPNL}")
-
+    
     def accountDownloadEnd(self, accountName: str):
         print("accountDownloadEnd.", accountName)
-        # self.disconnect()
+        self.disconnect()
 
-    def error(self, reqId: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        print(reqId, errorCode, errorString, advancedOrderRejectJson)
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 
-import threading, time
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
-time.sleep(3)
-threading.Thread(target=app.run).start()
-time.sleep(1)
-
-# app.reqAccountUpdatesMulti(1, "DU74649", "", False)
-app.reqAccountUpdatesMulti(2, "DU74650", "", False)
+app.connect("127.0.0.1", port, 0)
+app.run()

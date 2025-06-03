@@ -65,54 +65,17 @@ class TestApp(EClient, EWrapper):
 
         self.placeOrder(myorder.orderId, mycontract, myorder)
 
-    def openOrder(
-        self,
-        orderId: OrderId,
-        contract: Contract,
-        order: Order,
-        orderState: OrderState,
-    ):
-        print(
-            "openOrder.",
-            f"orderId:{orderId}",
-            f"contract:{contract}",
-            f"order:{order}",
-            # f"orderState:{orderState}",
-        )
+    def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
+        print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 
 
-    def orderStatus(
-        self,
-        orderId: OrderId,
-        status: str,
-        filled: Decimal,
-        remaining: Decimal,
-        avgFillPrice: float,
-        permId: int,
-        parentId: int,
-        lastFillPrice: float,
-        clientId: int,
-        whyHeld: str,
-        mktCapPrice: float,
-    ):
-        print(
-            "orderStatus.",
-            f"orderId:{orderId}",
-            f"status:{status}",
-            f"filled:{filled}",
-            f"remaining:{remaining}",
-            f"avgFillPrice:{avgFillPrice}",
-            # f"permId:{permId}",
-            f"parentId:{parentId}",
-            f"lastFillPrice:{lastFillPrice}",
-            # f"clientId:{clientId}",
-            # f"whyHeld:{whyHeld}",
-            # f"mktCapPrice:{mktCapPrice}",
-        )
+    def orderStatus(self, orderId: TickerId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: TickerId, parentId: TickerId, lastFillPrice: float, clientId: TickerId, whyHeld: str, mktCapPrice: float):
+        print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
 
-    def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        return super().error(reqId, errorCode, errorString, advancedOrderRejectJson)
-
-
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+            
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

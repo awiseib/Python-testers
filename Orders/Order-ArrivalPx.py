@@ -1,8 +1,6 @@
 from ibapi.client import *
 from ibapi.wrapper import *
 from ibapi.tag_value import TagValue
-from datetime import datetime
-import time
 
 port = 7496
 
@@ -33,17 +31,17 @@ class TestApp(EClient, EWrapper):
 
         self.placeOrder(orderId, mycontract, myorder)
 
-    def openOrder(self,orderId: OrderId,contract: Contract,order: Order,orderState: OrderState):
-        print(f"{datetime.now().strftime('%H:%M:%S.%f')[:-3]} openOrder. orderId:{orderId}, contract:{contract}, order:{order}")
-        print(f"Algo params: {order.algoParams}")
+    def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
+        print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 
 
-    def orderStatus(self, orderId: OrderId,status: str,filled: Decimal,remaining: Decimal,avgFillPrice: float,permId: int,parentId: int,lastFillPrice: float,clientId: int,whyHeld: str,mktCapPrice: float):
-        print(f"{datetime.now().strftime('%H:%M:%S.%f')[:-3]},orderStatus. orderId:{orderId}, status:{status}, filled:{filled}, remaining:{remaining}, avgFillPrice:{avgFillPrice}, lastFillPrice:{lastFillPrice}")
+    def orderStatus(self, orderId: TickerId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: TickerId, parentId: TickerId, lastFillPrice: float, clientId: TickerId, whyHeld: str, mktCapPrice: float):
+        print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
 
-    def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        print("ERROR: ", errorString)
-
-
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+            
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

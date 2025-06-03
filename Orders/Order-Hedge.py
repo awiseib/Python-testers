@@ -1,9 +1,6 @@
-from decimal import Decimal
 from ibapi.client import *
 from ibapi.wrapper import *
 from datetime import datetime
-from ibapi.contract import *
-from ibapi.order_condition import Create, OrderCondition
 import time
 port = 7496
 
@@ -54,80 +51,17 @@ class TestApp(EClient, EWrapper):
         time.sleep(1)
         self.placeOrder(hedgeChildOrder.orderId, hedgeChild, hedgeChildOrder)
 
-        ###################################### Modifications ###################################################
-        # time.sleep(2)
-        # parentOrder.transmit = True
-        # parentOrder.lmtPrice = 3.38
+    def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
+        print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 
 
-        # hedgeChildOrder.lmtPrice = 0.24
+    def orderStatus(self, orderId: TickerId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: TickerId, parentId: TickerId, lastFillPrice: float, clientId: TickerId, whyHeld: str, mktCapPrice: float):
+        print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
 
-        # ###################################### Executions ###################################################
-        
-        # self.placeOrder(parentOrder.orderId, parent, parentOrder)
-        # self.placeOrder(hedgeChildOrder.orderId, hedgeChild, hedgeChildOrder)
-
-    def openOrder(
-        self,
-        orderId: OrderId,
-        contract: Contract,
-        order: Order,
-        orderState: OrderState,
-    ):
-        print(
-            "openOrder.",
-            f"orderId:{orderId}",
-            f"contract:{contract}",
-            f"order:{order}",
-            # f"orderState:{orderState}",
-        )
-
-    def orderStatus(
-        self,
-        orderId: OrderId,
-        status: str,
-        filled: Decimal,
-        remaining: Decimal,
-        avgFillPrice: float,
-        permId: int,
-        parentId: int,
-        lastFillPrice: float,
-        clientId: int,
-        whyHeld: str,
-        mktCapPrice: float,
-    ):
-        print(
-            "orderStatus.",
-            f"orderId:{orderId}",
-            f"status:{status}",
-            f"filled:{filled}",
-            f"remaining:{remaining}",
-            f"avgFillPrice:{avgFillPrice}",
-            # f"permId:{permId}",
-            f"parentId:{parentId}",
-            f"lastFillPrice:{lastFillPrice}",
-            # f"clientId:{clientId}",
-            # f"whyHeld:{whyHeld}",
-            # f"mktCapPrice:{mktCapPrice}",
-        )
-
-    def error(
-        self,
-        reqId: TickerId,
-        errorCode: int,
-        errorString: str,
-        advancedOrderRejectJson="",
-    ):
-        print(
-            datetime.now().strftime("%H:%M:%S.%f")[:-3],
-            "error.",
-            f"reqId:{reqId}",
-            f"errorCode:{errorCode}",
-            f"errorString:{errorString}",
-            f"advancedOrderRejectJson:{advancedOrderRejectJson}",
-        )
-
-
-
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+            
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

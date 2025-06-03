@@ -1,9 +1,4 @@
 from ibapi.client import *
-from ibapi.common import Decimal, OrderId, TickerId
-from ibapi.contract import Contract
-from ibapi.order import Order
-from ibapi.order_state import OrderState
-from ibapi.utils import Decimal
 from ibapi.wrapper import *
 
 port = 7496
@@ -50,9 +45,9 @@ class TradingApp(EWrapper, EClient):
     def orderStatus(self, orderId: OrderId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: int, parentId: int, lastFillPrice: float, clientId: int, whyHeld: str, mktCapPrice: float):
         print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
 
-    def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
         print(reqId, errorCode, errorString, advancedOrderRejectJson)
     
 app = TradingApp()      
-app.connect("127.0.0.1", port, clientId=101)
+app.connect("127.0.0.1", port, 0)
 app.run()

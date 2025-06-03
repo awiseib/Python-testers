@@ -1,6 +1,5 @@
 from ibapi.client import *
 from ibapi.wrapper import *
-from ibapi.ticktype import TickTypeEnum
 
 port = 7496
 
@@ -11,22 +10,27 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
         
         mycontract = Contract()
-        # mycontract.conId = 617579246
-
-        mycontract.symbol = "SPY"
+        mycontract.symbol = "SPX"
         mycontract.secType = "OPT"
         mycontract.exchange = "SMART"
         mycontract.currency = "USD"
 
-        mycontract.lastTradeDateOrContractMonth = 20230421
-        mycontract.right = "C"
-        mycontract.strike = 415
+        mycontract.lastTradeDateOrContractMonth = 20250602
+        mycontract.right = "P"
+        mycontract.strike = 5550
 
-        self.calculateImpliedVolatility(orderId, mycontract, 1.74, 414.09, [])
+        self.calculateImpliedVolatility(orderId, mycontract, 86.52, 5560.12, [])
         
-    def tickOptionComputation(self, reqId: TickerId, tickType: TickType, tickAttrib: int, impliedVol: float, delta: float, optPrice: float, pvDividend: float, gamma: float, vega: float, theta: float, undPrice: float):
-        print(f"reqId: {reqId}, tickType: {TickTypeEnum.to_str(tickType)}, impliedVol: {(impliedVol*100):.2f}%, undPrice: {undPrice}")
+    def tickOptionComputation(self, reqId, tickType, tickAttrib, impliedVol, delta, optPrice, pvDividend, gamma, vega, theta, undPrice):
+        print(
+            f"Option Price: {optPrice:.2f}\n",
+            f"Implied Volatility: {(impliedVol*100):.3f}"
+        )
+    
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        # if reqId != -1:
+            print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
         
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

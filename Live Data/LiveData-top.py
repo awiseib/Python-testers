@@ -2,40 +2,30 @@ from decimal import Decimal
 from ibapi.client import *
 from ibapi.common import TickAttrib, TickerId
 from ibapi.wrapper import *
-from datetime import datetime
 from ibapi.ticktype import TickTypeEnum
+import time, threading
+
+
 port = 7496
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
 
-    def nextValidId(self, orderId: OrderId):
-        mycontract = Contract()
-        mycontract.conId = 265598
-        mycontract.exchange = "SMART"
-        # self.reqMarketDataType(4)
-        self.reqMktData(
-            reqId=self.clientId,
-            contract=mycontract,
-            genericTickList="",
-            snapshot=False,
-            regulatorySnapshot=False,
-            mktDataOptions=[],
-        )
-        
-    # def tickOptionComputation(self, reqId: TickerId, tickType: TickType, tickAttrib: int, impliedVol: float, delta: float, optPrice: float, pvDividend: float, gamma: float, vega: float, theta: float, undPrice: float):
-    #     print(f"tickOptionComputation. reqId: {reqId}, tickType: {TickTypeEnum.toStr(tickType)}, tickAttrib: {tickAttrib}, ImpVol: {impliedVol}, delta: {delta}, optPrice: {optPrice}, pvDividend: {pvDividend}, gamma: {gamma}, vega: {vega}, theta: {theta}, undPrice: {undPrice}")
-    
     def tickPrice(self, reqId: TickerId, tickType: TickerId, price: float, attrib: TickAttrib):
-        if TickTypeEnum.toStr(tickType) in ["OPEN", "HIGH", "LOW", "CLOSE"]:
-            print(f"tickPrice. reqId: {reqId}, tickType: {TickTypeEnum.toStr(tickType)}, price: {price}, attrib: {attrib}")
+        print(f"tickPrice. reqId: {reqId}, tickType: {TickTypeEnum.toStr(tickType)}, price: {price}, attrib: {attrib}")
+
+    # def tickSize(self, reqId: TickerId, tickType: TickType, size: Decimal):
+    #     print(f"tickSize. reqId:{reqId}, tickType:{TickTypeEnum.toStr(tickType)}, size:{size}")
 
     # def tickReqParams(self, tickerId: TickerId, minTick: float, bboExchange: str, snapshotPermissions: TickerId):
     #     print(tickerId, minTick, bboExchange, snapshotPermissions)
 
-    # def tickSize(self, reqId: TickerId, tickType: TickType, size: Decimal):
-    #     print(f"tickSize. reqId:{reqId}, tickType:{TickTypeEnum.toStr(tickType)}, size:{size}")
+    # def rerouteMktDataReq(self, reqId: TickerId, conId: TickerId, exchange: str):
+    #     print("Reroute CFD data:", conId, exchange)
+
+    # def tickOptionComputation(self, reqId: TickerId, tickType: TickType, tickAttrib: int, impliedVol: float, delta: float, optPrice: float, pvDividend: float, gamma: float, vega: float, theta: float, undPrice: float):
+    #     print(f"tickOptionComputation. reqId: {reqId}, tickType: {TickTypeEnum.toStr(tickType)}, tickAttrib: {tickAttrib}, ImpVol: {impliedVol}, delta: {delta}, optPrice: {optPrice}, pvDividend: {pvDividend}, gamma: {gamma}, vega: {vega}, theta: {theta}, undPrice: {undPrice}")
 
     # def tickGeneric(self, reqId: TickerId, tickType: TickType, value: float):
     #     print(f"tickGeneric:  reqId: {reqId}, tickType: {TickTypeEnum.toStr(tickType)}, value: {value}")
@@ -50,9 +40,27 @@ class TestApp(EClient, EWrapper):
     #     print(f"tickSnapshotEnd. reqId:{reqId}")
     #     self.disconnect()
 
-    def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        print(reqId, errorCode, errorString, advancedOrderRejectJson)
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+        
 
 app = TestApp()
-app.connect("127.0.0.1", port, 1000)
-app.run()
+app.connect("127.0.0.1", port,10)
+time.sleep(1)
+threading.Thread(target=app.run).start()
+time.sleep(1)
+
+contract = Contract()
+contract.conId = 416843
+contract.exchange = "NASDAQ"
+
+app.reqMktData(
+    reqId=10,
+    contract=contract,
+    genericTickList="",
+    snapshot=False,
+    regulatorySnapshot=False,
+    mktDataOptions= []
+)

@@ -5,10 +5,8 @@ from ibapi.ticktype import TickTypeEnum
 import time
 import threading
 
-from Misc.varRef import *
-
 port = 7496
-acctId = ACCOUNT_ID
+acctId = "DU5240685"
 
 # Will be used to organize market data
 
@@ -28,7 +26,7 @@ class TestApp(EClient, EWrapper):
         self.contract = (reqId, contractDetails.contract)
 
     def tickPrice(self, reqId: TickerId, tickType: TickType, price: float, attrib: TickAttrib):
-        tick = TickTypeEnum.to_str(tickType)
+        tick = TickTypeEnum.toStr(tickType)
         request = PRICE_TRACKER[reqId][1]
         if tick in request:
             request[tick] = float(price)
@@ -46,8 +44,10 @@ class TestApp(EClient, EWrapper):
     def execDetails(self, reqId: int, contract: Contract, execution: Execution):
         print(f"execDetails. reqId: {reqId}, contract: {contract}, execution: {execution}")
 
-    def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        print(errorCode, errorString, advancedOrderRejectJson)
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 
 def buildContracts(app: TestApp, tickers: list):
@@ -144,7 +144,7 @@ def stop_app(app: TestApp):
 def main():
 
     app = TestApp()
-    app.connect("127.0.0.1", port, 1001)
+    app.connect("127.0.0.1", port, 0)
     time.sleep(3)
     app_obj = threading.Thread(target=app.run)
     app_obj.start()

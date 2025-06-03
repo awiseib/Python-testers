@@ -1,7 +1,4 @@
-from decimal import Decimal
 from ibapi.client import *
-from ibapi.contract import Contract
-from ibapi.execution import Execution
 from ibapi.wrapper import *
 
 port = 7496
@@ -15,24 +12,20 @@ class TestApp(EClient, EWrapper):
         print(f"nextValidId. orderId={orderId}")
 
         mycontract = Contract()
-        # mycontract.symbol = "BMW"
-        # mycontract.secType = "STK"
-        # mycontract.exchange = "SMART"
-        # mycontract.currency = "EUR"
         mycontract.conId = 265598
         mycontract.exchange = "SMART"
 
-        parent_price = 194.50
+        parent_price = 200
         parent_action = "BUY"
-        quantity = 10.0
+        quantity = 5
 
         parent = Order()
         parent.orderId = orderId
         parent.action = parent_action
-        parent.orderType = "MKT"
+        parent.orderType = "LMT"
+        parent.lmtPrice = parent_price
         parent.totalQuantity = quantity
-        # parent.outsideRth = True
-        # parent.lmtPrice = parent_price
+        parent.tif = "DAY"
         parent.transmit = False
 
         profit_taker = Order()
@@ -40,78 +33,37 @@ class TestApp(EClient, EWrapper):
         profit_taker.parentId = parent.orderId
         profit_taker.action = "SELL" if parent_action == "BUY" else "BUY"
         profit_taker.orderType = "LMT"
+        profit_taker.lmtPrice = parent_price + 10
         profit_taker.totalQuantity = quantity
-        profit_taker.lmtPrice = parent_price + 5
-        # profit_taker.lmtPrice = 140
-        # profit_taker.outsideRth = True
-        profit_taker.transmit = False
+        profit_taker.transmit = True
 
-        stop_loss = Order()
-        stop_loss.orderId = parent.orderId + 2
-        stop_loss.parentId = parent.orderId
-        stop_loss.action = "SELL" if parent_action == "BUY" else "BUY"
-        stop_loss.orderType = "STP"
-        stop_loss.totalQuantity = quantity
-        stop_loss.auxPrice = parent_price - 5
-        # stop_loss.auxPrice = 135.18
-        # stop_loss.outsideRth = True
-        stop_loss.transmit = True
+        # stop_loss = Order()
+        # stop_loss.orderId = parent.orderId + 2
+        # stop_loss.parentId = parent.orderId
+        # stop_loss.action = "SELL" if parent_action == "BUY" else "BUY"
+        # stop_loss.orderType = "STP"
+        # stop_loss.totalQuantity = quantity
+        # stop_loss.auxPrice = parent_price - 5
+        # stop_loss.transmit = True
 
         self.placeOrder(parent.orderId, mycontract, parent)
         self.placeOrder(profit_taker.orderId, mycontract, profit_taker)
-        self.placeOrder(stop_loss.orderId, mycontract, stop_loss)
+        # self.placeOrder(stop_loss.orderId, mycontract, stop_loss)
 
-    def openOrder(
-        self,
-        orderId: OrderId,
-        contract: Contract,
-        order: Order,
-        orderState: OrderState,
-    ):
-        print(
-            "openOrder.",
-            f"orderId:{orderId}",
-            f"contract:{contract}",
-            f"order:{order}",
-            # f"orderState:{orderState}",
-        )
+    def openOrderEnd(self):
+        print("END OF ORDERS")
+        
+    def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
+        print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 
 
-    def orderStatus(
-        self,
-        orderId: OrderId,
-        status: str,
-        filled: Decimal,
-        remaining: Decimal,
-        avgFillPrice: float,
-        permId: int,
-        parentId: int,
-        lastFillPrice: float,
-        clientId: int,
-        whyHeld: str,
-        mktCapPrice: float,
-    ):
-        print(
-            "orderStatus.",
-            f"orderId:{orderId}",
-            f"status:{status}",
-            f"filled:{filled}",
-            f"remaining:{remaining}",
-            f"avgFillPrice:{avgFillPrice}",
-            # f"permId:{permId}",
-            f"parentId:{parentId}",
-            f"lastFillPrice:{lastFillPrice}",
-            # f"clientId:{clientId}",
-            # f"whyHeld:{whyHeld}",
-            # f"mktCapPrice:{mktCapPrice}",
-        )
+    # def orderStatus(self, orderId: TickerId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: TickerId, parentId: TickerId, lastFillPrice: float, clientId: TickerId, whyHeld: str, mktCapPrice: float):
+    #     print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
 
-    def execDetails(self, reqId: int, contract: Contract, execution: Execution):
-        print(reqId, contract, execution)
-    
-    def error(self, reqId: TickerId, errorCode: int, errorString: str, tickAttrib):
-        print(f"error. reqId:{reqId} code:{errorCode} string:{errorString}")
-
-
+    # def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+    #     print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        # if advancedOrderRejectJson != "":
+        #     print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+            
 app = TestApp()
-app.connect("127.0.0.1", 7496, 1001)
+app.connect("127.0.0.1", port, 1001)
 app.run()

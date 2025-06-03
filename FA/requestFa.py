@@ -1,4 +1,5 @@
 from decimal import Decimal
+from ibapi.common import FaDataType,FaDataTypeEnum
 from ibapi.client import *
 from ibapi.wrapper import *
 
@@ -15,10 +16,12 @@ class TestApp(EClient, EWrapper):
     def receiveFA(self, faData: FaDataType, cxml: str):
         print(cxml)
 
-    # def error(self, reqId: TickerId, errorCode: int, errorString: str):
-    #     print(f"error. reqId:{reqId} code:{errorCode} string:{errorString}")
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", 4002, 0)
 app.run()

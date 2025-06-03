@@ -7,14 +7,14 @@ port = 7496
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
+        self.rCount = 0
 
     def nextValidId(self, orderId: OrderId):
-        
         mycontract = Contract()
-        mycontract.conId = 39622938
-        # mycontract.secType = "BAG"
-        # mycontract.currency = "USD"
+        mycontract.symbol = "VWRA"
+        mycontract.secType = "STK"
         mycontract.exchange = "SMART"
+        # mycontract.currency = "GBP"
 
         self.reqContractDetails(reqId=orderId, contract=mycontract)
         
@@ -46,9 +46,11 @@ class TestApp(EClient, EWrapper):
             "\n".join(f"{name}: {value}" for name, value in attrs.items()),
         )
 
-    def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        return super().error(reqId, errorCode, errorString, advancedOrderRejectJson)
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(reqId, errorCode, errorString, advancedOrderRejectJson)
+        if errorString == "No security definition has been found for the request":
+            self.disconnect()
         
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

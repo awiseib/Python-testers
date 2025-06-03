@@ -13,10 +13,10 @@ class TestApp(EClient, EWrapper):
 
         self.reqSecDefOptParams(  
             reqId=123,
-            underlyingSymbol="AAPL",
+            underlyingSymbol="SPX",
             futFopExchange="",  
-            underlyingSecType="STK",
-            underlyingConId="265598",
+            underlyingSecType="IND",
+            underlyingConId="416904",
         )
 
     def securityDefinitionOptionParameter(
@@ -43,9 +43,11 @@ class TestApp(EClient, EWrapper):
     def securityDefinitionOptionParameterEnd(self, reqId: int):
         print(f"securityDefinitionOptionParameterEnd. reqId:{reqId}")
 
-    def error(self, reqId: TickerId, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        print(reqId, errorCode, errorString, advancedOrderRejectJson)
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

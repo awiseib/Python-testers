@@ -14,27 +14,27 @@ class TestApp(EClient, EWrapper):
 
     def nextValidId(self, orderId: OrderId):
         mycontract = Contract()
-        mycontract.symbol = "ES"
+        mycontract.symbol = "ES,SPY"
         mycontract.secType = "BAG"
         mycontract.currency = "USD"
         mycontract.exchange = "SMART"
 
         leg1 = ComboLeg()
-        leg1.conId = 533620665 # ES March FUT
-        leg1.ratio = 1
+        leg1.conId = 756733 # SPY
+        leg1.ratio = 100
         leg1.action = "BUY"
-        leg1.exchange = "CME"
+        leg1.exchange = "SMART"
 
         leg2 = ComboLeg()
-        leg2.conId = 568550526 # ES September FUT
+        leg2.conId = 620731015 # ES September FUT
         leg2.ratio = 1
-        leg2.action = "SELL"
+        leg2.action = "BUY"
         leg2.exchange = "CME"
 
         mycontract.comboLegs = []
         mycontract.comboLegs.append(leg1)
         mycontract.comboLegs.append(leg2)
-        
+
 
         myorder = Order()
         myorder.orderId = orderId
@@ -42,59 +42,25 @@ class TestApp(EClient, EWrapper):
         myorder.orderType = "LMT"
         myorder.totalQuantity = 1
 
-        myorder.lmtPrice = -11430.25
+        myorder.lmtPrice = 6491
 
         myorder.smartComboRoutingParams = []
-        myorder.smartComboRoutingParams.append(TagValue("NonGuaranteed", "0"))
+        myorder.smartComboRoutingParams.append(TagValue("NonGuaranteed", "1"))
 
 
         self.placeOrder(myorder.orderId, mycontract, myorder)
 
-    def openOrder(
-        self,
-        orderId: OrderId,
-        contract: Contract,
-        order: Order,
-        orderState: OrderState,
-    ):
-        print(
-            "openOrder.",
-            f"orderId:{orderId}",
-            f"contract:{contract}",
-            f"order:{order}",
-            # f"orderState:{orderState}",
-        )
+    def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
+        print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 
 
-    def orderStatus(
-        self,
-        orderId: OrderId,
-        status: str,
-        filled: Decimal,
-        remaining: Decimal,
-        avgFillPrice: float,
-        permId: int,
-        parentId: int,
-        lastFillPrice: float,
-        clientId: int,
-        whyHeld: str,
-        mktCapPrice: float,
-    ):
-        print(
-            "orderStatus.",
-            f"orderId:{orderId}",
-            f"status:{status}",
-            f"filled:{filled}",
-            f"remaining:{remaining}",
-            f"avgFillPrice:{avgFillPrice}",
-            # f"permId:{permId}",
-            f"parentId:{parentId}",
-            f"lastFillPrice:{lastFillPrice}",
-            # f"clientId:{clientId}",
-            # f"whyHeld:{whyHeld}",
-            # f"mktCapPrice:{mktCapPrice}",
-        )
+    def orderStatus(self, orderId: TickerId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: TickerId, parentId: TickerId, lastFillPrice: float, clientId: TickerId, whyHeld: str, mktCapPrice: float):
+        print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
 
-
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+            
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

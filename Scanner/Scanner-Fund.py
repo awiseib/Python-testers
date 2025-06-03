@@ -13,13 +13,12 @@ class TestApp(EClient, EWrapper):
         sub.instrument = "FUND.ALL"
         sub.locationCode = "FUND.US"
         sub.scanCode = "SCAN_lipperFundLeverageRatio_ASC"
-        # sub.numberOfRows = 100
 
         scan_options = []
         filter_options = [
-            # TagValue("volumeAbove","10000"),
-            # TagValue("marketCapBelow1e6", "1000"),
-            # TagValue("priceAbove", '1')
+            TagValue("volumeAbove","10000"),
+            TagValue("marketCapBelow1e6", "1000"),
+            TagValue("priceAbove", '1')
         ]
 
         self.reqScannerSubscription(orderId, sub, scan_options, filter_options)
@@ -32,7 +31,11 @@ class TestApp(EClient, EWrapper):
         self.cancelScannerSubscription(reqId)
         self.disconnect()
 
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

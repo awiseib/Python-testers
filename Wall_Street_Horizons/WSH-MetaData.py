@@ -14,12 +14,14 @@ class TestApp(EClient, EWrapper):
 
     def wshMetaData(self, reqId: TickerId, data: str):
         jsonDict = json.dumps(json.loads(data), indent=2)
-        open('./wshMetaData.xml', 'w').write(jsonDict)
-
+        # open('./wshMetaData.xml', 'w').write(jsonDict)
+        
         print("WSH Meta Data received.")
-
+        jcon = json.loads(data)
+        for jobj in jcon["meta_data"]["event_types"]:
+            print(f'{jobj["name"]}: {jobj["tag"]}')
         self.disconnect()
 
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()

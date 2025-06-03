@@ -1,9 +1,5 @@
-from decimal import Decimal
 from ibapi.client import *
 from ibapi.wrapper import *
-from datetime import datetime
-from ibapi.contract import *
-from ibapi.order_state import *
 
 port = 7496
 
@@ -13,8 +9,6 @@ class TestApp(EClient, EWrapper):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: OrderId):
-        print(f"nextValidId. orderId={orderId}")
-
         mycontract = Contract()
         mycontract.conId = 8314 # IBM STK
         mycontract.exchange = "SMART"
@@ -39,80 +33,26 @@ class TestApp(EClient, EWrapper):
         #being traded at...
         myorder.referenceExchangeId = "SMART"
         #starting reference price is...
-        myorder.stockRefPrice = 219
+        myorder.stockRefPrice = 230
         #Keep myorder active as long as reference contract trades between...
-        myorder.stockRangeLower = 200
+        myorder.stockRangeLower = 220
         #and...
-        myorder.stockRangeUpper = 220
+        myorder.stockRangeUpper = 230
 
         self.placeOrder(myorder.orderId, mycontract, myorder)
 
-    def marketRule(self, marketRuleId: int, priceIncrements: ListOfPriceIncrements):
-        print("Market Rule details: ", marketRuleId, priceIncrements)
+    def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
+        print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 
 
-    def openOrder(
-        self,
-        orderId: OrderId,
-        contract: Contract,
-        order: Order,
-        orderState: OrderState,
-    ):
-        print(
-            "openOrder.",
-            f"orderId:{orderId}",
-            f"contract:{contract}",
-            f"order:{order}",
-            f"orderState:{orderState}",
-        )
-        print(order.startingPrice)
+    def orderStatus(self, orderId: TickerId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: TickerId, parentId: TickerId, lastFillPrice: float, clientId: TickerId, whyHeld: str, mktCapPrice: float):
+        print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
 
-    def orderStatus(
-        self,
-        orderId: OrderId,
-        status: str,
-        filled: Decimal,
-        remaining: Decimal,
-        avgFillPrice: float,
-        permId: int,
-        parentId: int,
-        lastFillPrice: float,
-        clientId: int,
-        whyHeld: str,
-        mktCapPrice: float,
-    ):
-        print(
-            "orderStatus.",
-            f"orderId:{orderId}",
-            f"status:{status}",
-            f"filled:{filled}",
-            f"remaining:{remaining}",
-            f"avgFillPrice:{avgFillPrice}",
-            # f"permId:{permId}",
-            f"parentId:{parentId}",
-            f"lastFillPrice:{lastFillPrice}",
-            # f"clientId:{clientId}",
-            # f"whyHeld:{whyHeld}",
-            # f"mktCapPrice:{mktCapPrice}",
-        )
-
-    def error(
-        self,
-        reqId: TickerId,
-        errorCode: int,
-        errorString: str,
-        advancedOrderRejectJson="",
-    ):
-        print(
-            datetime.now().strftime("%H:%M:%S.%f")[:-3],
-            "error.",
-            f"reqId:{reqId}",
-            f"errorCode:{errorCode}",
-            f"errorString:{errorString}",
-            f"advancedOrderRejectJson:{advancedOrderRejectJson}",
-        )
-
-
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+            
 app = TestApp()
-app.connect("127.0.0.1", port, 1001)
+app.connect("127.0.0.1", port, 0)
 app.run()
 

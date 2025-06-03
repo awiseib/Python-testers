@@ -12,16 +12,16 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
 
         mycontract = Contract()
-        mycontract.conId = 76792991
+        mycontract.conId = 772144625
         mycontract.exchange = "SMART"
 
         self.reqHistoricalTicks(
-            reqId=123,
+            reqId=orderId,
             contract=mycontract,
             startDateTime="",
-            endDateTime="20231030 14:00:03 US/Eastern",
-            numberOfTicks=1000,
-            whatToShow="TRADES",
+            endDateTime="20250423 10:34:00 US/Eastern",
+            numberOfTicks=100,
+            whatToShow="AllLast",
             useRth=1,
             ignoreSize=False,
             miscOptions=[],
@@ -40,6 +40,7 @@ class TestApp(EClient, EWrapper):
                 datetime.datetime.fromtimestamp(tick.time),
                 f"ticks:{tick.price}"
             )
+        # self.disconnect()
 
     def historicalTicksBidAsk(
         self, 
@@ -47,13 +48,13 @@ class TestApp(EClient, EWrapper):
         ticks: ListOfHistoricalTickBidAsk, 
         done: bool,
     ):
+        # print(type(ticks[0]))
         for tick in ticks:
             print(
                 "historicalTicksBidAsk.", 
-                f"reqId:{reqId}", 
-                datetime.datetime.fromtimestamp(tick.time),
                 f"ticks:{tick}"
             )
+        self.disconnect()
 
     def historicalTicks(
         self, 
@@ -65,11 +66,16 @@ class TestApp(EClient, EWrapper):
             print(
                 "historicalTicks.", 
                 f"reqId:{reqId}", 
-                datetime.datetime.fromtimestamp(tick.time),
+                datetime.datetime.fromtimestamp(tick.time,datetime.timezone.tzname("US/Central")),
                 f"ticks:{tick.price}"
             )
 
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
+        print(f"Error., Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
+
 
 app = TestApp()
-app.connect("127.0.0.1", port, 50)
+app.connect("127.0.0.1", port, 1)
 app.run()
