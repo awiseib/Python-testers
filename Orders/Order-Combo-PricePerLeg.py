@@ -33,7 +33,7 @@ class TestApp(EClient, EWrapper):
         myorder.smartComboRoutingParams.append(TagValue("NonGuaranteed", "1"))
 
         leg1 = ComboLeg()
-        leg1.conId = 265598 # SPX JUN 20 5285 P
+        leg1.conId = 265598 
         leg1.ratio = 1
         leg1.action = "BUY"
         leg1.exchange = "SMART"
@@ -42,7 +42,7 @@ class TestApp(EClient, EWrapper):
         orderLeg1.price = 222
 
         leg2 = ComboLeg()
-        leg2.conId = 8314 # SPX JUN 20 5285 C
+        leg2.conId = 8314 
         leg2.ratio = 1
         leg2.action = "BUY"
         leg2.exchange = "SMART"
