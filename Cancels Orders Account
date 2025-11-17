@@ -1,0 +1,49 @@
+from ibapi.client import EClient
+from ibapi.wrapper import EWrapper
+from ibapi.order_cancel import OrderCancel
+import time
+
+port = 7497
+account_filter = "U1234567"  # Specify the account to filter orders
+
+class TestApp(EClient, EWrapper):
+
+    def __init__(self):
+        EClient.__init__(self, self)
+        self.open_orders = []  # To store order IDs for the specified account
+
+    def nextValidId(self, orderId):
+        print("Next valid order ID:", orderId)
+        self.reqOpenOrders()  # Request all open orders
+
+    def openOrder(self, orderId, contract, order, orderState):
+        if order.account == account_filter:  # Check if the order belongs to the specified account
+            print("Open order received for account:", account_filter, 
+                  "Order ID:", orderId, "Symbol:", contract.symbol, 
+                  "Action:", order.action, "Quantity:", order.totalQuantity)
+            self.open_orders.append(orderId)  # Add orderId to the list of open orders
+        else:
+            print("Order ignored (not in account", account_filter, "):", orderId)
+
+    def orderStatus(self, orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice):
+        print("Order status: ", orderId, status, filled, remaining, avgFillPrice)
+
+    def openOrderEnd(self):
+        print("All open orders retrieved.")
+        print("Open orders for account", account_filter, ":", self.open_orders)
+        # Cancel all open orders for the specified account
+        for orderId in self.open_orders:
+            print(f"Cancelling order ID: {orderId} for account {account_filter}")
+            self.cancelOrder(orderId,orderCancel=OrderCancel())
+
+    def error(self, reqId, errorCode, errorString, advancedOrderRejectJson="",arg5=""):
+        print("Error:", reqId, errorCode, errorString, advancedOrderRejectJson)
+
+    def close_all_order(self):
+        self.reqGlobalCancel(OrderCancel())
+
+
+app = TestApp()
+app.connect("127.0.0.1", port, 0)
+app.run()
+app.disconnect()
