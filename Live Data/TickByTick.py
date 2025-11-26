@@ -1,20 +1,14 @@
 from ibapi.client import *
 from ibapi.wrapper import *
 from datetime import datetime
+from threading import Thread
+from time import sleep
 port = 7496
 
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
-
-    def nextValidId(self, orderId: OrderId):
-
-        mycontract = Contract()
-        mycontract.conId = 265598
-        mycontract.exchange = "SMART"
-
-        self.reqTickByTickData(orderId, mycontract, "AllLast", 50, 0)
 
     # whatToShow=BidAsk
     def tickByTickBidAsk(self, reqId: int, time: int, bidPrice: float, askPrice: float, bidSize: int, askSize: int, tickAttribBidAsk: TickAttribBidAsk):
@@ -32,12 +26,19 @@ class TestApp(EClient, EWrapper):
         else:
             print(f"AllLast. reqId: {reqId}, time: {datetime.fromtimestamp(time)}, price: {price}, size: {size}, tickAttribLast: {tickAttribLast}, exchange: {exchange}, specialConditions: {specialConditions}")
 
-    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        print(f"Error., Time of Error: {datetime.fromtimestamp(errorTime)}, Error Code: {errorCode}, Error Message: {errorString}")
+    def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString="", advancedOrderRejectJson=""):
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
         if advancedOrderRejectJson != "":
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
         
 
 app = TestApp()
 app.connect("127.0.0.1", port, 0)
-app.run()
+sleep(1)
+Thread(target=app.run).start()
+sleep(1)
+app.reqMarketDataType(1)
+c1 = Contract()
+c1.conId = 265598
+c1.exchange = "SMART"
+app.reqTickByTickData(1, c1, "AllLast", 50, 0)

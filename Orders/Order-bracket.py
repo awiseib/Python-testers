@@ -15,10 +15,31 @@ class TestApp(EClient, EWrapper):
         mycontract.conId = 265598
         mycontract.exchange = "SMART"
 
-        parent_price = 200
-        parent_action = "BUY"
-        quantity = 5
+        parent_price = 260
+        parent_action = "SELL"
+        quantity = 1
+        
 
+        parent = Order()
+        parent.orderId = orderId
+        parent.action = parent_action
+        parent.orderType = "STP"
+        parent.auxPrice = 269
+        parent.totalQuantity = 1
+        parent.tif = "DAY"
+        parent.transmit = False
+
+        pos_exit = Order()
+        pos_exit.orderId = parent.orderId + 1
+        pos_exit.parentId = parent.orderId
+        pos_exit.action = "SELL" 
+        pos_exit.orderType = "MKT"
+        pos_exit.totalQuantity = 199
+        pos_exit.transmit = True
+        self.placeOrder(parent.orderId, mycontract, parent)
+        self.placeOrder(pos_exit.orderId, mycontract, pos_exit)
+
+        '''
         parent = Order()
         parent.orderId = orderId
         parent.action = parent_action
@@ -37,18 +58,19 @@ class TestApp(EClient, EWrapper):
         profit_taker.totalQuantity = quantity
         profit_taker.transmit = True
 
-        # stop_loss = Order()
-        # stop_loss.orderId = parent.orderId + 2
-        # stop_loss.parentId = parent.orderId
-        # stop_loss.action = "SELL" if parent_action == "BUY" else "BUY"
-        # stop_loss.orderType = "STP"
-        # stop_loss.totalQuantity = quantity
-        # stop_loss.auxPrice = parent_price - 5
-        # stop_loss.transmit = True
+        stop_loss = Order()
+        stop_loss.orderId = parent.orderId + 2
+        stop_loss.parentId = parent.orderId
+        stop_loss.action = "SELL" if parent_action == "BUY" else "BUY"
+        stop_loss.orderType = "STP"
+        stop_loss.totalQuantity = quantity
+        stop_loss.auxPrice = parent_price - 5
+        stop_loss.transmit = True
 
         self.placeOrder(parent.orderId, mycontract, parent)
         self.placeOrder(profit_taker.orderId, mycontract, profit_taker)
-        # self.placeOrder(stop_loss.orderId, mycontract, stop_loss)
+        self.placeOrder(stop_loss.orderId, mycontract, stop_loss)
+        '''
 
     def openOrderEnd(self):
         print("END OF ORDERS")

@@ -9,7 +9,7 @@ class TestApp(EClient, EWrapper):
 
     def nextValidId(self, orderId: OrderId):
         
-        self.reqMatchingSymbols(orderId, "AAPL")
+        self.reqMatchingSymbols(orderId, "BRFG")
     
     def symbolSamples(self, reqId: int, contractDescriptions: list):
         for contractDescription in contractDescriptions:

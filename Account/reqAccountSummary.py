@@ -13,7 +13,8 @@ class TestApp(EClient, EWrapper):
         self.reqAccountSummary(
             reqId=1,
             groupName="All",
-            tags=AccountSummaryTags.AllTags
+            # tags=AccountSummaryTags.AllTags
+            tags=AccountSummaryTags.AvailableFunds
         )
 
     def accountSummary(self, reqId: int, account: str, tag: str, value: str, currency: str):

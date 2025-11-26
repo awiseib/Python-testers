@@ -16,21 +16,26 @@ class TestApp(EClient, EWrapper):
         mycontract.exchange = "SMART"
         
         myorder = Order()
+        myorder.orderId=1784380540
         myorder.action = "BUY"
         myorder.orderType = "LMT"
-        myorder.lmtPrice = 212
+        myorder.lmtPrice = 215
         myorder.totalQuantity = 1
-        myorder.tif = "DAY"
-        
+        myorder.tif = "GTC"
+        myorder.postToAts=True
         myorder.algoStrategy = "Adaptive"
         myorder.algoParams = [
-            TagValue("adaptivePriority", "Urgent")
+            TagValue("adaptivePriority", "Normal")
         ]
-
-        self.placeOrder(orderId, mycontract, myorder)
+        self.reqOpenOrders()
+        # self.placeOrder(1784380540, mycontract, myorder)
 
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
         print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 
+        if orderId == 1784380537 and order.lmtPrice == 212:
+            order.lmtPrice = 215
+            # order.postToAts = True
+            self.placeOrder(1784380537, contract, order)
 
     def orderStatus(self, orderId: TickerId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: TickerId, parentId: TickerId, lastFillPrice: float, clientId: TickerId, whyHeld: str, mktCapPrice: float):
         print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)

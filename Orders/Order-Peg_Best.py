@@ -10,36 +10,23 @@ class TestApp(EClient, EWrapper):
 
     def nextValidId(self, orderId: OrderId):
         mycontract = Contract()
-        mycontract.conId = 8314 # IBM STK
-        mycontract.exchange = "SMART"
+        mycontract.symbol = "AAPL"
+        mycontract.secType = "STK"
         mycontract.currency = "USD"
+        mycontract.exchange = "IBKRATS"
 
         myorder = Order()
         myorder.orderId = orderId
-        myorder.orderType = "PEG BENCH"
-        # BUY or SELL
+        myorder.orderType = "PEG BEST"
         myorder.action = "BUY"
         myorder.totalQuantity = 100
-        #Beginning with price...
-        myorder.startingPrice = 280
-        #increase/decrease price..
-        myorder.isPeggedChangeAmountDecrease = False
-        #by... (and likewise for price moving in opposite direction)
-        myorder.peggedChangeAmount = 3
-        #whenever there is a price change of...
-        myorder.referenceChangeAmount = 1
-        #in the reference contract...
-        myorder.referenceContractId = 265598 # IGF STK
-        #being traded at...
-        myorder.referenceExchangeId = "SMART"
-        #starting reference price is...
-        myorder.stockRefPrice = 200
-        #Keep myorder active as long as reference contract trades between...
-        myorder.stockRangeLower = 190
-        #and...
-        myorder.stockRangeUpper = 240
+        myorder.lmtPrice = 205
+        myorder.notHeld = True
+        myorder.minCompeteSize = 100
+        myorder.competeAgainstBestOffset = 0.05
 
         self.placeOrder(myorder.orderId, mycontract, myorder)
+
 
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
         print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 

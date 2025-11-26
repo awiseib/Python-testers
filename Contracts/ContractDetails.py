@@ -10,15 +10,19 @@ class TestApp(EClient, EWrapper):
         self.rCount = 0
 
     def nextValidId(self, orderId: OrderId):
-        mycontract = Contract()
-        mycontract.symbol = "VWRA"
-        mycontract.secType = "STK"
-        mycontract.exchange = "SMART"
-        # mycontract.currency = "GBP"
+        
+        contract = Contract()
+        contract.symbol = "AAPL"
+        contract.secType = "STK"
+        contract.exchange = "SMART"
+        # contract.includeExpired = True
+        # contract.currency = "USD"
 
-        self.reqContractDetails(reqId=orderId, contract=mycontract)
+        self.reqContractDetails(reqId=orderId, contract=contract)
         
     def contractDetails(self, reqId: int, contractDetails: ContractDetails):
+        # print(contractDetails.contract)
+        self.rCount+=1
         attrs = vars(contractDetails)
         print(
             datetime.now().strftime("%H:%M:%S.%f")[:-3],
@@ -53,4 +57,6 @@ class TestApp(EClient, EWrapper):
         
 app = TestApp()
 app.connect("127.0.0.1", port, 0)
+# app.connect("134.231.145.96", 7496, 0)
+# app.connect("172.59.184.232", 7497, 0)
 app.run()

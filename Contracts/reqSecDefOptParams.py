@@ -13,10 +13,10 @@ class TestApp(EClient, EWrapper):
 
         self.reqSecDefOptParams(  
             reqId=123,
-            underlyingSymbol="SPX",
+            underlyingSymbol="ROG",
             futFopExchange="",  
-            underlyingSecType="IND",
-            underlyingConId="416904",
+            underlyingSecType="STK",
+            underlyingConId="762280415",
         )
 
     def securityDefinitionOptionParameter(

@@ -3,7 +3,7 @@ from ibapi.wrapper import *
 from ibapi.tag_value import *
 from ibapi.ticktype import TickTypeEnum
 
-port = 7496
+port = 7497
 
 
 class TestApp(EClient, EWrapper):
@@ -12,14 +12,16 @@ class TestApp(EClient, EWrapper):
 
     def nextValidId(self, orderId: int):
         # Creates a contract specific news source and denotes the news feed through 'genericTickList="mdoff,292:BRFG"'.
-        mycontract = Contract()
-        mycontract.symbol = "ES"
-        mycontract.secType = "IND"
-        mycontract.currency = "USD"
-        mycontract.exchange="CME"
+
+        contract = Contract()
+        # contract.conId = 265598 # AAPL ConId
+        contract.symbol = "B4B"
+        contract.currency = "EUR"
+        contract.secType = "STK"
+        contract.exchange = "VALUE"
 
         # Places the request for news data. Note the generic tick list string.
-        self.reqMktData(orderId, mycontract,"mdoff,292:DJ-N", False, False, [])
+        self.reqMktData(orderId, contract,"mdoff,292:DJ-N", False, False, [])
 
 
     def tickNews(self, tickerId: int, timeStamp: int, providerCode: str, articleId: str, headline: str, extraData: str):

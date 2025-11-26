@@ -2,7 +2,7 @@ from ibapi.client import *
 from ibapi.wrapper import *
 import json
 
-port = 7496
+port = 7497
 
 
 class TestApp(EClient, EWrapper):

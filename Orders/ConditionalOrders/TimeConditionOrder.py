@@ -26,7 +26,7 @@ class TestApp(EClient, EWrapper):
         myorder.tif = "DAY"
 
         oc = TimeCondition()
-        oc.time = "20250611 15:55:55 US/Eastern"
+        oc.time = "20250911 15:55:55 US/Eastern"
         oc.isMore = True
         oc.isConjunctionConnection = True
         

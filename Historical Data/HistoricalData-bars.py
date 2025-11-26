@@ -3,23 +3,40 @@ from ibapi.common import TickerId
 from ibapi.wrapper import *
 from datetime import datetime
 
-port = 7497
+port = 7496
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
+        self.bar_count = 0
 
     def nextValidId(self, orderId: OrderId):
         mycontract = Contract()
-        mycontract.conId = 3691937
+        # mycontract.conId = 132803412=
+        # mycontract.exchange = "SMART"
+        # mycontract.includeExpired = True
+        mycontract.symbol = "AAPL"
         mycontract.secType = "STK"
-        # mycontract.currency = "USD"
+        mycontract.currency = "USD"
         mycontract.exchange = "SMART"
-        mycontract.primaryExchange = "NASDAQ"
-        self.reqHistoricalData(orderId, mycontract, "", "7 D", "1 hour", "TRADES", 1, 1, True, [])
+        # mycontract.primaryExchange = "ISLAND"
+        
+        self.reqHistoricalData(orderId, mycontract, 
+                               endDateTime="", 
+                            #    endDateTime="20250924-17:52:08", 
+                               durationStr="1 W", 
+                               barSizeSetting="1 day", 
+                               whatToShow="TRADES", 
+                               useRTH=1, 
+                               formatDate=1, 
+                               keepUpToDate=False, 
+                               chartOptions=[]
+                               )
     
     def historicalData(self, reqId, bar):
-        print(f"Time: {bar.date}, Open: {bar.open}, High: {bar.high}, Low: {bar.low}, Close: {bar.close}, Volume: {bar.volume}")
+    #     # real_date = bar.date.split(" ")[0]
+        # if bar.date == "20251009":
+            print(f"Time: {bar.date}, Open: {bar.open}, High: {bar.high}, Low: {bar.low}, Close: {bar.close}, Volume: {bar.volume}")
 
     def historicalDataEnd(self, reqId, start, end):
         print(f"Historical Data Ended for {reqId}. Started at {start}, ending at {end}")

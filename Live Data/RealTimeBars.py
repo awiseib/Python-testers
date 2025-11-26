@@ -22,6 +22,8 @@ class TestApp(EClient, EWrapper):
 
     def realtimeBar(self, reqId: int, time: int, open_: float, high: float, low: float, close: float, volume: Decimal, wap: Decimal, count: int):
         print(f"reqId: {reqId}, Bar Time: {datetime.fromtimestamp(time)}, Open: {open_}, High: {high}, Low: {low}, Close: {close}, Volume: {volume}, Weighted Average Price: {wap}, Count: {count}")
+        self.cancelRealTimeBars(reqId)
+        self.disconnect()
 
     def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
         print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")

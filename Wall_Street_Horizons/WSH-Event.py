@@ -2,7 +2,7 @@ from ibapi.client import *
 from ibapi.wrapper import *
 import json
 
-port = 7496
+port = 7497
 
 
 class TestApp(EClient, EWrapper):
@@ -14,13 +14,14 @@ class TestApp(EClient, EWrapper):
         # Either ConID or Filter may be passed, but not both.
         eventData = WshEventData()
         # eventData.conId = 195014116
-        eventData.startDate = "20180201"
-        eventData.endDate = "20190101"
+        # eventData.startDate = ""
+        # eventData.endDate = "20181231"
         # eventData.fillCompetitors = False
         # eventData.fillPortfolio = False
         # eventData.fillWatchlist = False
-        eventData.totalLimit = 0
-        eventData.filter = '{"country": "All","watchlist":["72063691"], "wshe_ed":"true"}'
+        # eventData.totalLimit = 0
+        eventData.filter = '{"country": "All","watchlist":["265598"], "wshe_ed":"true"}'
+        # eventData.filter = '{"country": "All", "wshe_ipo":"true"}'
 
         """
         Filters pulled from wshMetaData. Look for section header in response to find filter name.

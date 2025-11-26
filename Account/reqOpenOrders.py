@@ -26,6 +26,10 @@ class TestApp(EClient, EWrapper):
     # def orderStatus(self, orderId: int, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: int, parentId: int, lastFillPrice: float, clientId: int, whyHeld: str, mktCapPrice: float):
     #     print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
 
+    def openOrderEnd(self):
+        print("End of open orders")
+        self.disconnect()
+
     def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
         print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
         if advancedOrderRejectJson != "":

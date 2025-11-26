@@ -1,3 +1,4 @@
+from ibapi.tag_value import TagValue
 from ibapi.client import *
 from ibapi.wrapper import *
 
@@ -9,37 +10,31 @@ class TestApp(EClient, EWrapper):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: OrderId):
-        mycontract = Contract()
-        mycontract.conId = 8314 # IBM STK
-        mycontract.exchange = "SMART"
-        mycontract.currency = "USD"
+        contract = Contract()
+        contract.conId = 785025858
+        # contract.symbol = "KO"
+        # contract.secType = "STK"
+        contract.exchange = "SMART"
+        contract.currency = "USD"
+        
+        order = Order()
+        order.action = "BUY"
+        order.totalQuantity = 100
+        order.orderType = "LMT"
+        order.lmtPrice = 25.5
+        order.tif = "DAY"
+        order.algoStrategy = "MinImpact"
 
-        myorder = Order()
-        myorder.orderId = orderId
-        myorder.orderType = "PEG BENCH"
-        # BUY or SELL
-        myorder.action = "BUY"
-        myorder.totalQuantity = 100
-        #Beginning with price...
-        myorder.startingPrice = 280
-        #increase/decrease price..
-        myorder.isPeggedChangeAmountDecrease = False
-        #by... (and likewise for price moving in opposite direction)
-        myorder.peggedChangeAmount = 3
-        #whenever there is a price change of...
-        myorder.referenceChangeAmount = 1
-        #in the reference contract...
-        myorder.referenceContractId = 265598 # IGF STK
-        #being traded at...
-        myorder.referenceExchangeId = "SMART"
-        #starting reference price is...
-        myorder.stockRefPrice = 200
-        #Keep myorder active as long as reference contract trades between...
-        myorder.stockRangeLower = 190
-        #and...
-        myorder.stockRangeUpper = 240
-
-        self.placeOrder(myorder.orderId, mycontract, myorder)
+        order.algoParams = []
+        # order.algoParams.append(TagValue("componentSize", 100))
+        # order.algoParams.append(TagValue("timeBetweenOrders", 1))
+        # order.algoParams.append(TagValue("randomizeTime20", int(1)))
+        # order.algoParams.append(TagValue("randomizeSize55", int(1)))
+        # order.algoParams.append(TagValue("giveUp", 0))
+        # order.algoParams.append(TagValue("catchUp", int(1)))
+        # order.algoParams.append(TagValue("waitForFill", int(0)))
+    
+        self.placeOrder(orderId, contract, order)
 
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
         print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 

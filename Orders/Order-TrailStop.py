@@ -28,8 +28,8 @@ class TestApp(EClient, EWrapper):
         '''
         You must specify one value: limit price or limit price offset value.
         '''
-        # order.lmtPrice = 222
-        # order.lmtPriceOffset = 0.03
+        order.lmtPrice = 222
+        order.lmtPriceOffset = 0.03
 
         self.placeOrder(order.orderId, mycontract, order)
 

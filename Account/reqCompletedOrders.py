@@ -13,12 +13,11 @@ class TestApp(EClient, EWrapper):
 
     def completedOrder(self, contract: Contract, order: Order, orderState: OrderState):
         print("Contract:", contract)
-    
-        print(order)
-        attrs = vars(orderState)
-        print("OrderState Details.\n",
-            "\n".join(f"{name}: {value}" for name, value in attrs.items())
-            )
+        print("Order:",order)
+        # attrs = vars(orderState)
+        # print("OrderState Details.\n",
+        #     "\n".join(f"{name}: {value}" for name, value in attrs.items())
+        #     )
 
     def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
         print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")

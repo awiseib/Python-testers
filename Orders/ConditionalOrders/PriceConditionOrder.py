@@ -13,10 +13,10 @@ class TestApp(EClient, EWrapper):
         print(f"nextValidId. orderId={orderId}")
 
         mycontract = Contract()
-        mycontract.conId = 782730302
+        mycontract.conId = 731693973
         # mycontract.symbol = "SPY"
         # mycontract.secType = "STK"
-        mycontract.exchange = "SMART"
+        mycontract.exchange = "CME"
         # mycontract.currency = "USD"
 
         myorder = Order()
@@ -27,10 +27,10 @@ class TestApp(EClient, EWrapper):
         myorder.tif = "DAY"
 
         oc = PriceCondition()
-        oc.conId = 0
-        # oc.exchange = "SMART"
+        oc.conId = 731693973
+        oc.exchange = "CME"
         oc.isMore = True
-        oc.price = 250.00
+        oc.price = 321.210
         '''
         Trigger Methods
         "Default",  # = 0,

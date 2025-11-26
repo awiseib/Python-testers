@@ -12,7 +12,7 @@ class TestApp(EClient, EWrapper):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: OrderId):
-        self.reqAccountUpdatesMulti(orderId, "DU74649", "")
+        self.reqAccountUpdatesMulti(orderId, "DU5240685", "", False)
 
     def accountUpdateMulti(self, reqId: TickerId, account: str, modelCode: str, key: str, value: str, currency: str):
         print("updateAccountValue.", key, value, currency, account)

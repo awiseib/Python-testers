@@ -1,8 +1,8 @@
 from ibapi.client import *
 from ibapi.wrapper import *
+from datetime import datetime
 
-
-port = 7496
+port = 7497
 
 
 class TestApp(EClient, EWrapper):
@@ -23,12 +23,12 @@ class TestApp(EClient, EWrapper):
             reqId=123,
             contract=mycontract,
             endDateTime="",
-            durationStr= "600 S",
-            barSizeSetting = "1 min",
+            durationStr= "4800 S",
+            barSizeSetting = "4 mins",
             whatToShow= "TRADES",
             useRTH=0,
             formatDate=1,
-            keepUpToDate=True,
+            keepUpToDate=False,
             chartOptions=[],
         )
         
@@ -37,10 +37,10 @@ class TestApp(EClient, EWrapper):
         print("DATA", reqId, bar)
 
     def historicalDataUpdate(self, reqId: int, bar: BarData):
-        print("UPDATE: ", reqId, bar)
+        print(f"UPDATE. Current Time: {datetime.now().time()}; Bar Time: {bar.date}, O: {bar.open}; H: {bar.high}; L: {bar.low}; C: {bar.close}")
         
-    def historicalDataEnd(self, reqId: int, start: str, end: str):
-        print("historicalDataEnd")
+    # def historicalDataEnd(self, reqId: int, start: str, end: str):
+    #     print("historicalDataEnd")
 
     def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
         print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")

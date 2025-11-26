@@ -2,7 +2,7 @@ from ibapi.client import *
 from ibapi.wrapper import *
 import datetime
 
-port = 7496
+port = 7497
 
 
 class TestApp(EClient, EWrapper):
@@ -12,16 +12,16 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
 
         mycontract = Contract()
-        mycontract.conId = 772144625
+        mycontract.conId = 265598
         mycontract.exchange = "SMART"
 
         self.reqHistoricalTicks(
             reqId=orderId,
             contract=mycontract,
-            startDateTime="",
-            endDateTime="20250423 10:34:00 US/Eastern",
-            numberOfTicks=100,
-            whatToShow="AllLast",
+            startDateTime="20250923-13:30:01",
+            endDateTime="",
+            numberOfTicks=1,
+            whatToShow="Trades",
             useRth=1,
             ignoreSize=False,
             miscOptions=[],
@@ -33,13 +33,14 @@ class TestApp(EClient, EWrapper):
         ticks: ListOfHistoricalTickLast, 
         done: bool,
     ):
-        for tick in ticks:
-            print(
-                "historicalTicksLast.", 
-                f"reqId:{reqId}", 
-                datetime.datetime.fromtimestamp(tick.time),
-                f"ticks:{tick.price}"
-            )
+        print(f"Number of ticks: {len(ticks)}")
+        # for tick in ticks:
+        #     print(
+        #         "historicalTicksLast.", 
+        #         f"reqId:{reqId}", 
+        #         datetime.datetime.fromtimestamp(tick.time),
+        #         f"ticks:{tick.price}"
+        #     )
         # self.disconnect()
 
     def historicalTicksBidAsk(
