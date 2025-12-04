@@ -57,6 +57,4 @@ class TestApp(EClient, EWrapper):
         
 app = TestApp()
 app.connect("127.0.0.1", port, 0)
-# app.connect("134.231.145.96", 7496, 0)
-# app.connect("172.59.184.232", 7497, 0)
 app.run()
