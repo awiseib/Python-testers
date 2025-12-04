@@ -7,7 +7,6 @@ port = 7496
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
-        self.rCount = 0
 
     def nextValidId(self, orderId: OrderId):
         
@@ -15,14 +14,12 @@ class TestApp(EClient, EWrapper):
         contract.symbol = "AAPL"
         contract.secType = "STK"
         contract.exchange = "SMART"
-        # contract.includeExpired = True
-        # contract.currency = "USD"
+        contract.currency = "USD"
 
         self.reqContractDetails(reqId=orderId, contract=contract)
         
     def contractDetails(self, reqId: int, contractDetails: ContractDetails):
         # print(contractDetails.contract)
-        self.rCount+=1
         attrs = vars(contractDetails)
         print(
             datetime.now().strftime("%H:%M:%S.%f")[:-3],
