@@ -33,7 +33,6 @@ class TestApp(EClient, EWrapper):
         parentOrder.totalQuantity = 1
         parentOrder.transmit = False
 
-        parentOrder.orderId = 1784381393
         ###################################### Hedged Child Order ###################################################
 
         hedgeChildOrder = Order()
@@ -49,8 +48,8 @@ class TestApp(EClient, EWrapper):
         hedgeChildOrder.transmit = True
         ###################################### Executions ###################################################
         
-        # self.placeOrder(parentOrder.orderId, parent, parentOrder)
-        # time.sleep(3)
+        self.placeOrder(parentOrder.orderId, parent, parentOrder)
+        time.sleep(3)
         self.placeOrder(hedgeChildOrder.orderId, hedgeChild, hedgeChildOrder)
 
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
