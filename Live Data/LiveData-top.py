@@ -63,12 +63,14 @@ time.sleep(1)
 threading.Thread(target=app.run).start()
 time.sleep(1)
 
+app.reqMarketDataType(3)
+
 contract = Contract()
-# contract.conId = 44260130
-contract.symbol = "EUR"
-contract.secType = "CASH"
+contract.conId = 265598
+contract.symbol = "AAPL"
+contract.secType = "STK"
 contract.currency = "USD"
-contract.exchange = "IDEALPRO"
+contract.exchange = "SMART"
 
 
 app.reqMktData(
