@@ -14,41 +14,43 @@ class TestApp(EClient, EWrapper):
 
         # Stock Hedge
         parent = Contract()
-        parent.conId = 374570709 # CGP - PARENT
+        parent.conId = 265598 # AAPL - PARENT
         parent.exchange = "SMART"
-        parent.currency = "CAD"
+        parent.currency = "USD"
 
         hedgeChild = Contract()
-        hedgeChild.conId = 282158487 # SOLG - To be hedged - CHILD
+        hedgeChild.conId = 8314 # IBM - To be hedged - CHILD
         hedgeChild.exchange = "SMART"
-        hedgeChild.currency = "CAD"
+        hedgeChild.currency = "USD"
 
         ###################################### Parent Order ###################################################
         parentOrder = Order()
         parentOrder.orderId = orderId
         parentOrder.action = "BUY"
         parentOrder.orderType = "LMT"
-        parentOrder.lmtPrice = 3.37
-        parentOrder.totalQuantity = 4
+        parentOrder.tif = "DAY"
+        parentOrder.lmtPrice = 270
+        parentOrder.totalQuantity = 1
         parentOrder.transmit = False
 
-        
+        parentOrder.orderId = 1784381393
         ###################################### Hedged Child Order ###################################################
 
         hedgeChildOrder = Order()
         hedgeChildOrder.orderId = parentOrder.orderId + 1
         hedgeChildOrder.action = "SELL"
         hedgeChildOrder.orderType = "LMT"
-        hedgeChildOrder.lmtPrice = 0.50
+        hedgeChildOrder.tif = "DAY"
+        hedgeChildOrder.lmtPrice = 304
         hedgeChildOrder.hedgeType = "P"
         hedgeChildOrder.dontUseAutoPriceForHedge = True
-        hedgeChildOrder.hedgeParam = 1
+        hedgeChildOrder.hedgeParam = "1"
         hedgeChildOrder.parentId = parentOrder.orderId
         hedgeChildOrder.transmit = True
         ###################################### Executions ###################################################
         
-        self.placeOrder(parentOrder.orderId, parent, parentOrder)
-        time.sleep(1)
+        # self.placeOrder(parentOrder.orderId, parent, parentOrder)
+        # time.sleep(3)
         self.placeOrder(hedgeChildOrder.orderId, hedgeChild, hedgeChildOrder)
 
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
