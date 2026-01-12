@@ -49,7 +49,7 @@ class TestApp(EClient, EWrapper):
         ###################################### Executions ###################################################
         
         self.placeOrder(parentOrder.orderId, parent, parentOrder)
-        time.sleep(3)
+        time.sleep(0.1)
         self.placeOrder(hedgeChildOrder.orderId, hedgeChild, hedgeChildOrder)
 
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
