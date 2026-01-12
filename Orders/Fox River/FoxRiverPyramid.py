@@ -24,8 +24,8 @@ order.transmit = False
 
 order.algoStrategy = "FoxPyramid"
 order.algoParams = [
-    # TagValue("EffectiveTime", "15:00:00 US/Eastern"),
-    # TagValue("ExpireTime", "15:45:00 US/Eastern"),
+    TagValue("EffectiveTime", "15:00:00 US/Eastern"),
+    TagValue("ExpireTime", "15:45:00 US/Eastern"),
     TagValue("PartRateLimit", 0.05),
     TagValue("EndTimeBehavior", "Hard_EndTime"), # Hard_EndTime, Cancel_balance, or an empty string.
     TagValue("PartRateTarget", 0.075),
