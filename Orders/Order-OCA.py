@@ -42,22 +42,21 @@ sleep(1)
 
 ### Leg for AAPL
 c1 = Contract() 
-c1.conId = 766510430
+c1.conId = 265598
 c1.exchange = "SMART"
 
-### Leg for AAPL
+### Leg for IBM
 c2 = Contract() 
-c2.conId = 766510798
+c2.conId = 8314
 c2.exchange = "SMART"
 
 o1 = Order()
 o1.tif = "GTC"
 o1.orderId = app.nextOid()
 o1.action = "BUY"
-o1.orderType = "LMT"
-o1.lmtPrice = 1.7
+o1.orderType = "MKT"
 o1.totalQuantity = 1
-o1.ocaGroup = "TestOCA_", o1.orderId
+o1.ocaGroup = f"TestOCA_{o1.orderId}"
 o1.ocaType = 3
 
 o2 = Order()
@@ -65,23 +64,10 @@ o2.tif = "GTC"
 o2.orderId = app.nextOid()
 o2.permId = app.permId
 o2.action = "BUY"
-o2.orderType = "LMT"
-o2.lmtPrice = 25.4
+o2.orderType = "MKT"
 o2.totalQuantity = 1
-o2.ocaGroup = "TestOCA_", o1.orderId
-# o2.ocaType = 1
+o2.ocaGroup = f"TestOCA_{o1.orderId}"
+
 
 app.placeOrder(o1.orderId, c1, o1)
 app.placeOrder(o2.orderId, c2, o2)
-
-# app2 = TestApp()
-# app2.connect("127.0.0.1", port, 0)
-# sleep(3)
-# Thread(target=app2.run).start()
-# sleep(1)
-
-# while True:
-#     if app.permId != 0:
-#         o2.lmtPrice = 215
-#         app.placeOrder(o2.orderId, c2, o2)
-#     sleep(3)
