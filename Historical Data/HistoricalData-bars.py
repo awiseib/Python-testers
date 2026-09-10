@@ -12,21 +12,20 @@ class TestApp(EClient, EWrapper):
 
     def nextValidId(self, orderId: OrderId):
         mycontract = Contract()
-        # mycontract.conId = 132803412=
-        # mycontract.exchange = "SMART"
-        # mycontract.includeExpired = True
-        mycontract.symbol = "AAPL"
-        mycontract.secType = "STK"
-        mycontract.currency = "USD"
+        mycontract.conId = 132803412
         mycontract.exchange = "SMART"
+        
+        # mycontract.symbol = "AAPL"
+        # mycontract.secType = "STK"
+        # mycontract.currency = "USD"
+        # mycontract.exchange = "SMART"
         # mycontract.primaryExchange = "ISLAND"
         
         self.reqHistoricalData(orderId, mycontract, 
                                endDateTime="", 
-                            #    endDateTime="20250924-17:52:08", 
-                               durationStr="1 W", 
+                               durationStr="2 D", 
                                barSizeSetting="1 day", 
-                               whatToShow="TRADES", 
+                               whatToShow="ADJUSTED_LAST", 
                                useRTH=1, 
                                formatDate=1, 
                                keepUpToDate=False, 
@@ -34,9 +33,7 @@ class TestApp(EClient, EWrapper):
                                )
     
     def historicalData(self, reqId, bar):
-    #     # real_date = bar.date.split(" ")[0]
-        # if bar.date == "20251009":
-            print(f"Time: {bar.date}, Open: {bar.open}, High: {bar.high}, Low: {bar.low}, Close: {bar.close}, Volume: {bar.volume}")
+        print(f"Time: {bar.date}, Open: {bar.open}, High: {bar.high}, Low: {bar.low}, Close: {bar.close}, Volume: {bar.volume}")
 
     def historicalDataEnd(self, reqId, start, end):
         print(f"Historical Data Ended for {reqId}. Started at {start}, ending at {end}")
