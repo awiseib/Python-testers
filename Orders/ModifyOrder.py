@@ -3,13 +3,14 @@ from ibapi.wrapper import *
 from ibapi.ticktype import TickTypeEnum
 import time, threading
 
-port=7496
+port=7497
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
         self.contract = Contract()
         self.order = Order()
+        self.my_id = 0
         self.oid = 0
         self.snapshotEnd = {}
         self.md = {}
@@ -59,7 +60,7 @@ class TestApp(EClient, EWrapper):
         
 if __name__ == "__main__":
     app = TestApp()
-    app.connect("127.0.0.1", port, 1)
+    app.connect(host="127.0.0.1", port=7497, clientId=0)
     time.sleep(1)
     threading.Thread(target=app.run).start()
     time.sleep(1)
@@ -75,9 +76,11 @@ if __name__ == "__main__":
     order.orderId = app.nextOid()
     order.action = "BUY"
     order.orderType = "LMT"
-    order.lmtPrice = 200
+    order.lmtPrice = 312
     order.totalQuantity = 10
-    
+    order.tif = "DAY"
+    order.outsideRth = True
+    order.deactivate = True
     app.placeOrder(order.orderId, contract, order)
     time.sleep(3)
     app.reqOpenOrders()

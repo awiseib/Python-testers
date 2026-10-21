@@ -3,12 +3,26 @@ from ibapi.wrapper import *
 from datetime import datetime
 from threading import Thread
 from time import sleep
-port = 7496
 
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
+    
+    def nextValidId(self, orderId):
+        mycontract = Contract()
+        mycontract.symbol = "AAPL"
+        mycontract.secType = "STK"
+        mycontract.exchange = "SMART"
+        mycontract.currency = "USD"
+
+        self.reqTickByTickData(
+            reqId=orderId, 
+            contract=mycontract, 
+            tickType="AllLast", # BidAsk, Last, AllLast, MidPoint. AllLast 
+            numberOfTicks=0 ,
+            ignoreSize=False
+        )
 
     # whatToShow=BidAsk
     def tickByTickBidAsk(self, reqId: int, time: int, bidPrice: float, askPrice: float, bidSize: int, askSize: int, tickAttribBidAsk: TickAttribBidAsk):
@@ -33,12 +47,6 @@ class TestApp(EClient, EWrapper):
         
 
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 sleep(1)
 Thread(target=app.run).start()
-sleep(1)
-app.reqMarketDataType(1)
-c1 = Contract()
-c1.conId = 265598
-c1.exchange = "SMART"
-app.reqTickByTickData(1, c1, "AllLast", 50, 0)

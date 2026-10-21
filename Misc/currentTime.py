@@ -1,8 +1,6 @@
 from ibapi.client import *
 from ibapi.wrapper import *
-import datetime
 
-port = 7496
 
 
 class TestApp(EClient, EWrapper):
@@ -13,13 +11,15 @@ class TestApp(EClient, EWrapper):
         self.reqCurrentTime()
 
     def currentTime(self, time: int):
-        print("Current time: ", datetime.datetime.fromtimestamp(time), "US")
+        print(time)
         self.disconnect()
 
     def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        print(reqId, errorCode, errorString, advancedOrderRejectJson)
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

@@ -1,13 +1,8 @@
-from decimal import Decimal
+import time
+import threading
 from ibapi.client import *
-from ibapi.common import TickAttrib, TickerId
-from ibapi.contract import Contract, ContractDetails, ComboLeg
-from ibapi.order import Order
-from ibapi.order_state import OrderState
-from ibapi.ticktype import TickType
 from ibapi.wrapper import *
-import time, threading
-port=7496
+from ibapi.tag_value import TagValue
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
@@ -23,28 +18,16 @@ class TestApp(EClient, EWrapper):
 
 
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
-        print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, Ref: {order.orderRef}")
-        # print(f"MidOffsetAtHalf: {order.midOffsetAtHalf}")
-        # attrs = vars(order)
-        # print("Order:")
-        # print(
-        #     "\n\t".join(f"{name}: {value}" for name, value in attrs.items())
-        # )
-        # print("Order State: ")
-        # print(
-        #     "\n\t".join(f"{name}: {value}" for name, value in vars(orderState).items())
-        # )
+        print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState}")
+
     def openOrderEnd(self):
         print("End of open orders.")
 
-    # def orderStatus(self, orderId: TickerId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: TickerId, parentId: TickerId, lastFillPrice: float, clientId: TickerId, whyHeld: str, mktCapPrice: float):
-    #     print(orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
+    def orderStatus(self, orderId: TickerId, status: str, filled: Decimal, remaining: Decimal, avgFillPrice: float, permId: TickerId, parentId: TickerId, lastFillPrice: float, clientId: TickerId, whyHeld: str, mktCapPrice: float):
+        print("orderStatus.", orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice)
 
-    # def completedOrder(self, contract: Contract, order: Order, orderState: OrderState):
-    #     print(f"CompletedOrder. submitter: {order.submitter}")
-
-    # def execDetails(self, reqId: int, contract: Contract, execution: Execution):
-    #     print(f"reqId: {reqId}, contract: {contract}, execution: {execution}, submitter: {execution.submitter}")
+    def execDetails(self, reqId: int, contract: Contract, execution: Execution):
+        print(f"reqId: {reqId}, contract: {contract}, execution: {execution}, submitter: {execution.submitter}")
 
     def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
         print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
@@ -53,39 +36,23 @@ class TestApp(EClient, EWrapper):
         
 if __name__ == "__main__":
 
-    contract = Contract()
-    contract.symbol = "AAPL"
-    contract.secType = "STK"
-    contract.exchange = "SMART"
-    # contract.primaryExchange = "ARCA"
-    contract.currency = "USD"
-
-    myorder = Order()
-    myorder.action = "BUY"
-    myorder.orderType = "LMT"
-    myorder.lmtPrice = 262.90
-    myorder.totalQuantity = 75
-    myorder.notHeld = False
-    
-    # myorder.tif = "IOC"
-    # myorder.ocaType=2
-    # myorder.cashQty = 100
-    # myorder.notHeld = True
-    # myorder.midOffsetAtHalf = 0.005000000001
-    # myorder.midOffsetAtWhole = 0.010
-
-    # myorder.account = "DF74648"
-    # myorder.faGroup = ""
-    # myorder.modelCode = "Test"
-
-
     app = TestApp()
-    app.connect("127.0.0.1", port, 0)
+    app.connect(host="127.0.0.1", port=7497, clientId=0)
     time.sleep(1)
     threading.Thread(target=app.run).start()
     time.sleep(1)
 
-    app.reqOpenOrders()
+    mycontract = Contract()
+    mycontract.symbol = "AAPL"
+    mycontract.secType = "STK"
+    mycontract.exchange = "SMART"
+    mycontract.currency = "USD"
 
-    time.sleep(3)
-    app.placeOrder(app.nextOid(), contract, myorder)
+    myorder = Order()
+    myorder.action = "BUY"
+    myorder.tif = "DAY"
+    myorder.orderType = "MKT"
+    myorder.totalQuantity = 7032
+    myorder.algoStrategy = "Vwap"
+    myorder.algoParams = [TagValue("endTime", "20261020-13:30:00")]
+    app.placeOrder(app.nextOid(), mycontract, myorder)

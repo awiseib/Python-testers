@@ -99,3 +99,106 @@ The workaround described in this document, including use of the `tscon` command,
 The Java 17 to Java 25 upgrade in TWS/IB Gateway 10.50 improves the long-term stability and security posture of Interactive Brokers' desktop platforms but introduces a known limitation for GUI-detached remote sessions, such as those used in standard RDP disconnect workflows. The `tscon /dest:console` approach offers a practical, field-tested workaround for clients operating in Windows remote server environments. However, this solution falls outside the bounds of IBKR's standard platform support model, and clients implementing it should do so with a full understanding of the associated risks and support limitations outlined above.
 
 For questions regarding supported platform configurations, please contact Interactive Brokers Client Services. For questions regarding custom remote server implementations, clients are encouraged to consult their internal IT resources or systems administrators.
+
+
+---
+
+
+# Security Addendum: Risk Considerations for the `tscon /dest:console` Workaround
+
+**Interactive Brokers LLC**
+**Document Classification:** Client Advisory — Security Supplement
+**Version:** 1.0
+**Date:** October 21, 2026
+
+---
+
+## Purpose
+
+This addendum supplements the prior whitepaper on the TWS/IB Gateway 10.50 Java 25 upgrade and the associated `tscon 2 /dest:console` workaround. While the command addresses a functional reauthentication issue, clients should be aware that this technique carries **non-trivial security implications** that are independent of Interactive Brokers' platform and stem entirely from native Windows session management behavior. This section outlines those considerations for risk, compliance, and IT security teams evaluating whether to adopt this workaround.
+
+---
+
+## 1. Authentication Bypass on Session Reattachment
+
+The `tscon` command can, under certain privilege conditions, reattach a disconnected session to the console **without requiring the invoking user to re-enter credentials** for that session. This is a well-documented Windows session-hijacking technique (publicly discussed in security research as early as 2017–2019) and has been cataloged as an adversary technique under privilege escalation / lateral movement frameworks (e.g., MITRE ATT&CK-aligned behaviors).
+
+**Risk:** If executed by an account with sufficient rights (particularly `SYSTEM`-level access obtained via tools such as `PsExec -s` or a scheduled task), `tscon` can be used to seize control of **another user's active or disconnected session** — including sessions belonging to higher-privileged accounts — without supplying that user's password.
+
+**Relevance to IBKR deployment:** Any server running IB Gateway that is reachable by multiple administrators, support staff, or scheduled/service accounts introduces a scenario where one party could access another's authenticated trading session without their knowledge or consent.
+
+---
+
+## 2. Bypassing the Default Windows Lock-on-Disconnect Behavior
+
+When an RDP session is disconnected using the standard Windows mechanism, Windows typically locks the console desktop (if a user is logged in) or suspends the session entirely, requiring credentials to resume. Reattaching via `tscon` to the console **can leave the desktop unlocked and fully visible** to anyone with physical or console (e.g., KVM, IPMI, hypervisor console) access to the machine.
+
+**Risk:** An unattended, unlocked desktop running IB Gateway with an active trading session exposes:
+- Account balances, open positions, and order entry screens
+- Live trading functionality to anyone with local/physical/console access
+- Potential exposure to shoulder-surfing or opportunistic misuse in shared data center or shared-access environments
+
+---
+
+## 3. Elevated Privilege Requirement
+
+Successful use of `tscon` to reattach a session not owned by the current user generally requires **administrative or SYSTEM-level privileges** on the host. Standardizing this workaround as an operational practice may incentivize:
+
+- Granting broader administrative access to operational staff than otherwise necessary (violating least-privilege principles)
+- Use of elevation techniques (e.g., scheduled tasks running as SYSTEM) that themselves introduce additional attack surface
+- Increased blast radius if the account or script used to invoke `tscon` is compromised
+
+---
+
+## 4. Reduced Audit Visibility
+
+Standard RDP connect/disconnect/logoff events generate specific, well-understood Windows Security Event Log entries (Event IDs such as 4778/4779, 4624/4634, etc.) that are commonly ingested by SIEM and monitoring tools. Session reattachment via `tscon` does not always generate equivalent, clearly distinguishable audit trail entries depending on OS version and configuration.
+
+**Risk:** Security operations teams relying on standard RDP session telemetry may have **reduced visibility** into who accessed a given session and when, complicating incident response, forensic investigation, and compliance reporting (particularly relevant for regulated trading environments subject to audit requirements).
+
+---
+
+## 5. Detection as Malicious Activity by Security Tooling
+
+Because `tscon`-based session hijacking is a recognized adversary technique, many commercial Endpoint Detection and Response (EDR) and antivirus solutions **flag or block `tscon` invocations** — particularly when combined with elevation tools — as suspicious or malicious behavior.
+
+**Risk:**
+- Legitimate use of this workaround may trigger security alerts, requiring exception handling or allow-listing that weakens detection fidelity for genuine attacks using the same technique.
+- Conversely, if the workaround is allow-listed broadly, it may create a blind spot that an actual attacker could exploit using the identical command.
+
+---
+
+## 6. Licensing and Session Accounting Ambiguity
+
+Windows Remote Desktop Services licensing and concurrent session limits are generally designed around the assumption of standard connect/disconnect/logoff behavior. Using `tscon` to persist a console-bound session independent of an active RDP connection may create ambiguity in:
+
+- Concurrent Remote Desktop Services Client Access License (RDS CAL) accounting
+- Session limit enforcement on servers configured for multiple concurrent users
+
+This is a licensing/compliance consideration separate from, but related to, security risk, and should be reviewed with internal licensing or vendor compliance teams.
+
+---
+
+## 7. No Idle Timeout or Automatic Re-Lock Enforcement
+
+Because the session is deliberately kept active and bound to the console to preserve IB Gateway's authentication state, standard idle-timeout and automatic screen-lock policies that would normally apply to a disconnected or logged-off RDP session **may not trigger** as expected. This can result in indefinitely unlocked, unattended sessions running live trading infrastructure.
+
+---
+
+## Recommended Compensating Controls
+
+Clients who determine that the operational benefit of this workaround outweighs its risks should consider implementing the following compensating controls:
+
+1. **Restrict administrative access** to the server to the minimum necessary set of individuals or service accounts, and avoid shared administrative credentials.
+2. **Enforce physical and console-level security** for any machine where this workaround is deployed, including restricting physical/hypervisor console access and disabling unnecessary remote console tools (IPMI, iDRAC, iLO, hypervisor consoles) where not required.
+3. **Implement independent session monitoring** (e.g., via Sysmon, enhanced Windows auditing, or third-party EDR) specifically configured to log and alert on `tscon` usage and session reattachment events, rather than relying on default RDP event logging alone.
+4. **Avoid using SYSTEM-level elevation techniques** (e.g., scheduled tasks running as SYSTEM) to invoke `tscon`; where possible, scope execution to the same user account that owns the session.
+5. **Apply network-level segmentation and firewalling** to limit which hosts/users can establish RDP connections to the server in question.
+6. **Document and periodically review** the use of this workaround as part of the organization's change management and security review processes, given its deviation from standard, vendor-supported session handling.
+7. **Consider alternative architectures** — such as dedicated always-on virtual displays, supported remote access solutions designed for unattended GUI persistence, or vendor-supported headless automation (where available) — that avoid the underlying session-detachment problem without relying on a console-reattachment technique.
+
+---
+
+## Disclaimer
+
+As stated in the originating whitepaper, Interactive Brokers does not design, test, or support custom remote access configurations, including use of the `tscon` command. The security considerations outlined in this addendum are provided for client awareness and risk evaluation purposes only and do not constitute an exhaustive security assessment. Clients should engage their internal information security and compliance teams prior to adopting this or any similar workaround in a production trading environment.

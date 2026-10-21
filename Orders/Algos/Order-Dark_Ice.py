@@ -1,8 +1,8 @@
+from ibapi.tag_value import TagValue
 from ibapi.client import *
 from ibapi.wrapper import *
-from ibapi.tag_value import TagValue
 
-port = 7496
+
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
@@ -11,29 +11,25 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
 
         mycontract = Contract()
-        mycontract.symbol = "AAPL"
-        mycontract.secType = "STK"
-        mycontract.currency = "USD"
-        mycontract.exchange = "CSFBALGO"
-        mycontract.primaryExchange = "ISLAND"
+        mycontract.conId = 265598
+        mycontract.exchange = "SMART"
         
-        baseOrder = Order()
-        baseOrder.action = "BUY"
-        baseOrder.totalQuantity = 10
-        baseOrder.orderType = "LMT"
-        baseOrder.lmtPrice = 180
-        baseOrder.outsideRth = True
+        myorder = Order()
+        myorder.action = "BUY"
+        myorder.orderType = "LMT"
+        myorder.lmtPrice = 305
+        myorder.totalQuantity = 100
+        myorder.tif = "DAY"
 
-        # must be direct-routed to "CSFBALGO"
-
-        baseOrder.algoStrategy = "BLAST"
-        baseOrder.algoParams = []
-        baseOrder.algoParams.append(TagValue("StartTime", "13:00:00 America/Chicago"))
-        baseOrder.algoParams.append(TagValue("EndTime", "15:00:00 America/Chicago"))
-        baseOrder.algoParams.append(TagValue("ExecStyle", "Normal"))
-        baseOrder.algoParams.append(TagValue("DisplaySize", 100))
-
-        self.placeOrder(orderId, mycontract, baseOrder)
+        myorder.algoStrategy = "DarkIce"
+        myorder.algoParams = [
+            TagValue("displaySize", 300)
+            # TagValue("startTime", startTime),
+            # TagValue("endTime", endTime),
+            # TagValue("allowPastEndTime", int(allowPastEndTime))
+        ]
+        
+        self.placeOrder(orderId, mycontract, myorder)
 
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
         print(f"openOrder. orderId: {orderId}, contract: {contract}, order: {order}, orderState: {orderState.status}, submitter: {order.submitter}") 
@@ -47,5 +43,5 @@ class TestApp(EClient, EWrapper):
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
             
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

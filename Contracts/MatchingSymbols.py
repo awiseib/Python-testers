@@ -1,7 +1,6 @@
 from ibapi.client import *
 from ibapi.wrapper import *
 
-port = 7496
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
@@ -9,7 +8,10 @@ class TestApp(EClient, EWrapper):
 
     def nextValidId(self, orderId: OrderId):
         
-        self.reqMatchingSymbols(orderId, "BRFG")
+        self.reqMatchingSymbols(
+            reqId=orderId, 
+            pattern="IB" # This functions identical to the TWS contract lookup tool when seeking contracts from the watchlist.
+        )
     
     def symbolSamples(self, reqId: int, contractDescriptions: list):
         for contractDescription in contractDescriptions:
@@ -23,5 +25,5 @@ class TestApp(EClient, EWrapper):
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

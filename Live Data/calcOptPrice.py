@@ -2,7 +2,6 @@ from ibapi.client import *
 from ibapi.wrapper import *
 from ibapi.ticktype import TickTypeEnum
 
-port = 7496
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
@@ -11,16 +10,22 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
         
         mycontract = Contract()
-        mycontract.symbol = "SPY"
+        mycontract.symbol = "SPX"
         mycontract.secType = "OPT"
         mycontract.exchange = "SMART"
         mycontract.currency = "USD"
 
-        mycontract.lastTradeDateOrContractMonth = 20250417
+        mycontract.lastTradeDateOrContractMonth = "20270114"
         mycontract.right = "P"
-        mycontract.strike = 541
+        mycontract.strike = 7750
 
-        self.calculateOptionPrice(orderId, mycontract, 0.299, 541.31, [])
+        self.calculateOptionPrice(
+            reqId=orderId, 
+            contract=mycontract, 
+            volatility=0.299, # Any value may be entered. Not all entered values may result in a calculated price.
+            underPrice=541.31, # Any value may be entered. Not all entered values may result in a calculated price.
+            optPrcOptions=[]
+        )
         
     def tickOptionComputation(self, reqId, tickType, tickAttrib, impliedVol, delta, optPrice, pvDividend, gamma, vega, theta, undPrice):
         print(
@@ -33,10 +38,11 @@ class TestApp(EClient, EWrapper):
         )
     
     def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        if reqId != -1:
-            print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
         
 
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

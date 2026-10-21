@@ -3,25 +3,23 @@ from ibapi.client import *
 from ibapi.common import TickerId
 from ibapi.wrapper import *
 
-port = 7496
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
     
     def nextValidId(self, orderId: OrderId):
-
         mycontract = Contract()
-        mycontract.conId = 265598
+        mycontract.symbol = "AAPL"
+        mycontract.secType = "STK"
         mycontract.exchange = "SMART"
-        # mycontract.conId = 9599491
-        # mycontract.exchange = "SMART"
+        mycontract.currency = "USD"
         
         self.reqMktDepth(
             reqId=orderId,
             contract=mycontract,
             numRows=100,
-            isSmartDepth=True,
+            isSmartDepth=True,  # if True, data will return to updateMktDepthL2
             mktDepthOptions=[]
         )
 
@@ -33,6 +31,9 @@ class TestApp(EClient, EWrapper):
         print(f"updateMktDepthL2 SmartRouted: {isSmartDepth}. position: {position}, marketMaker: {marketMaker}, operation: {operation}, side: {'BID' if side == 1 else 'ASK'}, price: {price}, size: {size}")
         # self.cancelMktDepth(reqId, isSmartDepth)
 
+    def rerouteMktDepthReq(self, reqId, conId, exchange):
+        print("Reroute Market Depth for:", reqId, conId, exchange)
+
     def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
         print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
         if advancedOrderRejectJson != "":
@@ -40,5 +41,5 @@ class TestApp(EClient, EWrapper):
         
 
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

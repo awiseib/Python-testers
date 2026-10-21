@@ -1,10 +1,6 @@
 from ibapi.client import *
 from ibapi.wrapper import *
 
-
-port = 7497
-
-
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
@@ -13,9 +9,9 @@ class TestApp(EClient, EWrapper):
 
         self.reqHistoricalNews(
             reqId=orderId, 
-            conId=281858120, # BTC ConId
+            conId=265598, # AAPL ConId
             providerCodes="DJ-N", #BRFG+BRFUPDN+DJNL 
-            startDateTime="20250801 00:00:01", 
+            startDateTime="20261001 00:00:01 US/Central", 
             endDateTime="", 
             totalResults= 15, 
             historicalNewsOptions=[]
@@ -35,5 +31,5 @@ class TestApp(EClient, EWrapper):
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

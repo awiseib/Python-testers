@@ -6,7 +6,6 @@ from ibapi.contract import *
 import time
 import threading
 
-port = 7496
 
 class TestApp(EWrapper, EClient):
 
@@ -14,7 +13,11 @@ class TestApp(EWrapper, EClient):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: int):
-        self.reqPositionsMulti(orderId, "DU5240685", "")
+        self.reqPositionsMulti(
+            reqId=orderId, 
+            account="DU5240685", 
+            modelCode=""
+        )
 
     def positionMulti(self, reqId: int, account: str, modelCode: str, contract: Contract, pos: Decimal, avgCost: float):
         print(f"reqId: {reqId}, account: {account}, modelCode: {modelCode}, contract: {contract}, pos: {pos}, avgCost: {avgCost}")
@@ -33,5 +36,5 @@ class TestApp(EWrapper, EClient):
 
     
 app = TestApp()
-app.connect('127.0.0.1', port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

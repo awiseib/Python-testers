@@ -1,7 +1,6 @@
 from ibapi.client import *
 from ibapi.wrapper import *
 
-port = 7496
 
 class TradingApp(EWrapper, EClient):
     def __init__(self):
@@ -47,5 +46,5 @@ class TradingApp(EWrapper, EClient):
         print(reqId, errorCode, errorString, advancedOrderRejectJson)
     
 app = TradingApp()      
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

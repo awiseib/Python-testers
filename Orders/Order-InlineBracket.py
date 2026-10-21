@@ -5,7 +5,7 @@ from ibapi.order import Order
 from ibapi.order_state import OrderState
 from ibapi.wrapper import *
 import time, threading
-port=7496
+port=7497
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
@@ -42,7 +42,7 @@ class TestApp(EClient, EWrapper):
         
 if __name__ == "__main__":
     app = TestApp()
-    app.connect("127.0.0.1", port, 0)
+    app.connect(host="127.0.0.1", port=7497, clientId=0)
     time.sleep(1)
     threading.Thread(target=app.run).start()
     time.sleep(1)

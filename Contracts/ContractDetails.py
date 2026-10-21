@@ -1,28 +1,24 @@
 from ibapi.client import *
 from ibapi.wrapper import *
-from datetime import datetime
-from ibapi.contract import ComboLeg
-port = 7496
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
+    
+    def nextValidId(self, orderId):
+        mycontract = Contract()
+        mycontract.symbol = "AAPL"
+        mycontract.secType = "STK"
+        mycontract.currency = "USD"
 
-    def nextValidId(self, orderId: OrderId):
-        
-        contract = Contract()
-        contract.symbol = "AAPL"
-        contract.secType = "STK"
-        contract.exchange = "SMART"
-        contract.currency = "USD"
+        self.reqContractDetails(
+            reqId=orderId,
+            contract=mycontract # See https://www.interactivebrokers.com/docs/tws-api/ref/contract for full list contract definition.
+        )
 
-        self.reqContractDetails(reqId=orderId, contract=contract)
-        
     def contractDetails(self, reqId: int, contractDetails: ContractDetails):
-        # print(contractDetails.contract)
         attrs = vars(contractDetails)
         print(
-            datetime.now().strftime("%H:%M:%S.%f")[:-3],
             "contractDetails.",
             f"reqId:{reqId}",
             "\n",
@@ -31,7 +27,6 @@ class TestApp(EClient, EWrapper):
         
     def contractDetailsEnd(self, reqId: int):
         print(
-            datetime.now().strftime("%H:%M:%S.%f")[:-3],
             "contractDetailsEnd.",
             f"reqId:{reqId}",
         )
@@ -40,7 +35,6 @@ class TestApp(EClient, EWrapper):
     def bondContractDetails(self, reqId: int, contractDetails: ContractDetails):
         attrs = vars(contractDetails)
         print(
-            datetime.now().strftime("%H:%M:%S.%f")[:-3],
             "bondDetails.",
             f"reqId:{reqId}",
             "\n",
@@ -48,10 +42,10 @@ class TestApp(EClient, EWrapper):
         )
 
     def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        print(reqId, errorCode, errorString, advancedOrderRejectJson)
-        if errorString == "No security definition has been found for the request":
-            self.disconnect()
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
         
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

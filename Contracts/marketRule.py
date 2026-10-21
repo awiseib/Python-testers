@@ -1,16 +1,17 @@
 from ibapi.client import *
 from ibapi.wrapper import *
 
-port = 7496
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: OrderId):
-        mktRules = [26]
+        mktRules = [26]         # Any market rule may be added, or a list of them if a smart routed contract returns multiple.
         for i in mktRules:
-            self.reqMarketRule(i)
+            self.reqMarketRule(
+                marketRuleId=i
+            )
 
     def marketRule(self, marketRuleId: int, priceIncrements: ListOfPriceIncrements):
         print(f"marketRuleId: {marketRuleId}")
@@ -24,5 +25,5 @@ class TestApp(EClient, EWrapper):
 
 
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()
