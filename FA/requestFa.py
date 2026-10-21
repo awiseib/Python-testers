@@ -1,9 +1,7 @@
-from decimal import Decimal
 from ibapi.common import FaDataType,FaDataTypeEnum
 from ibapi.client import *
 from ibapi.wrapper import *
 
-port = 7496
 
 
 class TestApp(EClient, EWrapper):
@@ -23,5 +21,5 @@ class TestApp(EClient, EWrapper):
 
 
 app = TestApp()
-app.connect("127.0.0.1", 4002, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

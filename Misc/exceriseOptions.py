@@ -1,19 +1,21 @@
 from ibapi.client import *
 from ibapi.wrapper import *
 
-port = 7496
-accountId = "U1234567"
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
         
     def nextValidId(self, orderId: OrderId): 
-        contract = Contract()
-        contract.conId = 580482280
-        contract.secType = "OPT"
-        contract.exchange = "SMART"
-        contract.currency = "USD"
+        mycontract = Contract()
+        mycontract.symbol = "SPX"
+        mycontract.secType = "OPT"
+        mycontract.exchange = "SMART"
+        mycontract.currency = "USD"
+
+        mycontract.lastTradeDateOrContractMonth = "20270114"
+        mycontract.right = "P"
+        mycontract.strike = 7750
 
         '''
         contract: Contract - This structure contains a description of the contract to be exercised
@@ -28,16 +30,23 @@ class TestApp(EClient, EWrapper):
         professionalCustomer:bool - professional customer
         '''
 
-        self.exerciseOptions(5003, contract, 1, 1, accountId, 1)
+        self.exerciseOptions(
+            reqId=orderId, 
+            contract=mycontract, 
+            exerciseAction=1, 
+            exerciseQuantity=1, 
+            account="U1234567", 
+            professionalCustomer=1
+        )
 
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order, orderState: OrderState):
         print(f"OpenOrders. Order ID: {orderId}, Contract: {contract}, Order: {order}, Order State: {orderState}")
 
     def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        print(reqId, errorCode, errorString, advancedOrderRejectJson)
-        if errorString == "No security definition has been found for the request":
-            self.disconnect()
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

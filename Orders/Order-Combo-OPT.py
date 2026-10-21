@@ -3,7 +3,6 @@ from ibapi.wrapper import *
 from ibapi.contract import ComboLeg
 from ibapi.order import *
 
-port = 7496
 
 
 class TestApp(EClient, EWrapper):
@@ -66,5 +65,5 @@ class TestApp(EClient, EWrapper):
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
             
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

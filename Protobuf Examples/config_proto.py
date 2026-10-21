@@ -4,7 +4,6 @@ from ibapi.wrapper import EWrapper
 from ibapi.protobuf.ConfigRequest_pb2 import ConfigRequest as ConfigRequestProto
 from ibapi.protobuf.ConfigResponse_pb2 import ConfigResponse as ConfigResponseProto
 
-port = 7496
 
 '''
 Changes come from the larger introduction of Settings Management throuh ProtoBuf.
@@ -17,6 +16,7 @@ class TestApp(EClient, EWrapper):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: int):        
+        
         configRequestProto = ConfigRequestProto()
         configRequestProto.reqId = orderId
 
@@ -28,9 +28,9 @@ class TestApp(EClient, EWrapper):
 
 
     def configResponseProtoBuf(self, configResponseProto: ConfigResponseProto):
-        print(configResponseProto)
+        print(configResponseProto.messages)
 
 
 app = TestApp()
-app.connect("localhost", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

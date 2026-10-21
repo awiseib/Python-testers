@@ -3,7 +3,7 @@
 from ibapi.tag_value import TagValue
 from ibapi.sync_wrapper import *
 app = TWSSyncWrapper(timeout=30)
-if not app.connect_and_start(host="127.0.0.1", port=7496, client_id=8675309):
+if not app.connect_and_start(host="127.0.0.1", port=7497, client_id=8675309):
     print("Failed to connect to TWS")
     exit(1)
 else:

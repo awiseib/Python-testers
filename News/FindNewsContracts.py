@@ -5,7 +5,11 @@ from threading import Thread
 from time import sleep
 from datetime import datetime
 
-port = 7496
+'''
+This script is used to identify all available news sources at Interactive Brokers that may be used for live or historical news. 
+The complete list is approximately 4426 total news sources.
+This does not guarantee access on all resources, but does validate the sources as a potential provider.
+'''
 
 headers = ["Symbol", "SecType", "Exchange", "Description"]
 filePath = "./NewsSources.csv"
@@ -30,7 +34,9 @@ class TestApp(EClient, EWrapper):
         print(f"Finished {self.con_tracker[reqId]} at {datetime.now()}")
         
     def error(self, reqId: TickerId, errorTime: int, errorCode: int, errorString: str, advancedOrderRejectJson=""):
-        print(reqId, errorCode, errorString, advancedOrderRejectJson)
+        print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
+        if advancedOrderRejectJson != "":
+            print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
         
 def time_to_die():
     sleep(15)
@@ -38,7 +44,7 @@ def time_to_die():
     contract_csv_file.close()
 
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 sleep(2)
 Thread(target=app.run).start()
 

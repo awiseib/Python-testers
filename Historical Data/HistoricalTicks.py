@@ -2,18 +2,16 @@ from ibapi.client import *
 from ibapi.wrapper import *
 import datetime
 
-port = 7497
-
-
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: OrderId):
-
         mycontract = Contract()
-        mycontract.conId = 265598
+        mycontract.symbol = "AAPL"
+        mycontract.secType = "STK"
         mycontract.exchange = "SMART"
+        mycontract.currency = "USD"
 
         self.reqHistoricalTicks(
             reqId=orderId,
@@ -21,35 +19,23 @@ class TestApp(EClient, EWrapper):
             startDateTime="20250923-13:30:01",
             endDateTime="",
             numberOfTicks=1,
-            whatToShow="Trades",
+            whatToShow="Trades",    # Supports "Bid_Ask", "Midpoint", or "Trades"
             useRth=1,
             ignoreSize=False,
             miscOptions=[],
         )
 
-    def historicalTicksLast(
-        self, 
-        reqId: int, 
-        ticks: ListOfHistoricalTickLast, 
-        done: bool,
-    ):
-        print(f"Number of ticks: {len(ticks)}")
-        # for tick in ticks:
-        #     print(
-        #         "historicalTicksLast.", 
-        #         f"reqId:{reqId}", 
-        #         datetime.datetime.fromtimestamp(tick.time),
-        #         f"ticks:{tick.price}"
-        #     )
-        # self.disconnect()
+    def historicalTicksLast(self, reqId: int, ticks: ListOfHistoricalTickLast, done: bool,):
+        for tick in ticks:
+            print(
+                "historicalTicksLast.", 
+                f"reqId:{reqId}", 
+                datetime.datetime.fromtimestamp(tick.time),
+                f"ticks:{tick.price}"
+            )
+        self.disconnect()
 
-    def historicalTicksBidAsk(
-        self, 
-        reqId: int, 
-        ticks: ListOfHistoricalTickBidAsk, 
-        done: bool,
-    ):
-        # print(type(ticks[0]))
+    def historicalTicksBidAsk(self, reqId: int, ticks: ListOfHistoricalTickBidAsk, done: bool,):
         for tick in ticks:
             print(
                 "historicalTicksBidAsk.", 
@@ -57,12 +43,7 @@ class TestApp(EClient, EWrapper):
             )
         self.disconnect()
 
-    def historicalTicks(
-        self, 
-        reqId: int, 
-        ticks: ListOfHistoricalTick, 
-        done: bool,
-    ):
+    def historicalTicks(self, reqId: int, ticks: ListOfHistoricalTick, done: bool):
         for tick in ticks:
             print(
                 "historicalTicks.", 
@@ -78,5 +59,5 @@ class TestApp(EClient, EWrapper):
 
 
 app = TestApp()
-app.connect("127.0.0.1", port, 1)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

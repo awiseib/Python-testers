@@ -7,11 +7,14 @@ class TestApp(EClient, EWrapper):
         EClient.__init__(self, self)
 
     def nextValidId(self, orderId: int):
-        self.reqAccountUpdatesMulti(orderId, "DU74649", "", False)
+        self.reqAccountUpdatesMulti(
+            reqId=orderId, 
+            account="DU74649", 
+            modelCode="", 
+            ledgerAndNLV=False  # Declare if Ledger and Net Liquidation values should be returned.
+        )
 
-    def updateAccountValue(
-        self, key: str, val: str, currency: str, accountName: str
-    ):
+    def updateAccountValue(self, key: str, val: str, currency: str, accountName: str):
         print("updateAccountValue.", key, val, currency, accountName)
 
     def updateAccountTime(self, timeStamp: str):
@@ -30,5 +33,5 @@ class TestApp(EClient, EWrapper):
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
             
 app = TestApp()
-app.connect("127.0.0.1", 7496, 1001)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

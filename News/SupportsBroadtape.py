@@ -4,10 +4,12 @@ from threading import Thread
 from time import sleep
 import csv
 
-port = 7496
+'''
+This file was meant to be used in tandem with FindNewsContracts.py to identify which of the 4400 contracts supported broad tape news requests.
+'''
 
 headers = ["Symbol", "SecType", "Exchange", "Description", "Supports Broadtape"]
-filePath = r"C:\Users\awise\Code\Python testers\BroadtapeNewsSupport.csv"
+filePath = "./BroadtapeNewsSupport.csv"
 contract_csv_file = open(filePath, 'w', newline='')
 contract_writer = csv.DictWriter(f=contract_csv_file, fieldnames=headers)
 contract_writer.writeheader()
@@ -45,11 +47,11 @@ def time_to_die():
     newsContractFile.close()
 
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 sleep(2)
 Thread(target=app.run).start()
 try:
-    newsContractFile = open(r"C:\Users\awise\Code\Python testers\NewsSources.csv", "r")
+    newsContractFile = open("./NewsSources.csv", "r")
     newsContractHeaders = ["Symbol","SecType","Exchange", "Description"]
     newsFileReader = csv.DictReader(f=newsContractFile, fieldnames=newsContractHeaders)
 except FileNotFoundError as e:

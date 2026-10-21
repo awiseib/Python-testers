@@ -2,7 +2,6 @@ from ibapi.tag_value import TagValue
 from ibapi.client import *
 from ibapi.wrapper import *
 
-port = 7496
 
 
 class TestApp(EClient, EWrapper):
@@ -20,7 +19,7 @@ class TestApp(EClient, EWrapper):
         myorder.orderType = "LMT"
         myorder.lmtPrice = 230
         myorder.totalQuantity = 50
-        
+        myorder.tif = "DAY"
         myorder.algoStrategy = "ClosePx"
         myorder.algoParams = []
         myorder.algoParams.append(TagValue("maxPctVol", 0.4))
@@ -42,5 +41,5 @@ class TestApp(EClient, EWrapper):
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
             
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

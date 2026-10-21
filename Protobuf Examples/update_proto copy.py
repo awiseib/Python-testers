@@ -10,7 +10,6 @@ from ibapi.protobuf.UpdateConfigWarning_pb2 import UpdateConfigWarning as Update
 from ibapi.protobuf.LockAndExitConfig_pb2 import LockAndExitConfig as LockAndExitConfigProto
 from ibapi.protobuf.UpdateConfigResponse_pb2 import UpdateConfigResponse as UpdateConfigResponseProto
 
-port = 7496
 
 '''
 Changes come from the larger introduction of Settings Management throuh ProtoBuf.
@@ -32,19 +31,21 @@ class TestApp(EClient, EWrapper):
         
         # Reflective of the Global Configuration -> API -> Settings menu
         apiSettingsConfigProto = ApiSettingsConfigProto()
-        apiSettingsConfigProto.createApiMessageLogFile = True
-        apiSettingsConfigProto.includeMarketDataInLogFile = True
-        apiSettingsConfigProto.loggingLevel = "Detail"
+        # apiSettingsConfigProto.createApiMessageLogFile = True
+        # apiSettingsConfigProto.includeMarketDataInLogFile = True
+        # apiSettingsConfigProto.loggingLevel = "Detail"
+        apiSettingsConfigProto.sendInstrumentTimezone = "utc"
         apiConfigProto.settings.CopyFrom(apiSettingsConfigProto)
 
+        '''
         # Reflective of the Global Configuration -> API -> Precautions menu
         apiPrecautionsConfig = ApiPrecautionsConfigProto()
         apiPrecautionsConfig.bypassOrderPrecautions = True
         apiPrecautionsConfig.bypassPriceBasedVolatilityWarning = True
         apiConfigProto.precautions.CopyFrom(apiPrecautionsConfig)
-
+        '''
         updateConfigRequestProto.api.CopyFrom(apiConfigProto)
-        
+        '''
         # Reflective of Global Configuration -> Messages
         updateConfigWarningProto = UpdateConfigWarningProto()
         updateConfigWarningProto.messageId = 520
@@ -52,7 +53,6 @@ class TestApp(EClient, EWrapper):
         updateConfigWarningProto.message = "Pricecap Warning Message"
         updateConfigRequestProto.acceptedWarnings.append(updateConfigWarningProto)
 
-        '''
         # Currently appears to be non-functional - escalated with development.
         # Reflective of Global Configuration -> Lock and Exit menu
         lockAndExitProto = LockAndExitConfigProto()
@@ -69,9 +69,10 @@ class TestApp(EClient, EWrapper):
     def updateConfigResponseProtoBuf(self, updateConfigResponseProto: UpdateConfigResponseProto):
         print(updateConfigResponseProto)
 
+
     def error(self, reqId, errorTime, errorCode, errorString, advancedOrderRejectJson=""):
         print(f"Error., Time of Error: {errorTime}, Error Code: {errorCode}, Error Message: {errorString}")
 
 app = TestApp()
-app.connect("localhost", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

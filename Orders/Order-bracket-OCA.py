@@ -2,7 +2,6 @@ from ibapi.client import *
 from ibapi.wrapper import *
 
 import threading,time
-port = 7496
 
 
 class TestApp(EClient, EWrapper):
@@ -32,7 +31,7 @@ class TestApp(EClient, EWrapper):
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
             
 app = TestApp()
-app.connect("127.0.0.1", 7496, 1001)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 time.sleep(1)
 threading.Thread(target=app.run).start()
 time.sleep(1)

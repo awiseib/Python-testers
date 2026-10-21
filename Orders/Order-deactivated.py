@@ -5,9 +5,9 @@ from datetime import datetime
 # Instantiate the reference for our sync class
 app = TWSSyncWrapper(timeout=30)
 # make a connection to Trader Workstation
-# In this case, we're connecting on Localhost with port 7496 and Client ID 0.
+# In this case, we're connecting on Localhost with port 7497 and Client ID 0.
 # Connect to TWS
-if not app.connect_and_start(host="127.0.0.1", port=7496, client_id=0):
+if not app.connect_and_start(host="127.0.0.1", port=7497, client_id=0):
     print("Failed to connect to TWS")
     exit(1)
 else:

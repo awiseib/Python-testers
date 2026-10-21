@@ -4,7 +4,6 @@ from datetime import datetime
 import time, threading
 
 lock = threading.Lock()
-port = 7496
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
@@ -49,7 +48,7 @@ if __name__ == "__main__":
 
     # Create our EClient/EWrapper object and initialize the run loop.
     app = TestApp()
-    app.connect("127.0.0.1", port, 0)
+    app.connect(host="127.0.0.1", port=7497, clientId=0)
     time.sleep(1)
     threading.Thread(target=app.run).start()
     time.sleep(1)

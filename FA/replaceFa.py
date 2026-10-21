@@ -1,10 +1,7 @@
 from ibapi.client import *
-from ibapi.common import FaDataType, TickerId
 from ibapi.wrapper import *
 from ibapi.common import *
-import time
 
-port = 7496
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
@@ -24,6 +21,5 @@ class TestApp(EClient, EWrapper):
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
         
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
-time.sleep(3)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

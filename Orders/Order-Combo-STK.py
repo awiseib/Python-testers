@@ -3,7 +3,6 @@ from ibapi.wrapper import *
 from ibapi.tag_value import TagValue
 from ibapi.contract import ComboLeg
 
-port = 7497
 
 
 class TestApp(EClient, EWrapper):
@@ -34,7 +33,7 @@ class TestApp(EClient, EWrapper):
         myorder.orderId = orderId
         myorder.action = "BUY"
         myorder.orderType = "LMT"
-        myorder.totalQuantity = 1
+        myorder.totalQuantity = 20
         myorder.tif = "DAY"
         mycontract.comboLegs = [leg2, leg1]
 
@@ -62,5 +61,5 @@ class TestApp(EClient, EWrapper):
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
             
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

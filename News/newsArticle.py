@@ -1,9 +1,6 @@
 from ibapi.client import *
 from ibapi.wrapper import *
 
-port = 7496
-
-
 class TestApp(EClient, EWrapper):
     def __init__(self):
         EClient.__init__(self, self)
@@ -13,7 +10,12 @@ class TestApp(EClient, EWrapper):
         Please be aware this article may no longer be available. 
         If that is the case, please test the News-Historical.py request for avialable news articles.
         '''
-        self.reqNewsArticle(orderId, "DJNL", "DJNL$08aff51c", []) 
+        self.reqNewsArticle(
+            reqId=orderId, 
+            providerCode="DJ-N", 
+            articleId="DJ-N$1f8c854d", 
+            newsArticleOptions= []
+        ) 
 
     def newsArticle(self, requestId: int, articleType: int, articleText: str):
         print("Article Type: ", articleType)
@@ -25,5 +27,5 @@ class TestApp(EClient, EWrapper):
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

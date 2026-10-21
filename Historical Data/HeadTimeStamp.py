@@ -1,6 +1,5 @@
 from ibapi.client import *
 from ibapi.wrapper import *
-port = 7496
 
 class TestApp(EClient, EWrapper):
     def __init__(self):
@@ -9,14 +8,18 @@ class TestApp(EClient, EWrapper):
     def nextValidId(self, orderId: OrderId):
         
         mycontract = Contract()
-        mycontract.conId = 495512552
-        mycontract.exchange = "CME"
-        # mycontract.symbol = "ES"
-        # mycontract.secType = "CONTFUT"
-        # mycontract.exchange = "CME"
-        # mycontract.currency = "USD"
+        mycontract.symbol = "AAPL"
+        mycontract.secType = "STK"
+        mycontract.exchange = "SMART"
+        mycontract.currency = "USD"
 
-        self.reqHeadTimeStamp(1, mycontract, "TRADES", 1, 1)
+        self.reqHeadTimeStamp(
+            reqId=orderId, 
+            contract=mycontract, 
+            whatToShow="BID_ASK",   # See https://www.interactivebrokers.com/docs/tws-api/doc/md/historical-bars#whattoshow-values for all values. 
+            useRth=1, 
+            formatDate=1
+        )
 
     def headTimestamp(self, reqId: int, headTimestamp):
         print(f"headTimeStamp. reqId: {reqId}, headTimestamp: {headTimestamp}")
@@ -29,5 +32,5 @@ class TestApp(EClient, EWrapper):
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()

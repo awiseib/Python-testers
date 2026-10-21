@@ -3,7 +3,6 @@ from ibapi.wrapper import *
 from ibapi.tag_value import *
 import threading,time
 
-port = 7496
 
 class TestApp(EWrapper, EClient):
     def __init__(self):
@@ -11,7 +10,7 @@ class TestApp(EWrapper, EClient):
 
 
     def scannerData(self, reqId, rank, contractDetails, distance, benchmark, projection, legsStr):
-        print(f"ReqId: {reqId}, Rank: {rank+1}, Contract: {contractDetails.contract}")
+        print(f"ReqId: {reqId}, Rank: {rank+1}, Contract: {contractDetails.contract}", distance, benchmark, projection, legsStr)
 
     def scannerDataEnd(self, reqId):
         print("Market Scanner End")
@@ -24,7 +23,7 @@ class TestApp(EWrapper, EClient):
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
 
 app = TestApp()
-app.connect("127.0.0.1", port, 1)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 time.sleep(1)
 threading.Thread(target=app.run).start()
 time.sleep(1)
@@ -34,12 +33,12 @@ sub = ScannerSubscription()
 sub.numberOfRows = 10 # Displays the maximum number of scanner results. Max of 50.
 sub.instrument = "STK" # Returns the Instrument type to be returned. See scannerParameters xml response for details.
 sub.locationCode = "STK.US.MAJOR" # Returns the exchange regions to be returned. See scannerParameters xml response for details.
-sub.scanCode = "MOST_ACTIVE" # Returns the code to sort results by. See scannerParameters xml response for details.
+sub.scanCode = "TOP_PERC_GAIN" # Returns the code to sort results by. See scannerParameters xml response for details.
 # sub.abovePrice = 50 # Set the maximum MARK price to filter by.
 # sub.belowPrice = 55 # Set the minimum MARK price to filter by.
-# sub.aboveVolume = 1000000 # Set the minimum trade volume of the day.
-# sub.marketCapAbove = 100000 # Set the minimum market cap restriction  
-# sub.marketCapBelow = 10000000 # Set the maximum market cap restriction. 
+sub.aboveVolume = 500000 # Set the minimum trade volume of the day.
+# sub.marketCapAbove = 10 # Set the minimum market cap restriction  
+# sub.marketCapBelow = 10000 # Set the maximum market cap restriction. 
 '''
 Moody ratings scale:
 Investment Grade
@@ -94,12 +93,14 @@ D: Payment default on a financial commitment
 
 scan_options = []
 filter_options = [
-    # TagValue("changeOpenPercAbove", 20),
-    # TagValue("stVolume5minAbove", 100000),
-    # TagValue("volumeAbove", 100000),
-    # TagValue("priceAbove", .05),
-    # TagValue("marketCapAbove1e6", 1),
-    # TagValue("marketCapBelow1e6", 10000),
+    TagValue("stkTypes", "CORP"),
+    # TagValue("volumeAbove", 500000),
+    TagValue("priceAbove", 2),
+    TagValue("priceBelow", 15),
+    TagValue("marketCapAbove1e6", 10),
+    TagValue("marketCapBelow1e6", 10000),
+    TagValue("avgVolumeAbove", 400000),
+    # TagValue("stVolumeVsAvg5minAbove", 0.1)
 ]
-app.reqMarketDataType(3)
+# app.reqMarketDataType(3)
 app.reqScannerSubscription(0, sub, scan_options, filter_options)

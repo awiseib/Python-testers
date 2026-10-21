@@ -2,7 +2,6 @@ from ibapi.client import *
 from ibapi.wrapper import *
 from ibapi.order_condition import *
 
-port = 7496
 
 
 class TestApp(EClient, EWrapper):
@@ -28,6 +27,7 @@ class TestApp(EClient, EWrapper):
         oc = MarginCondition()
         oc.percent = 75 # If the margin cushion % is greater than 75%
         oc.isMore = True
+        oc.isConjunctionConnection = False
 
         '''
         Conditions Cancel Order
@@ -52,5 +52,5 @@ class TestApp(EClient, EWrapper):
             print(f"AdvancedOrderRejectJson: {advancedOrderRejectJson}")
             
 app = TestApp()
-app.connect("127.0.0.1", port, 0)
+app.connect(host="127.0.0.1", port=7497, clientId=0)
 app.run()
